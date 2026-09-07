@@ -3,6 +3,126 @@
   "version": "1.4.0",
   "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./engine": {
+      "types": "./lib/engine.d.ts",
+      "default": "./lib/engine.js"
+    },
+    "./package.json": "./package.json",
+    "./lib": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./lib/components": {
+      "types": "./lib/components/index.d.ts",
+      "default": "./lib/components/index.js"
+    },
+    "./lib/components/FormComponents": {
+      "types": "./lib/components/FormComponents/index.d.ts",
+      "default": "./lib/components/FormComponents/index.js"
+    },
+    "./lib/components/FormComponents/BooleanItem": {
+      "types": "./lib/components/FormComponents/BooleanItem/index.d.ts",
+      "default": "./lib/components/FormComponents/BooleanItem/index.js"
+    },
+    "./lib/components/FormComponents/ChoiceItems": {
+      "types": "./lib/components/FormComponents/ChoiceItems/index.d.ts",
+      "default": "./lib/components/FormComponents/ChoiceItems/index.js"
+    },
+    "./lib/components/FormComponents/DateTimeItems": {
+      "types": "./lib/components/FormComponents/DateTimeItems/index.d.ts",
+      "default": "./lib/components/FormComponents/DateTimeItems/index.js"
+    },
+    "./lib/components/FormComponents/DateTimeItems/utils": {
+      "types": "./lib/components/FormComponents/DateTimeItems/utils/index.d.ts",
+      "default": "./lib/components/FormComponents/DateTimeItems/utils/index.js"
+    },
+    "./lib/components/FormComponents/DecimalItem": {
+      "types": "./lib/components/FormComponents/DecimalItem/index.d.ts",
+      "default": "./lib/components/FormComponents/DecimalItem/index.js"
+    },
+    "./lib/components/FormComponents/GridGroup": {
+      "types": "./lib/components/FormComponents/GridGroup/index.d.ts",
+      "default": "./lib/components/FormComponents/GridGroup/index.js"
+    },
+    "./lib/components/FormComponents/GroupItem": {
+      "types": "./lib/components/FormComponents/GroupItem/index.d.ts",
+      "default": "./lib/components/FormComponents/GroupItem/index.js"
+    },
+    "./lib/components/FormComponents/ItemParts": {
+      "types": "./lib/components/FormComponents/ItemParts/index.d.ts",
+      "default": "./lib/components/FormComponents/ItemParts/index.js"
+    },
+    "./lib/components/FormComponents/RepeatGroup": {
+      "types": "./lib/components/FormComponents/RepeatGroup/index.d.ts",
+      "default": "./lib/components/FormComponents/RepeatGroup/index.js"
+    },
+    "./lib/components/FormComponents/RepeatItem": {
+      "types": "./lib/components/FormComponents/RepeatItem/index.d.ts",
+      "default": "./lib/components/FormComponents/RepeatItem/index.js"
+    },
+    "./lib/components/FormComponents/SingleItem": {
+      "types": "./lib/components/FormComponents/SingleItem/index.d.ts",
+      "default": "./lib/components/FormComponents/SingleItem/index.js"
+    },
+    "./lib/components/FormComponents/StringItem": {
+      "types": "./lib/components/FormComponents/StringItem/index.d.ts",
+      "default": "./lib/components/FormComponents/StringItem/index.js"
+    },
+    "./lib/components/FormComponents/Tables": {
+      "types": "./lib/components/FormComponents/Tables/index.d.ts",
+      "default": "./lib/components/FormComponents/Tables/index.js"
+    },
+    "./lib/components/Renderer": {
+      "types": "./lib/components/Renderer/index.d.ts",
+      "default": "./lib/components/Renderer/index.js"
+    },
+    "./lib/hooks": {
+      "types": "./lib/hooks/index.d.ts",
+      "default": "./lib/hooks/index.js"
+    },
+    "./lib/i18n": {
+      "types": "./lib/i18n/index.d.ts",
+      "default": "./lib/i18n/index.js"
+    },
+    "./lib/interfaces": {
+      "types": "./lib/interfaces/index.d.ts",
+      "default": "./lib/interfaces/index.js"
+    },
+    "./lib/stores": {
+      "types": "./lib/stores/index.d.ts",
+      "default": "./lib/stores/index.js"
+    },
+    "./lib/theme": {
+      "types": "./lib/theme/index.d.ts",
+      "default": "./lib/theme/index.js"
+    },
+    "./lib/utils": {
+      "types": "./lib/utils/index.d.ts",
+      "default": "./lib/utils/index.js"
+    },
+    "./lib/*.js": {
+      "types": "./lib/*.d.ts",
+      "default": "./lib/*.js"
+    },
+    "./lib/*": {
+      "types": "./lib/*.d.ts",
+      "default": "./lib/*.js"
+    },
+    "./src/*": "./src/*"
+  },
+  "typesVersions": {
+    "*": {
+      "engine": [
+        "lib/engine.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "compile": "tsc",
     "watch": "tsc -w",
@@ -88,6 +208,7 @@
     "@types/react-dom": "^19.1.1",
     "chokidar": "^4.0.3",
     "concurrently": "^9.2.4",
+    "dependency-cruiser": "^17.4.3",
     "eslint-plugin-storybook": "9.1.13",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.3.0",
