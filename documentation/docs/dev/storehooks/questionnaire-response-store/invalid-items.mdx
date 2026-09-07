@@ -8,11 +8,11 @@ The invalidItems object is a `Record<errorKey, OperationOutcome>` of the items t
 
 The `errorKey` is **not always a bare `linkId`**. For an item outside a repeating group it is just the `linkId`. For an item inside one or more repeating group instances, the key is suffixed with the path of enclosing instance indices, so that each instance tracks its own errors instead of all instances sharing a single key:
 
-| Item | errorKey |
-| --- | --- |
-| Outside a repeating group | `myField` |
-| Inside the 2nd instance of a repeating group | `myField///1` |
-| Nested: 1st instance, then 3rd instance | `myField///0.2` |
+| Item                                         | errorKey        |
+| -------------------------------------------- | --------------- |
+| Outside a repeating group                    | `myField`       |
+| Inside the 2nd instance of a repeating group | `myField///1`   |
+| Nested: 1st instance, then 3rd instance      | `myField///0.2` |
 
 The indices are positions within the **QuestionnaireResponse**, not the rendered list — the two differ when an instance is empty or, for a `gtable`, unselected, because such instances are absent from the response.
 
