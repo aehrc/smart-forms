@@ -60,7 +60,7 @@ and because the toolkit is meant to be general rather than shaped around its cur
 Treat them as untested surface.
 
 **`terminologyServerUrl` is load-bearing — do not remove it.** `BehavioralTestWrapper` passes it to
-`buildForm`, and `apps/smart-forms-app/src/test/aboriginalFormExtraction.test.tsx` compares the
+`buildForm` unless the consumer overrides it through the prop of the same name, and `apps/smart-forms-app/src/test/aboriginalFormExtraction.test.tsx` compares the
 requested server URL against this exact value, forwarding matches to the real Ontoserver. Changing
 or deleting it breaks that suite. (An earlier revision of this file called it "probably dead" on
 the grounds that every suite mocks `fhirclient` to return `{}`. That is untrue of the file above,

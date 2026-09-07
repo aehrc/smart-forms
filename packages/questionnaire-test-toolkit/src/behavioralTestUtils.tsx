@@ -27,7 +27,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { useEffect, useState } from 'react';
 import { inAppExtract, type InAppExtractOutput } from '@aehrc/sdc-template-extract';
-import { terminologyServerUrl } from './behavioralTestConstants';
+import { terminologyServerUrl as defaultTerminologyServerUrl } from './behavioralTestConstants';
 import type { BehavioralTestWrapperProps, RequestDefinition } from './behavioralTestTypes';
 
 /**
@@ -38,7 +38,19 @@ import type { BehavioralTestWrapperProps, RequestDefinition } from './behavioral
  * server. The rendered response can be extracted through the Save button exposed by the wrapper.
  */
 export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
-  const { questionnaire, patient, requestDefinitions } = props;
+  const {
+    questionnaire,
+    patient,
+    requestDefinitions,
+    terminologyServerUrl = defaultTerminologyServerUrl
+  } = props;
+
+  // Validate during render so a misuse fails the test loudly, rather than as an unhandled
+  // rejection inside the effect that would leave the harness stuck on "Loading...".
+  if (requestDefinitions && !patient) {
+    throw new Error('Patient must be provided when request definitions are provided');
+  }
+
   const queryClient = useRendererQueryClient();
   const [isPopulating, setIsPopulating] = useState(false);
 
@@ -46,46 +58,43 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
     const load = async () => {
       setIsPopulating(true);
 
-      if (requestDefinitions && !patient) {
-        throw new Error('Patient must be provided when request definitions are provided');
-      }
-
-      if (patient) {
-        const result = await populateQuestionnaire({
-          questionnaire,
-          patient,
-          fetchResourceCallback: buildFetchResourceCallback(requestDefinitions ?? []),
-          fetchResourceRequestConfig: { sourceServerUrl: 'http://mock.example' }
-        });
-
-        const { populateSuccess, populateResult } = result;
-        if (!populateSuccess || !populateResult) {
-          setIsPopulating(false);
-          return;
-        }
-
-        const { populatedResponse, populatedContext } = populateResult;
-        await buildForm({
-          questionnaire,
-          questionnaireResponse: populatedResponse,
-          terminologyServerUrl,
-          additionalContext: {
+      try {
+        if (patient) {
+          const result = await populateQuestionnaire({
+            questionnaire,
             patient,
-            ...populatedContext
-          }
-        });
-      } else {
-        await buildForm({
-          questionnaire,
-          terminologyServerUrl
-        });
-      }
+            fetchResourceCallback: buildFetchResourceCallback(requestDefinitions ?? []),
+            fetchResourceRequestConfig: { sourceServerUrl: 'http://mock.example' }
+          });
 
-      setIsPopulating(false);
+          const { populateSuccess, populateResult } = result;
+          if (!populateSuccess || !populateResult) {
+            return;
+          }
+
+          const { populatedResponse, populatedContext } = populateResult;
+          await buildForm({
+            questionnaire,
+            questionnaireResponse: populatedResponse,
+            terminologyServerUrl,
+            additionalContext: {
+              patient,
+              ...populatedContext
+            }
+          });
+        } else {
+          await buildForm({
+            questionnaire,
+            terminologyServerUrl
+          });
+        }
+      } finally {
+        setIsPopulating(false);
+      }
     };
 
     void load();
-  }, [questionnaire, patient, requestDefinitions]);
+  }, [questionnaire, patient, requestDefinitions, terminologyServerUrl]);
 
   if (isPopulating) {
     return <div>Loading...</div>;

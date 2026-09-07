@@ -29,6 +29,12 @@ export interface BehavioralTestWrapperProps {
   requestDefinitions?: RequestDefinition[];
   onExtractResult?: (extractResult: InAppExtractOutput) => void;
   questionnaire: Questionnaire;
+  /**
+   * Terminology server passed to `buildForm`. Defaults to the exported `terminologyServerUrl`
+   * constant (CSIRO's public Ontoserver). Override it when a suite cannot mock `fhirclient` and
+   * must not reach that server.
+   */
+  terminologyServerUrl?: string;
 }
 
 /**
