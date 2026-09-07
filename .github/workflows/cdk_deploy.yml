@@ -1,0 +1,100 @@
+name: CDK Infrastructure Deployment
+
+# Deliberately dispatch only: deploying briefly takes the FHIR servers offline, so it is always
+# someone's decision, never a side effect of merging. See deployment/README.md.
+on:
+  workflow_dispatch:
+    inputs:
+      stack:
+        description: 'Which stack to act on'
+        type: choice
+        required: true
+        default: 'both'
+        options: ['both', 'EhrProxyAppStack', 'FormsServerAppStack']
+      action:
+        description: 'diff shows the pending changes, deploy applies them'
+        type: choice
+        required: true
+        default: 'diff'
+        options: ['diff', 'deploy']
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AWS_REGION: ap-southeast-2
+
+jobs:
+  diff:
+    name: Diff ${{ inputs.stack }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node, build the deployment packages, configure AWS
+        uses: ./.github/actions/cdk-setup
+        with:
+          role-arn: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # The default change set method is used rather than --method=template on purpose. A
+      # template-only diff compares JSON without asking CloudFormation to validate the resource
+      # graph, which is how a circular dependency between the HAPI service and its database once
+      # reached a deploy attempt undetected.
+      - name: cdk diff
+        run: |
+          set -o pipefail
+          for stack in $(.github/scripts/cdk-stacks.sh '${{ inputs.stack }}'); do
+            dir=$(.github/scripts/cdk-stacks.sh --dir "$stack")
+            echo "::group::cdk diff $stack"
+            ( cd "$dir" && npx cdk diff "$stack" 2>&1 ) | tee "/tmp/diff-$stack.txt"
+            echo "::endgroup::"
+            {
+              echo "### \`$stack\`"
+              echo '```'
+              grep -E "^\[[+~-]\]|Number of stacks|IAM Statement Changes|Security Group Changes" \
+                "/tmp/diff-$stack.txt" | head -60 || echo "no resource-level changes"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          done
+
+  deploy:
+    name: Deploy ${{ inputs.stack }}
+    needs: diff
+    if: inputs.action == 'deploy'
+    runs-on: ubuntu-latest
+    # Access control lives here, in the environment's required reviewers. See deployment/README.md.
+    environment: aws-production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node, build the deployment packages, configure AWS
+        uses: ./.github/actions/cdk-setup
+        with:
+          role-arn: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: cdk deploy
+        run: |
+          for stack in $(.github/scripts/cdk-stacks.sh '${{ inputs.stack }}'); do
+            dir=$(.github/scripts/cdk-stacks.sh --dir "$stack")
+            echo "::group::cdk deploy $stack"
+            ( cd "$dir" && npx cdk deploy "$stack" --require-approval never )
+            echo "::endgroup::"
+          done
+
+      # The HAPI servers hold demo data in their databases and are not repopulated by deploying.
+      # This is a liveness check, not a data check.
+      - name: Check the FHIR endpoints are serving
+        run: |
+          fail=0
+          for url in https://proxy.smartforms.io/fhir/metadata \
+                     https://smartforms.csiro.au/api/fhir/metadata; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --retry 10 --retry-delay 15 \
+                     --retry-all-errors -m 20 "$url" || echo 000)
+            echo "$url -> $code"
+            echo "- \`$url\` -> $code" >> "$GITHUB_STEP_SUMMARY"
+            [ "$code" = "200" ] || fail=1
+          done
+          exit $fail

@@ -1,0 +1,49 @@
+name: CDK setup
+description: >-
+  Shared setup for the CDK workflows: Node.js, the deployment role check, npm dependencies,
+  the deployment package builds, and AWS credentials.
+
+inputs:
+  role-arn:
+    description: ARN of the IAM role GitHub Actions assumes to run CDK
+    required: true
+  aws-region:
+    description: AWS region to operate in
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: npm
+
+    - name: Check the deployment role is configured
+      shell: bash
+      run: |
+        if [ -z "${{ inputs.role-arn }}" ]; then
+          echo "::error::Repository variable AWS_CDK_DEPLOY_ROLE_ARN is not set."
+          echo "::error::It must name a role that trusts repo:aehrc/smart-forms and can assume the"
+          echo "::error::cdk-hnb659fds-* bootstrap roles in account 209248795938."
+          exit 1
+        fi
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+
+    - name: Build deployment packages
+      shell: bash
+      run: |
+        npm run build -w shared-hapi-endpoint
+        npm run build -w ehr-proxy-smart-proxy
+        npm run build -w forms-server-assemble-endpoint
+        npm run build -w forms-server-populate-endpoint
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.role-arn }}
+        aws-region: ${{ inputs.aws-region }}
