@@ -75,6 +75,9 @@ export function insertValuesToPath(
 
   // Insert each valueToInsert instance into template at the correct location, taking into account context index
   // We can have multiple values to insert eg. given names ['First', 'Middle'] which will result in two objects like [{given: ['First']}, {given: ['Middle']}] which are merged
+  // Only the first item of this split can be a genuinely new array insert - the rest always merge into the
+  // element that first item just created (or already existed), regardless of the outer isNewInsert flag.
+  let isFirstInsert = isNewInsert;
   for (let i = 0; i < valuesToInsert.length; i++) {
     const valueToInsert = valuesToInsert[i];
     const cleanedEntryPathSegments = cleanEntryPathSegments(entryPathSegments, insertIndex);
@@ -83,9 +86,10 @@ export function insertValuesToPath(
       templateToMutate,
       entryPath,
       cleanedEntryPathSegments,
-      isNewInsert,
+      isFirstInsert,
       valueToInsert
     );
+    isFirstInsert = false;
   }
 }
 
