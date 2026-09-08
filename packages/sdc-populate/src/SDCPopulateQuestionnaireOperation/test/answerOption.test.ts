@@ -33,7 +33,7 @@
  */
 
 import { describe, expect, it } from '@jest/globals';
-import { findInAnswerOptions } from '../utils/answerOption';
+import { findInAnswerOptions, valueIsCoding } from '../utils/answerOption';
 
 describe('findInAnswerOptions', () => {
   const codingOption = {
@@ -145,5 +145,44 @@ describe('findInAnswerOptions rejects non-Coding code-bearing objects', () => {
     expect(findInAnswerOptions(options, { code: 'mg' })).toEqual({
       valueCoding: { system: 'sys', code: 'mg', display: 'milligram' }
     });
+  });
+});
+
+describe('findInAnswerOptions codeless Coding values', () => {
+  const displayOnlyOption = {
+    valueCoding: { system: 'http://example.com/local-codes', display: 'Query positive' }
+  };
+
+  it('matches a codeless Coding against a display-only option by display', () => {
+    const value = { system: 'http://example.com/local-codes', display: 'Query positive' };
+
+    expect(findInAnswerOptions([displayOnlyOption], value)).toEqual({
+      valueCoding: displayOnlyOption.valueCoding
+    });
+  });
+
+  it('does not match a codeless Coding from a different system', () => {
+    const value = { system: 'http://example.com/other-codes', display: 'Query positive' };
+
+    expect(findInAnswerOptions([displayOnlyOption], value)).toBeUndefined();
+  });
+
+  it('does not match a codeless Coding with a different display', () => {
+    const value = { system: 'http://example.com/local-codes', display: 'Query negative' };
+
+    expect(findInAnswerOptions([displayOnlyOption], value)).toBeUndefined();
+  });
+});
+
+describe('valueIsCoding content requirement', () => {
+  it('accepts a codeless Coding with system and display', () => {
+    expect(valueIsCoding({ system: 'sys', display: 'Query positive' })).toBe(true);
+  });
+
+  it('rejects objects with neither system nor code', () => {
+    expect(valueIsCoding({})).toBe(false);
+    expect(valueIsCoding({ userSelected: true })).toBe(false);
+    expect(valueIsCoding({ id: 'x' })).toBe(false);
+    expect(valueIsCoding({ display: 'just text' })).toBe(false);
   });
 });

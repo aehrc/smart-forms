@@ -26,7 +26,8 @@ import { getRelevantCodingProperties } from './codingProperties';
  * Find and return corresponding answerOption based on a populated or selected answer value.
  * String values match by code, display, string, or integer value.
  * Coding values (e.g. from an initialExpression FHIRPath result) match coding options by code,
- * with system agreement when both sides specify one.
+ * with system agreement when both sides specify one; codeless Codings match display-only
+ * options by display.
  *
  * @author Sean Fong
  */
@@ -92,10 +93,17 @@ const CODING_PROPERTIES = new Set([
 ]);
 
 export function valueIsCoding(value: unknown): value is Coding {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const coding = value as Coding;
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    typeof (value as Coding).code === 'string' &&
+    // code is optional in a Coding, but when present it must be a string
+    (coding.code === undefined || typeof coding.code === 'string') &&
+    // require a system or code so bare {display} objects, {} or {userSelected: true}
+    // are not treated as Codings
+    (coding.system !== undefined || coding.code !== undefined) &&
     Object.keys(value).every((key) => CODING_PROPERTIES.has(key))
   );
 }

@@ -138,6 +138,34 @@ describe('parseValueToAnswer', () => {
     expect(result).toEqual({ valueCoding: { code: 'J44.9', display: 'COPD' } });
   });
 
+  it('returns valueCoding for a codeless coding instead of flattening it to valueString', () => {
+    const qItem = {
+      linkId: 'query',
+      type: 'choice' as const,
+      answerOption: [
+        {
+          valueCoding: { system: 'http://example.com/local-codes', display: 'Query positive' }
+        }
+      ]
+    };
+
+    const matched = parseValueToAnswer(qItem, {
+      system: 'http://example.com/local-codes',
+      display: 'Query positive'
+    });
+    expect(matched).toEqual({
+      valueCoding: { system: 'http://example.com/local-codes', display: 'Query positive' }
+    });
+
+    const unmatched = parseValueToAnswer(qItem, {
+      system: 'http://example.com/other-codes',
+      display: 'Query unknown'
+    });
+    expect(unmatched).toEqual({
+      valueCoding: { system: 'http://example.com/other-codes', display: 'Query unknown' }
+    });
+  });
+
   it('never emits an object inside valueString for unrecognised object values', () => {
     const qItem = { linkId: 'q', type: 'string' as const };
 

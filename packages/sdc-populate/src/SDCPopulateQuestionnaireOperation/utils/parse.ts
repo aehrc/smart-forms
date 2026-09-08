@@ -117,7 +117,7 @@ export function parseValueToAnswer(
     return { valueQuantity: value };
   }
 
-  // A Coding may legally omit its system
+  // A Coding may legally omit its system or code
   if (valueIsCoding(value)) {
     return {
       valueCoding: getRelevantCodingProperties(value)
