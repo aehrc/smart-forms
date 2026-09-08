@@ -20,7 +20,7 @@ import type {
   QuestionnaireItemInitial,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { findInAnswerOptions } from './answerOption';
+import { findInAnswerOptions, valueIsCoding } from './answerOption';
 import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './constructResponse';
 import { getRelevantCodingProperties } from './codingProperties';
 
@@ -117,9 +117,18 @@ export function parseValueToAnswer(
     return { valueQuantity: value };
   }
 
-  if (typeof value === 'object' && value.system && value.code) {
+  // A Coding may legally omit its system or code
+  if (valueIsCoding(value)) {
     return {
       valueCoding: getRelevantCodingProperties(value)
+    };
+  }
+
+  // No branch below can represent an object; fall back to its display text so an
+  // object never ends up inside valueString
+  if (typeof value === 'object') {
+    return {
+      valueString: typeof value.display === 'string' ? value.display : JSON.stringify(value)
     };
   }
 

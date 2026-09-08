@@ -98,6 +98,11 @@ export async function constructResponse(
 
   const containedResources = questionnaire.contained ?? [];
 
+  // Filled during the population walk below, alongside answerOptions and
+  // containedValueSets, so open-choice items can be identified when filtering
+  // valueSet answers
+  const openChoiceLinkIds = new Set<string>();
+
   // Populate questionnaire response as a two-step process
   // In first step, populate answers from initialExpressions and get answerValueSet promises wherever population of valueSet answers are required
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
@@ -115,6 +120,7 @@ export async function constructResponse(
       valueSetPromises,
       answerOptions,
       containedValueSets,
+      openChoiceLinkIds,
       fetchTerminologyCallback,
       fetchTerminologyRequestConfig,
       fetchResourceRequestConfig
@@ -142,7 +148,13 @@ export async function constructResponse(
   valueSetPromises = await resolveValueSetPromises(valueSetPromises);
   const updatedTopLevelQRItems: QuestionnaireResponseItem[] = topLevelQRItems
     .map((qrItem) =>
-      filterValueSetAnswersRecursive(qrItem, valueSetPromises, answerOptions, containedValueSets)
+      filterValueSetAnswersRecursive(
+        qrItem,
+        valueSetPromises,
+        answerOptions,
+        containedValueSets,
+        openChoiceLinkIds
+      )
     )
     .filter((item): item is QuestionnaireResponseItem => item !== null);
 
@@ -193,6 +205,7 @@ interface ConstructResponseItemRecursiveParams {
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
+  openChoiceLinkIds: Set<string>;
   fetchTerminologyCallback?: FetchTerminologyCallback;
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
   fetchResourceRequestConfig?: FetchResourceRequestConfig;
@@ -215,6 +228,7 @@ async function constructResponseItemRecursive(
     valueSetPromises,
     answerOptions,
     containedValueSets,
+    openChoiceLinkIds,
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig,
     fetchResourceRequestConfig
@@ -237,6 +251,7 @@ async function constructResponseItemRecursive(
         valueSetPromises,
         answerOptions,
         containedValueSets,
+        openChoiceLinkIds,
         fetchTerminologyCallback,
         fetchTerminologyRequestConfig,
         fetchResourceRequestConfig
@@ -254,6 +269,7 @@ async function constructResponseItemRecursive(
         valueSetPromises,
         answerOptions,
         containedValueSets,
+        openChoiceLinkIds,
         fetchTerminologyCallback: fetchTerminologyCallback,
         fetchTerminologyRequestConfig: fetchTerminologyRequestConfig,
         fetchResourceRequestConfig: fetchResourceRequestConfig
@@ -276,6 +292,7 @@ async function constructResponseItemRecursive(
       valueSetPromises,
       answerOptions,
       containedValueSets,
+      openChoiceLinkIds,
       fetchTerminologyCallback: fetchTerminologyCallback,
       fetchTerminologyRequestConfig: fetchTerminologyRequestConfig
     });
@@ -288,6 +305,7 @@ async function constructResponseItemRecursive(
     valueSetPromises,
     answerOptions,
     containedValueSets,
+    openChoiceLinkIds,
     fetchTerminologyCallback: fetchTerminologyCallback,
     fetchTerminologyRequestConfig: fetchTerminologyRequestConfig
   });
@@ -301,6 +319,7 @@ interface ConstructGroupItemParams {
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
+  openChoiceLinkIds: Set<string>;
   fetchTerminologyCallback?: FetchTerminologyCallback | undefined;
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
 }
@@ -314,6 +333,7 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
     valueSetPromises,
     answerOptions,
     containedValueSets,
+    openChoiceLinkIds,
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig
   } = params;
@@ -352,6 +372,7 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
 
         recordAnswerOption(qItem, answerOptions);
         recordContainedValueSet(qItem, qContainedResources, containedValueSets);
+        recordOpenChoiceItem(qItem, openChoiceLinkIds);
       }
     }
   }
@@ -383,6 +404,7 @@ interface ConstructSingleItemParams {
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
+  openChoiceLinkIds: Set<string>;
   fetchTerminologyCallback?: FetchTerminologyCallback | undefined;
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
 }
@@ -395,6 +417,7 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
     valueSetPromises,
     answerOptions,
     containedValueSets,
+    openChoiceLinkIds,
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig
   } = params;
@@ -420,6 +443,7 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
 
       recordAnswerOption(qItem, answerOptions);
       recordContainedValueSet(qItem, qContainedResources, containedValueSets);
+      recordOpenChoiceItem(qItem, openChoiceLinkIds);
 
       return {
         linkId: qItem.linkId,
@@ -466,6 +490,12 @@ function recordAnswerOption(
 ) {
   if (qItem.answerOption) {
     answerOptions[qItem.linkId] = qItem.answerOption;
+  }
+}
+
+function recordOpenChoiceItem(qItem: QuestionnaireItem, openChoiceLinkIds: Set<string>) {
+  if (qItem.type === 'open-choice') {
+    openChoiceLinkIds.add(qItem.linkId);
   }
 }
 
@@ -563,6 +593,7 @@ async function constructRepeatGroupInstances(
   valueSetPromises: Record<string, ValueSetPromise>,
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
   containedValueSets: Record<string, ValueSet>,
+  openChoiceLinkIds: Set<string>,
   fetchTerminologyCallback?: FetchTerminologyCallback,
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
   fetchResourceRequestConfig?: FetchResourceRequestConfig
@@ -666,6 +697,7 @@ async function constructRepeatGroupInstances(
 
             recordAnswerOption(childItem, answerOptions);
             recordContainedValueSet(childItem, qContainedResources, containedValueSets);
+            recordOpenChoiceItem(childItem, openChoiceLinkIds);
 
             qrRepeatGroupInstance.item?.push({
               linkId: childItem.linkId,
@@ -702,6 +734,7 @@ async function constructRepeatGroupInstances(
           valueSetPromises,
           answerOptions,
           containedValueSets,
+          openChoiceLinkIds,
           fetchTerminologyCallback,
           fetchTerminologyRequestConfig,
           fetchResourceRequestConfig
