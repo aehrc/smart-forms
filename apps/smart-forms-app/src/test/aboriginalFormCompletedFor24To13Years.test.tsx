@@ -14,7 +14,7 @@ import {
   inputDecimal,
   getVisibleTab,
   inputDateTime
-} from './testUtils.ts';
+} from '@aehrc/questionnaire-test-toolkit';
 import { AboriginalForm } from './aboriginalFormUtils.tsx';
 
 vi.mock('fhirclient', () => ({
