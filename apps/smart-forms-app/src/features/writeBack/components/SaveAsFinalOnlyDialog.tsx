@@ -18,26 +18,26 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { saveProgress } from '../../../../api/saveQr.ts';
+import { saveProgress } from '../../../api/saveQr.ts';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
-import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 import {
   saveAsFinalSuccessMessage,
   saveAmendmentSuccessMessage,
   saveErrorMessage
-} from '../../../../interfaces/snackbar.interface.ts';
-import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
-import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTitle.tsx';
+} from '../../../interfaces/snackbar.interface.ts';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
-export interface RendererSaveAsFinalDialogProps {
+export interface SaveAsFinalOnlyDialogProps {
   open: boolean;
   isAmendment: boolean;
   additionalContentText?: string;
   closeDialog: () => unknown;
 }
 
-function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
+function SaveAsFinalOnlyDialog(props: SaveAsFinalOnlyDialogProps) {
   const { open, isAmendment, additionalContentText, closeDialog } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
@@ -122,4 +122,4 @@ function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
   );
 }
 
-export default RendererSaveAsFinalOnlyDialog;
+export default SaveAsFinalOnlyDialog;
