@@ -30,7 +30,7 @@ import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import { formHasErrorsMessage } from '../../../../interfaces/snackbar.interface.ts';
 import { findFirstErrorTabIndex } from '../../utils/tabNavigation.ts';
-import useSaveAsFinalExtraction from '../../../writeBack/hooks/useSaveAsFinalExtraction.ts';
+import useSaveAsFinalExtraction from '../../../writeBack/hooks/useSaveAsFinalExtraction.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;

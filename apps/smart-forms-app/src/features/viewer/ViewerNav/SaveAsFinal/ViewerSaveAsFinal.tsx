@@ -24,7 +24,7 @@ import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import { formHasErrorsViewerMessage } from '../../../../interfaces/snackbar.interface.ts';
-import useSaveAsFinalExtraction from '../../../writeBack/hooks/useSaveAsFinalExtraction.ts';
+import useSaveAsFinalExtraction from '../../../writeBack/hooks/useSaveAsFinalExtraction.tsx';
 import SaveAsFinalOnlyDialog from '../../../writeBack/components/SaveAsFinalOnlyDialog.tsx';
 import SaveAsFinalWriteBackDialog from '../../../writeBack/components/SaveAsFinalWriteBackDialog.tsx';
 

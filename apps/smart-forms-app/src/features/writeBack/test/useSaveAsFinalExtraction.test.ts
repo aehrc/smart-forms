@@ -16,6 +16,7 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
+import { useSnackbar } from 'notistack';
 import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
@@ -27,8 +28,10 @@ import {
 import useSmartClient from '../../../hooks/useSmartClient';
 import { getExtractMechanism } from '../../renderer/utils/extract';
 import { validateExtractedBundle } from '../utils/validateExtractedBundle';
+import { extractionErrorMessage } from '../../../interfaces/snackbar.interface';
 import useSaveAsFinalExtraction from '../hooks/useSaveAsFinalExtraction';
 
+jest.mock('notistack');
 jest.mock('../../../hooks/useSmartClient');
 jest.mock('@aehrc/sdc-populate', () => ({
   populateQuestionnaire: jest.fn()
@@ -87,6 +90,9 @@ const mockExtractObservationBased = extractObservationBased as jest.MockedFuncti
 const mockBuildBundleFromObservationArray = buildBundleFromObservationArray as jest.MockedFunction<
   typeof buildBundleFromObservationArray
 >;
+
+const mockEnqueueSnackbar = jest.fn();
+(useSnackbar as jest.Mock).mockReturnValue({ enqueueSnackbar: mockEnqueueSnackbar });
 
 describe('useSaveAsFinalExtraction', () => {
   const mockQuestionnaire: Questionnaire = {
@@ -294,6 +300,11 @@ describe('useSaveAsFinalExtraction', () => {
       expect(mockInAppExtract).not.toHaveBeenCalled();
       expect(onExtracted).not.toHaveBeenCalled();
       expect(result.current.isExtracting).toBe(false);
+      // The user must be told why nothing happened, not left with a silently reverted button
+      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+        extractionErrorMessage,
+        expect.objectContaining({ variant: 'error' })
+      );
     });
 
     it('does not call onExtracted when extraction returns an OperationOutcome', async () => {
@@ -311,6 +322,10 @@ describe('useSaveAsFinalExtraction', () => {
       expect(result.current.extractedBundle).toBeNull();
       expect(result.current.isExtracting).toBe(false);
       expect(consoleSpy).toHaveBeenCalled();
+      expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
+        extractionErrorMessage,
+        expect.objectContaining({ variant: 'error' })
+      );
 
       consoleSpy.mockRestore();
     });

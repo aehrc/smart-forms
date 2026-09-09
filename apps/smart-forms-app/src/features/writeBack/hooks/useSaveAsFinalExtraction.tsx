@@ -16,6 +16,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import { useSnackbar } from 'notistack';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
 import {
   buildBundleFromObservationArray,
@@ -29,6 +30,8 @@ import useSmartClient from '../../../hooks/useSmartClient.ts';
 import { fetchResourceCallback } from '../../prepopulate/utils/callback.ts';
 import { validateExtractedBundle } from '../utils/validateExtractedBundle.ts';
 import { getExtractMechanism } from '../../renderer/utils/extract.ts';
+import { extractionErrorMessage } from '../../../interfaces/snackbar.interface.ts';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 export interface UseSaveAsFinalExtractionOptions {
   // Called once extraction has completed and produced a bundle (possibly empty) to write back.
@@ -57,6 +60,7 @@ function useSaveAsFinalExtraction(
   const { onExtracted } = options;
 
   const { smartClient, patient, user, encounter, extraLaunchContext } = useSmartClient();
+  const { enqueueSnackbar } = useSnackbar();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
@@ -82,6 +86,10 @@ function useSaveAsFinalExtraction(
     // FhirClient not available, skip whole save process
     if (!smartClient || !patient || !user) {
       setExtracting(false);
+      enqueueSnackbar(extractionErrorMessage, {
+        variant: 'error',
+        action: <CloseSnackbar variant="error" />
+      });
       return;
     }
 
@@ -116,6 +124,10 @@ function useSaveAsFinalExtraction(
     if (extractResultIsOperationOutcome(extractResult)) {
       console.error(extractResult);
       setExtracting(false);
+      enqueueSnackbar(extractionErrorMessage, {
+        variant: 'error',
+        action: <CloseSnackbar variant="error" />
+      });
       return;
     }
 
