@@ -17,9 +17,9 @@
 
 import React from 'react';
 import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { generateCodingKey } from '../../../hooks/useAnswerOptionsToggleExpressions';
 import CheckboxSingle from '../ItemParts/CheckboxSingle';
 import { isOptionDisabled } from '../../../utils/choice';
-import { deepEqual } from 'fast-equals';
 import StyledText from '../ItemParts/StyledText';
 
 interface CheckboxOptionListProps {
@@ -50,6 +50,7 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
         );
 
         if (option['valueCoding']) {
+          const optionKey = generateCodingKey(option.valueCoding);
           return (
             <CheckboxSingle
               key={option.valueCoding.code ?? option.valueCoding.display ?? ''}
@@ -58,8 +59,9 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               readOnly={readOnly}
               disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
-              isChecked={answers.some((answer) =>
-                deepEqual(answer.valueCoding, option.valueCoding)
+              isChecked={answers.some(
+                (answer) =>
+                  answer.valueCoding && generateCodingKey(answer.valueCoding) === optionKey
               )}
               onCheckedChange={onCheckedChange}
             />

@@ -24,9 +24,11 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
 import { useRendererConfigStore } from '../../../stores';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
@@ -68,6 +70,11 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    valueSelect ? [valueSelect] : []
+  );
+
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   const [inputValue, setInputValue] = React.useState('');
@@ -88,7 +95,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
       <Autocomplete
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
-        options={options}
+        options={visibleOptions}
         getOptionDisabled={(option) => isOptionDisabled(option, answerOptionsToggleExpressionsMap)}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         isOptionEqualToValue={(option, value) => compareAnswerOptionValue(option, value)}
@@ -207,6 +214,9 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         }}
       />
 
+      {hasUnavailableDisplayOptions ? (
+        <AnswerOptionUnavailableWarning variant="helperText" />
+      ) : null}
       {feedback ? (
         <FormHelperText sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>

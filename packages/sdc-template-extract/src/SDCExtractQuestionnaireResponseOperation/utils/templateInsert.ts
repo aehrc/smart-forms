@@ -5,6 +5,27 @@ import { buildValuesToInsert } from './buildValueToInsert';
 import { getStaticTemplateDataAtPath } from './staticTemplateData';
 import deepmerge from 'deepmerge';
 
+/**
+ * Merges two arrays by index rather than by concatenation (deepmerge's default).
+ *
+ * Value paths address array elements positionally (e.g. `protocolApplied[0].doseNumberPositiveInt`),
+ * so an incoming array must be merged into the element at the same index. Elements beyond the
+ * target's length are appended, preserving the previous behaviour for genuinely new entries.
+ */
+function mergeArrayByIndex(target: any[], source: any[], options: any): any[] {
+  const destination = target.slice();
+  source.forEach((item, index) => {
+    if (typeof destination[index] === 'undefined') {
+      destination[index] = options.cloneUnlessOtherwiseSpecified(item, options);
+    } else if (options.isMergeableObject(item)) {
+      destination[index] = deepmerge(target[index], item, options);
+    } else {
+      destination.push(item);
+    }
+  });
+  return destination;
+}
+
 export function removeTemplateExtractValueExtension(
   entryPath: string,
   valuePath: string,
@@ -61,11 +82,14 @@ export function insertValuesToPath(
 ) {
   const entryPathSegments = parseFhirPath(entryPath);
 
-  const staticTemplateData = getStaticTemplateDataAtPath(
-    entryPath,
-    cleanTemplate,
-    populateIntoTemplateWarnings
-  );
+  // Static template data only needs to be spread in once, when this entry is first seeded
+  // (isNewInsert). Later merges into the same already-seeded element don't need it re-attached -
+  // deepmerge already preserves keys it isn't touching - and re-attaching it on every subsequent
+  // sibling value would make any static primitive array (e.g. a hardcoded `given`) duplicate
+  // itself once per sibling value merged in after the first.
+  const staticTemplateData = isNewInsert
+    ? getStaticTemplateDataAtPath(entryPath, cleanTemplate, populateIntoTemplateWarnings)
+    : {};
   const valuesToInsert = buildValuesToInsert(
     entryPathSegments,
     valuePath,
@@ -75,6 +99,9 @@ export function insertValuesToPath(
 
   // Insert each valueToInsert instance into template at the correct location, taking into account context index
   // We can have multiple values to insert eg. given names ['First', 'Middle'] which will result in two objects like [{given: ['First']}, {given: ['Middle']}] which are merged
+  // Only the first item of this split can be a genuinely new array insert - the rest always merge into the
+  // element that first item just created (or already existed), regardless of the outer isNewInsert flag.
+  let isFirstInsert = isNewInsert;
   for (let i = 0; i < valuesToInsert.length; i++) {
     const valueToInsert = valuesToInsert[i];
     const cleanedEntryPathSegments = cleanEntryPathSegments(entryPathSegments, insertIndex);
@@ -83,9 +110,10 @@ export function insertValuesToPath(
       templateToMutate,
       entryPath,
       cleanedEntryPathSegments,
-      isNewInsert,
+      isFirstInsert,
       valueToInsert
     );
+    isFirstInsert = false;
   }
 }
 
@@ -177,8 +205,14 @@ export function walkTemplateAndInsertValue(
 
   // Existing node is an object, and we are inserting an object, merge them
   if (typeof existingNode === 'object' && typeof valueToInsert === 'object') {
-    // Deep merge required to handle arrays within objects
-    current[finalSegment] = deepmerge(existingNode, valueToInsert);
+    // Deep merge required to handle arrays within objects.
+    // Arrays nested inside those objects are merged BY INDEX, not concatenated: a value path such
+    // as `Immunization.protocolApplied[0].doseNumberPositiveInt` targets a specific element of an
+    // existing template array, so concatenating would append a second, half-populated element
+    // instead of populating the one the path names.
+    current[finalSegment] = deepmerge(existingNode, valueToInsert, {
+      arrayMerge: mergeArrayByIndex
+    });
     return;
   }
 

@@ -17,7 +17,7 @@
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { QrRepeatGroup } from './repeatGroup.interface';
-import type { RenderingExtensions } from '../hooks/useRenderingExtensions';
+import type { RenderingExtensions } from './renderingExtensions.interface';
 import type { JSX } from 'react';
 
 export interface QItemOverrideComponentProps {

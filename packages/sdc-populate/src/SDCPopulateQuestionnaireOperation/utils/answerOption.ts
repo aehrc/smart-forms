@@ -15,29 +15,42 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type {
+  Coding,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { getRelevantCodingProperties } from './codingProperties';
 
 /**
- * Find and return corresponding answerOption based on selected answer in form.
- * Matches by code, display, string, or integer value.
+ * Find and return corresponding answerOption based on a populated or selected answer value.
+ * String values match by code, display, string, or integer value.
+ * Coding values (e.g. from an initialExpression FHIRPath result) match coding options by code,
+ * with system agreement when both sides specify one; codeless Codings match display-only
+ * options by display.
  *
  * @author Sean Fong
  */
 export function findInAnswerOptions(
   options: QuestionnaireItemAnswerOption[],
-  str: string
+  value: string | Coding
 ): QuestionnaireResponseItemAnswer | undefined {
   for (const option of options) {
     if (option.valueCoding) {
-      if (str === option.valueCoding.code) {
-        return {
-          valueCoding: getRelevantCodingProperties(option.valueCoding)
-        };
-      }
+      if (typeof value === 'string') {
+        if (value === option.valueCoding.code) {
+          return {
+            valueCoding: getRelevantCodingProperties(option.valueCoding)
+          };
+        }
 
-      // handle case where valueCoding.code is not present
-      if (str === option.valueCoding.display) {
+        // handle case where valueCoding.code is not present
+        if (value === option.valueCoding.display) {
+          return {
+            valueCoding: getRelevantCodingProperties(option.valueCoding)
+          };
+        }
+      } else if (valueIsCoding(value) && codingMatchesOption(value, option.valueCoding)) {
         return {
           valueCoding: getRelevantCodingProperties(option.valueCoding)
         };
@@ -45,15 +58,15 @@ export function findInAnswerOptions(
     }
 
     if (option.valueString) {
-      if (str === option.valueString) {
+      if (value === option.valueString) {
         return {
           valueString: option.valueString
         };
       }
     }
 
-    if (option.valueInteger) {
-      if (str === option.valueInteger.toString()) {
+    if (typeof option.valueInteger === 'number') {
+      if (value === option.valueInteger.toString()) {
         return {
           valueInteger: option.valueInteger
         };
@@ -62,4 +75,53 @@ export function findInAnswerOptions(
   }
 
   return;
+}
+
+/**
+ * Check that a non-string answer value is a Coding, and not another complex type
+ * carrying a "code" property such as a Quantity.
+ */
+// Element properties (id, extension) plus everything a Coding can carry
+const CODING_PROPERTIES = new Set([
+  'id',
+  'extension',
+  'system',
+  'version',
+  'code',
+  'display',
+  'userSelected'
+]);
+
+export function valueIsCoding(value: unknown): value is Coding {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const coding = value as Coding;
+  return (
+    // code is optional in a Coding, but when present it must be a string
+    (coding.code === undefined || typeof coding.code === 'string') &&
+    // require a system or code so bare {display} objects, {} or {userSelected: true}
+    // are not treated as Codings
+    (coding.system !== undefined || coding.code !== undefined) &&
+    Object.keys(value).every((key) => CODING_PROPERTIES.has(key))
+  );
+}
+
+export function codingMatchesOption(coding: Coding, optionCoding: Coding): boolean {
+  // when both codings specify a system, they must agree
+  if (coding.system && optionCoding.system && coding.system !== optionCoding.system) {
+    return false;
+  }
+
+  if (coding.code && optionCoding.code) {
+    return coding.code === optionCoding.code;
+  }
+
+  // display-only codings are legal in answerOption; match them by display
+  if (!coding.code && !optionCoding.code) {
+    return Boolean(coding.display) && coding.display === optionCoding.display;
+  }
+
+  return false;
 }

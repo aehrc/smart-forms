@@ -22,6 +22,8 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
+import { compareAnswerOptionValue } from '../../../utils/choice';
+import { withFallbackDisplay } from '../../../utils/openChoice';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
@@ -57,9 +59,21 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   if (!answerOptions) return null;
 
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
+  const qrAnswer = qrOpenChoice.answer?.[0] ?? null;
+
+  // A coded answer prefers a freshly-resolved display over its own recorded one, falling back
+  // to the recorded display only if live resolution can't supply one - same as Choice Select.
+  // A free-text answer (no valueCoding) is passed through unchanged; it has no terminology
+  // concept and matching it against the coded answerOption list would incorrectly blank it out.
   let valueSelect: QuestionnaireItemAnswerOption | string | null = null;
-  if (qrOpenChoice.answer) {
-    valueSelect = qrOpenChoice.answer[0] ?? null;
+  if (qrAnswer) {
+    if (qrAnswer.valueCoding) {
+      const liveValue =
+        answerOptions.find((option) => compareAnswerOptionValue(option, qrAnswer)) ?? null;
+      valueSelect = liveValue ? withFallbackDisplay(liveValue, qrAnswer.valueCoding) : null;
+    } else {
+      valueSelect = qrAnswer;
+    }
   }
 
   // Event handlers

@@ -47,7 +47,7 @@ function hasErrors(invalidItems: Record<string, OperationOutcome>): boolean {
  * @property updatableResponse - The current state of the response that is being updated via form fields
  * @property updatableResponseItems - Key-value pair of updatableResponse items `Record<linkId, QR.item(s)>`
  * @property formChangesHistory - Array of form changes history in the form of deep-diff objects
- * @property invalidItems - Key-value pair of invalid items based on defined value constraints in the questionnaire `Record<linkId, OperationOutcome>`
+ * @property invalidItems - Key-value pair of invalid items based on defined value constraints in the questionnaire `Record<errorKey, OperationOutcome>`. For items outside a repeating group the errorKey is the bare `linkId`. For items inside one or more repeating group instances it is `linkId///path`, where path is the dot-separated indices of the enclosing instances **within the QuestionnaireResponse** e.g. `myField///1`, or `myField///0.2` when nested — so each instance tracks its own errors instead of all instances sharing one key. Use `getValidationErrorKey()` / `getBaseLinkIdFromErrorKey()` from `utils/validateErrorKey` to build or parse a key rather than assuming a bare linkId
  * @property requiredItemsIsHighlighted - Required items are not highlighted by default (to provide a less-jarring UX), but can be manually toggled to be highlighted
  * @property responseIsValid - Whether there are any invalid items in the response
  * @property validateQuestionnaireResponse - Used to validate the questionnaire response based on the questionnaire

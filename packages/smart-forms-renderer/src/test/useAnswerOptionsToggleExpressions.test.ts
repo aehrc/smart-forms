@@ -81,7 +81,7 @@ describe('hasMapChanged', () => {
 });
 
 describe('generateOptionKey', () => {
-  it('generates key for valueCoding', () => {
+  it('generates key for valueCoding by system+code, ignoring display', () => {
     const option: QuestionnaireItemAnswerOption = {
       valueCoding: {
         system: 'http://loinc.org',
@@ -90,7 +90,37 @@ describe('generateOptionKey', () => {
       }
     };
 
-    expect(generateOptionKey(option)).toBe('coding:http://loinc.org-1234-5-Example');
+    expect(generateOptionKey(option)).toBe('coding:http://loinc.org-code:1234-5');
+  });
+
+  it('a code match is unaffected by a differing display (rename/re-resolution)', () => {
+    const originalDisplay: QuestionnaireItemAnswerOption = {
+      valueCoding: { system: 'http://loinc.org', code: '1234-5', display: 'Old Display' }
+    };
+    const renamedDisplay: QuestionnaireItemAnswerOption = {
+      valueCoding: { system: 'http://loinc.org', code: '1234-5', display: 'New Display' }
+    };
+
+    expect(generateOptionKey(originalDisplay)).toBe(generateOptionKey(renamedDisplay));
+  });
+
+  it('falls back to display when code is missing', () => {
+    const option: QuestionnaireItemAnswerOption = {
+      valueCoding: { system: 'http://loinc.org', display: 'Example' }
+    };
+
+    expect(generateOptionKey(option)).toBe('coding:http://loinc.org-display:Example');
+  });
+
+  it('a coding with no code and display "X" never collides with a different coding whose code is "X"', () => {
+    const noCodeOption: QuestionnaireItemAnswerOption = {
+      valueCoding: { system: 'http://loinc.org', display: 'X' }
+    };
+    const codedOption: QuestionnaireItemAnswerOption = {
+      valueCoding: { system: 'http://loinc.org', code: 'X', display: 'Something else' }
+    };
+
+    expect(generateOptionKey(noCodeOption)).not.toBe(generateOptionKey(codedOption));
   });
 
   it('uses placeholders when valueCoding fields are missing', () => {
@@ -98,7 +128,7 @@ describe('generateOptionKey', () => {
       valueCoding: {}
     };
 
-    expect(generateOptionKey(option)).toBe('coding: - - ');
+    expect(generateOptionKey(option)).toBe('coding: -display: ');
   });
 
   it('generates key for valueString', () => {
@@ -125,25 +155,36 @@ describe('generateOptionKey', () => {
 });
 
 describe('generateCodingKey', () => {
-  it('generates key from full Coding', () => {
+  it('generates key from full Coding by system+code, ignoring display', () => {
     const coding: Coding = {
       system: 'http://loinc.org',
       code: '1234-5',
       display: 'Example display'
     };
 
-    expect(generateCodingKey(coding)).toBe('coding:http://loinc.org-1234-5-Example display');
+    expect(generateCodingKey(coding)).toBe('coding:http://loinc.org-code:1234-5');
   });
 
   it('uses space placeholder when fields are missing', () => {
     const coding: Coding = {};
-    expect(generateCodingKey(coding)).toBe('coding: - - ');
+    expect(generateCodingKey(coding)).toBe('coding: -display: ');
   });
 
   it('handles partially missing fields', () => {
     const coding: Coding = {
       system: 'http://snomed.info/sct'
     };
-    expect(generateCodingKey(coding)).toBe('coding:http://snomed.info/sct- - ');
+    expect(generateCodingKey(coding)).toBe('coding:http://snomed.info/sct-display: ');
+  });
+
+  it('a coding with no code and display "X" never collides with a different coding whose code is "X"', () => {
+    const noCodeCoding: Coding = { system: 'http://loinc.org', display: 'X' };
+    const codedCoding: Coding = {
+      system: 'http://loinc.org',
+      code: 'X',
+      display: 'Something else'
+    };
+
+    expect(generateCodingKey(noCodeCoding)).not.toBe(generateCodingKey(codedCoding));
   });
 });

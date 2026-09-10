@@ -3,8 +3,10 @@ import type { OutputParameters, ReturnParameter } from '../interfaces';
 import { createInputParameters } from '../utils/createInputParameters';
 import type {
   Bundle,
+  Immunization,
   Observation,
   Parameters,
+  Patient,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   RelatedPerson
@@ -20,6 +22,10 @@ import { extractedRegularMedicationsModified } from './resources/extracted/extra
 import { extractedRegularMedicationsWithPatchAdd } from './resources/extracted/extractedRegularMedicationsWithPatchAdd';
 import { extractedComplexTemplateExtract } from './resources/extracted/extractedComplexTemplateExtract';
 import { extractedSepsisRisk } from './resources/extracted/extractedSepsisRisk';
+import { extractedArrayElementMergeImmunization } from './resources/extracted/extractedArrayElementMerge';
+import { extractedDuplicateValueMergePatient } from './resources/extracted/extractedDuplicateValueMerge';
+import { extractedStaticDataNotDuplicatedPatient } from './resources/extracted/extractedStaticDataNotDuplicated';
+import { extractedRepeatingComplexValueMergeImmunization } from './resources/extracted/extractedRepeatingComplexValueMerge';
 
 // QuestionnaireResponses
 import { QRAllergiesAdverseReactions } from './resources/questionnaireResponses/QRAllergiesAdverseReactions';
@@ -32,6 +38,10 @@ import { QRRegularMedicationsModified } from './resources/questionnaireResponses
 import { QRRegularMedicationsWithPatchAdd } from './resources/questionnaireResponses/QRRegularMedicationsWithPatchAdd';
 import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRComplexTemplateExtract';
 import { QRSepsisRisk } from './resources/questionnaireResponses/QRSepsisRisk';
+import { QRArrayElementMerge } from './resources/questionnaireResponses/QRArrayElementMerge';
+import { QRDuplicateValueMerge } from './resources/questionnaireResponses/QRDuplicateValueMerge';
+import { QRStaticDataNotDuplicated } from './resources/questionnaireResponses/QRStaticDataNotDuplicated';
+import { QRRepeatingComplexValueMerge } from './resources/questionnaireResponses/QRRepeatingComplexValueMerge';
 
 // Questionnaires
 import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergiesAdverseReactions';
@@ -44,6 +54,10 @@ import { QRegularMedicationsModified } from './resources/questionnaires/QRegular
 import { QRegularMedicationsWithPatchAdd } from './resources/questionnaires/QRegularMedicationsWithPatchAdd';
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
 import { QSepsisRisk } from './resources/questionnaires/QSepsisRisk';
+import { QArrayElementMerge } from './resources/questionnaires/QArrayElementMerge';
+import { QDuplicateValueMerge } from './resources/questionnaires/QDuplicateValueMerge';
+import { QStaticDataNotDuplicated } from './resources/questionnaires/QStaticDataNotDuplicated';
+import { QRepeatingComplexValueMerge } from './resources/questionnaires/QRepeatingComplexValueMerge';
 import { parametersIsFhirPatch } from '../utils/typePredicates';
 
 // Mock the fetchQuestionnaire callback function
@@ -558,3 +572,101 @@ function stripObservationSubjectReferenceAndDates(resource: any): any {
   const { subject, effectiveDateTime, issued, ...rest } = resource ?? {};
   return rest;
 }
+
+describe('extract ArrayElementMerge', () => {
+  // A templateExtractValue whose value path names an element that already exists in the template's
+  // array (`protocolApplied[0].doseNumberPositiveInt`) must populate THAT element, next to the
+  // static `targetDisease` declared beside it.
+  it('merges an evaluated value into the existing array element named by its value path', async () => {
+    const result = await extract(
+      createInputParameters(QRArrayElementMerge, QArrayElementMerge, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    const extracted = returnParam?.resource as Bundle;
+    // The template is a Bundle, so the extracted document Bundle is the first entry's resource
+    const extractedBundle = extracted.entry?.[0]?.resource as Bundle;
+    const extractedImmunization = extractedBundle.entry?.[0]?.resource as Immunization;
+
+    // The evaluated dose must not be appended as a second protocolApplied element
+    expect(extractedImmunization.protocolApplied).toHaveLength(1);
+    expect(extractedImmunization.protocolApplied?.[0]?.doseNumberPositiveInt).toBe(2);
+    expect(extractedImmunization.protocolApplied?.[0]?.targetDisease).toBeDefined();
+
+    expect(extractedImmunization).toEqual(extractedArrayElementMergeImmunization);
+  });
+});
+
+describe('extract DuplicateValueMerge', () => {
+  // A repeating templateExtractValue whose evaluated values contain a genuine duplicate (the same
+  // given name answered twice) must merge both occurrences into the array, not drop the repeat.
+  it('appends a repeated primitive value instead of dropping it as an apparent duplicate', async () => {
+    const result = await extract(
+      createInputParameters(QRDuplicateValueMerge, QDuplicateValueMerge, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    const extracted = returnParam?.resource as Bundle;
+    const extractedPatient = extracted.entry?.[0]?.resource as Patient;
+
+    expect(extractedPatient.name?.[0]?.given).toEqual(['Alex', 'Alex']);
+    expect(extractedPatient).toEqual(extractedDuplicateValueMergePatient);
+  });
+});
+
+describe('extract StaticDataNotDuplicated', () => {
+  // Static template data (here `prefix`) sitting alongside sibling templateExtractValues - two
+  // single-value (`family`, `use`) and one repeating (`given`) - in the same context must be
+  // spread into the merged element exactly once, not once per sibling or per inner repeat value.
+  it('does not duplicate static template data across sibling templateExtractValues', async () => {
+    const result = await extract(
+      createInputParameters(QRStaticDataNotDuplicated, QStaticDataNotDuplicated, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    const extracted = returnParam?.resource as Bundle;
+    const extractedPatient = extracted.entry?.[0]?.resource as Patient;
+
+    expect(extractedPatient.name?.[0]?.prefix).toEqual(['Dr']);
+    expect(extractedPatient.name?.[0]?.given).toEqual(['Alex', 'Chris']);
+    expect(extractedPatient).toEqual(extractedStaticDataNotDuplicatedPatient);
+  });
+});
+
+describe('extract RepeatingComplexValueMerge', () => {
+  // A repeating templateExtractValue whose evaluated values are objects (Codings, not primitives)
+  // must append each one, not merge the second into the first at the same array index.
+  it('appends repeated complex-typed values instead of collapsing them into one', async () => {
+    const result = await extract(
+      createInputParameters(QRRepeatingComplexValueMerge, QRepeatingComplexValueMerge, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    const extracted = returnParam?.resource as Bundle;
+    const extractedBundle = extracted.entry?.[0]?.resource as Bundle;
+    const extractedImmunization = extractedBundle.entry?.[0]?.resource as Immunization;
+
+    expect(extractedImmunization.protocolApplied?.[0]?.targetDisease).toHaveLength(2);
+    expect(extractedImmunization).toEqual(extractedRepeatingComplexValueMergeImmunization);
+  });
+});
