@@ -25,6 +25,7 @@ import { extractedSepsisRisk } from './resources/extracted/extractedSepsisRisk';
 import { extractedArrayElementMergeImmunization } from './resources/extracted/extractedArrayElementMerge';
 import { extractedDuplicateValueMergePatient } from './resources/extracted/extractedDuplicateValueMerge';
 import { extractedStaticDataNotDuplicatedPatient } from './resources/extracted/extractedStaticDataNotDuplicated';
+import { extractedRepeatingComplexValueMergeImmunization } from './resources/extracted/extractedRepeatingComplexValueMerge';
 
 // QuestionnaireResponses
 import { QRAllergiesAdverseReactions } from './resources/questionnaireResponses/QRAllergiesAdverseReactions';
@@ -40,6 +41,7 @@ import { QRSepsisRisk } from './resources/questionnaireResponses/QRSepsisRisk';
 import { QRArrayElementMerge } from './resources/questionnaireResponses/QRArrayElementMerge';
 import { QRDuplicateValueMerge } from './resources/questionnaireResponses/QRDuplicateValueMerge';
 import { QRStaticDataNotDuplicated } from './resources/questionnaireResponses/QRStaticDataNotDuplicated';
+import { QRRepeatingComplexValueMerge } from './resources/questionnaireResponses/QRRepeatingComplexValueMerge';
 
 // Questionnaires
 import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergiesAdverseReactions';
@@ -55,6 +57,7 @@ import { QSepsisRisk } from './resources/questionnaires/QSepsisRisk';
 import { QArrayElementMerge } from './resources/questionnaires/QArrayElementMerge';
 import { QDuplicateValueMerge } from './resources/questionnaires/QDuplicateValueMerge';
 import { QStaticDataNotDuplicated } from './resources/questionnaires/QStaticDataNotDuplicated';
+import { QRepeatingComplexValueMerge } from './resources/questionnaires/QRepeatingComplexValueMerge';
 import { parametersIsFhirPatch } from '../utils/typePredicates';
 
 // Mock the fetchQuestionnaire callback function
@@ -642,5 +645,28 @@ describe('extract StaticDataNotDuplicated', () => {
     expect(extractedPatient.name?.[0]?.prefix).toEqual(['Dr']);
     expect(extractedPatient.name?.[0]?.given).toEqual(['Alex', 'Chris']);
     expect(extractedPatient).toEqual(extractedStaticDataNotDuplicatedPatient);
+  });
+});
+
+describe('extract RepeatingComplexValueMerge', () => {
+  // A repeating templateExtractValue whose evaluated values are objects (Codings, not primitives)
+  // must append each one, not merge the second into the first at the same array index.
+  it('appends repeated complex-typed values instead of collapsing them into one', async () => {
+    const result = await extract(
+      createInputParameters(QRRepeatingComplexValueMerge, QRepeatingComplexValueMerge, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    const extracted = returnParam?.resource as Bundle;
+    const extractedBundle = extracted.entry?.[0]?.resource as Bundle;
+    const extractedImmunization = extractedBundle.entry?.[0]?.resource as Immunization;
+
+    expect(extractedImmunization.protocolApplied?.[0]?.targetDisease).toHaveLength(2);
+    expect(extractedImmunization).toEqual(extractedRepeatingComplexValueMergeImmunization);
   });
 });
