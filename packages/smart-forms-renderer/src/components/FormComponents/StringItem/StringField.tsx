@@ -31,6 +31,7 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   input: string;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
@@ -44,6 +45,7 @@ function StringField(props: StringFieldProps) {
     qItem,
     input,
     feedback,
+    feedbackSeverity,
     renderingExtensions,
     readOnly,
     isTabled,
@@ -66,7 +68,7 @@ function StringField(props: StringFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       value={input}
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       onChange={(event) => onInputChange(event.target.value)}
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -94,6 +96,9 @@ function StringField(props: StringFieldProps) {
         },
         htmlInput: {
           ...(instructionsId && { 'aria-describedby': instructionsId })
+        },
+        formHelperText: {
+          sx: feedbackSeverity === 'warning' && !!feedback ? { color: 'warning.main' } : undefined
         }
       }}
       helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}

@@ -31,7 +31,7 @@ import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
-import { useValidationFeedback } from '../../../hooks';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import { createEmptyQrItem } from '../../../utils';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -75,7 +75,8 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const validationFeedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback: validationFeedback, feedbackSeverity: validationFeedbackSeverity } =
+    useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const { displayInstructions } = useRenderingExtensions(qItem);
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!validationFeedback);
 
@@ -89,7 +90,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
   if (terminologyFeedback) {
     feedback = terminologyFeedback;
   } else if (validationFeedback !== '') {
-    feedback = { message: validationFeedback, color: 'error' };
+    feedback = { message: validationFeedback, color: validationFeedbackSeverity };
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

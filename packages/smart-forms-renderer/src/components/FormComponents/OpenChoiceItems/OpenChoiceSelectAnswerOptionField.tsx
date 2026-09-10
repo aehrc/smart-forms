@@ -45,6 +45,7 @@ interface OpenChoiceSelectAnswerOptionFieldProps
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   calcExpUpdated: boolean;
   instructionsId?: string;
@@ -60,6 +61,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
     options,
     valueSelect,
     feedback,
+    feedbackSeverity,
     readOnly,
     calcExpUpdated,
     instructionsId,
@@ -83,7 +85,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
   return (
     <FormControl
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       sx={{
         width: '100%',
         maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -134,7 +136,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
-            error={!!feedback}
+            error={!!feedback && feedbackSeverity !== 'warning'}
             placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
             {...params}
             slotProps={{
@@ -212,7 +214,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         <AnswerOptionUnavailableWarning variant="helperText" />
       ) : null}
       {feedback ? (
-        <FormHelperText>
+        <FormHelperText sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
         </FormHelperText>
       ) : null}

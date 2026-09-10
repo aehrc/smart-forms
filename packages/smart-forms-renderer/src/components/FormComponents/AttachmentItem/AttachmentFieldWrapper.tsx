@@ -34,6 +34,7 @@ interface AttachmentFieldWrapperProps
   qItem: QuestionnaireItem;
   attachmentValues: AttachmentValues;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   instructionsId: string | undefined;
   onUploadFile: (file: File | null) => void;
@@ -46,6 +47,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
     qItem,
     attachmentValues,
     feedback,
+    feedbackSeverity,
     readOnly,
     isRepeated,
     isTabled,
@@ -65,6 +67,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
         itemText={qItem.text}
         attachmentValues={attachmentValues}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         isTabled={isTabled}
         instructionsId={instructionsId}
@@ -92,6 +95,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
             itemText={qItem.text}
             attachmentValues={attachmentValues}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             isTabled={isTabled}
             instructionsId={instructionsId}

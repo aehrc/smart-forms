@@ -17,7 +17,7 @@
 
 import { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -55,7 +55,7 @@ function TextItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   // Get instructions ID for aria-describedby
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -107,6 +107,7 @@ function TextItem(props: BaseItemProps) {
         qItem={qItem}
         input={input}
         feedback={feedback ?? ''}
+        feedbackSeverity={feedbackSeverity}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
@@ -132,6 +133,7 @@ function TextItem(props: BaseItemProps) {
             qItem={qItem}
             input={input}
             feedback={feedback ?? ''}
+            feedbackSeverity={feedbackSeverity}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}

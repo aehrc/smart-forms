@@ -34,6 +34,7 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
   openLabelValue: string | null;
   openLabelSelected: boolean;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -53,6 +54,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     openLabelValue,
     openLabelSelected,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -75,6 +77,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
         options={visibleOptions}
         valueRadio={valueRadio}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

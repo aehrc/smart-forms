@@ -34,6 +34,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   valueDate: string;
   input: string;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   isFocused: boolean;
   displayPrompt: string;
   entryFormat: string;
@@ -54,6 +55,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     valueDate,
     input,
     feedback,
+    feedbackSeverity,
     isFocused,
     displayPrompt,
     entryFormat,
@@ -97,7 +99,7 @@ function CustomDateField(props: CustomDateFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       value={input}
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
       placeholder={placeholderText}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -131,6 +133,9 @@ function CustomDateField(props: CustomDateFieldProps) {
                   itemText ?? interpolate(rendererStrings.unnamedItem, { type: itemType })
               }),
           ...(instructionsId && { 'aria-describedby': instructionsId })
+        },
+        formHelperText: {
+          sx: feedbackSeverity === 'warning' && !!feedback ? { color: 'warning.main' } : undefined
         }
       }}
       helperText={feedback}

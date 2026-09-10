@@ -29,6 +29,7 @@ interface ChoiceCheckboxAnswerOptionFieldsProps {
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -44,6 +45,7 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
     options,
     answers,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -65,6 +67,7 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
         options={visibleOptions}
         answers={answers}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

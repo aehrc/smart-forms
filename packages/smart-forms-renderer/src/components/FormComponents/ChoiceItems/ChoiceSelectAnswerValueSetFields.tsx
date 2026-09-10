@@ -44,6 +44,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps
   valueCoding: Coding | null;
   terminologyError: TerminologyError;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -58,6 +59,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     valueCoding,
     terminologyError,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     isTabled,
@@ -86,7 +88,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   if (codings.length > 0) {
     return (
       <FormControl
-        error={!!feedback}
+        error={!!feedback && feedbackSeverity !== 'warning'}
         sx={{
           width: '100%',
           maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -115,7 +117,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
-              error={!!feedback}
+              error={!!feedback && feedbackSeverity !== 'warning'}
               placeholder={valueCoding ? undefined : entryFormat || displayPrompt}
               onFocus={handleFocus}
               {...params}
@@ -148,7 +150,8 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
         />
 
         {feedback ? (
-          <FormHelperText>
+          <FormHelperText
+            sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
             <AccessibleFeedback>{feedback}</AccessibleFeedback>
           </FormHelperText>
         ) : null}

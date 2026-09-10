@@ -4,6 +4,11 @@ export { default as useBuildForm } from './useBuildForm';
 export { default as useRendererQueryClient } from './useRendererQueryClient';
 export { default as useRenderingExtensions } from './useRenderingExtensions';
 export { default as useValidationFeedback } from './useValidationFeedback';
+export { default as useValidationFeedbackSeverity } from './useValidationFeedbackSeverity';
+export type {
+  FeedbackSeverity,
+  ValidationFeedbackWithSeverity
+} from './useValidationFeedbackSeverity';
 export { default as useValueSetCodings } from './useValueSetCodings';
 
 // CalculatedExpression and cqf-expression hooks

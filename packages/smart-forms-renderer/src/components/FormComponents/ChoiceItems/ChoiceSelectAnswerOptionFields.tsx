@@ -42,6 +42,7 @@ interface ChoiceSelectAnswerOptionFieldsProps
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -55,6 +56,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     options,
     valueSelect,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     isTabled,
@@ -83,7 +85,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   return (
     <FormControl
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       sx={{
         width: '100%',
         maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -144,7 +146,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             <StandardTextField
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
-              error={!!feedback}
+              error={!!feedback && feedbackSeverity !== 'warning'}
               placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
               {...params}
               slotProps={{
@@ -216,7 +218,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         <AnswerOptionUnavailableWarning variant="helperText" />
       ) : null}
       {feedback ? (
-        <FormHelperText>
+        <FormHelperText sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
         </FormHelperText>
       ) : null}
