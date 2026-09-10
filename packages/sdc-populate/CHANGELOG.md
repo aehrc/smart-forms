@@ -5,6 +5,12 @@ This log documents changes for [@aehrc/sdc-populate](https://www.npmjs.com/packa
 
 Changelog only includes changes from version 4.0.0 onwards.
 
+## [4.7.2] - 2026-09-10
+### Fixed
+- Fixed `$populate` silently dropping `open-choice` answers whose value is not present in `answerOption` - the FHIR spec allows open-choice items to hold answers outside the listed options. Also fixed several related answer-matching bugs: `Coding` values from FHIRPath expressions (e.g. `%condition.code.coding.first()`) are now matched against `answerOption`s by code/display instead of failing to match at all, `answerOption`s with a zero-valued `valueInteger` are matched correctly, and `Coding`s that legally omit `system` or `code` no longer fall back to an invalid `valueString`. See issue [#2096](https://github.com/aehrc/smart-forms/issues/2096)
+### Changed
+- Replaced the `moment` dependency with `dayjs` for date/time parsing in `constructResponse`, removing a redundant second date library.
+
 ## [4.7.1] - 2026-07-03
 ### Fixed
 - Fixed false-positive `OperationOutcomeIssue` errors for `toString()` and similar single-item FHIRPath functions in repeat group `initialExpression`s. Children of repeating `itemPopulationContext` groups are now excluded from global pre-evaluation and are always evaluated against the correctly scoped per-item context; children of non-repeating `itemPopulationContext` groups continue to be evaluated globally.
