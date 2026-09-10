@@ -73,6 +73,12 @@ function SliderItem(props: BaseItemProps) {
     });
   }
 
+  // Clearing removes the answer entirely rather than writing a value, because an unanswered
+  // slider is distinct from one deliberately set to 0
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  }
+
   if (isRepeated) {
     return (
       <Box px={1} width="100%">
@@ -92,6 +98,7 @@ function SliderItem(props: BaseItemProps) {
           isTabled={isTabled}
           instructionsId={instructionsId}
           onValueChange={handleValueChange}
+          onClear={handleClear}
         />
       </Box>
     );
@@ -126,6 +133,7 @@ function SliderItem(props: BaseItemProps) {
               isTabled={isTabled}
               instructionsId={instructionsId}
               onValueChange={handleValueChange}
+              onClear={handleClear}
             />
           </Box>
         }
