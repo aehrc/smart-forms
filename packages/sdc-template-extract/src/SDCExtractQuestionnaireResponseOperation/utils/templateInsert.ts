@@ -19,7 +19,7 @@ function mergeArrayByIndex(target: any[], source: any[], options: any): any[] {
       destination[index] = options.cloneUnlessOtherwiseSpecified(item, options);
     } else if (options.isMergeableObject(item)) {
       destination[index] = deepmerge(target[index], item, options);
-    } else if (target.indexOf(item) === -1) {
+    } else {
       destination.push(item);
     }
   });
@@ -82,11 +82,14 @@ export function insertValuesToPath(
 ) {
   const entryPathSegments = parseFhirPath(entryPath);
 
-  const staticTemplateData = getStaticTemplateDataAtPath(
-    entryPath,
-    cleanTemplate,
-    populateIntoTemplateWarnings
-  );
+  // Static template data only needs to be spread in once, when this entry is first seeded
+  // (isNewInsert). Later merges into the same already-seeded element don't need it re-attached -
+  // deepmerge already preserves keys it isn't touching - and re-attaching it on every subsequent
+  // sibling value would make any static primitive array (e.g. a hardcoded `given`) duplicate
+  // itself once per sibling value merged in after the first.
+  const staticTemplateData = isNewInsert
+    ? getStaticTemplateDataAtPath(entryPath, cleanTemplate, populateIntoTemplateWarnings)
+    : {};
   const valuesToInsert = buildValuesToInsert(
     entryPathSegments,
     valuePath,

@@ -6,6 +6,7 @@ import type {
   Immunization,
   Observation,
   Parameters,
+  Patient,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   RelatedPerson
@@ -22,6 +23,8 @@ import { extractedRegularMedicationsWithPatchAdd } from './resources/extracted/e
 import { extractedComplexTemplateExtract } from './resources/extracted/extractedComplexTemplateExtract';
 import { extractedSepsisRisk } from './resources/extracted/extractedSepsisRisk';
 import { extractedArrayElementMergeImmunization } from './resources/extracted/extractedArrayElementMerge';
+import { extractedDuplicateValueMergePatient } from './resources/extracted/extractedDuplicateValueMerge';
+import { extractedStaticDataNotDuplicatedPatient } from './resources/extracted/extractedStaticDataNotDuplicated';
 
 // QuestionnaireResponses
 import { QRAllergiesAdverseReactions } from './resources/questionnaireResponses/QRAllergiesAdverseReactions';
@@ -35,6 +38,8 @@ import { QRRegularMedicationsWithPatchAdd } from './resources/questionnaireRespo
 import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRComplexTemplateExtract';
 import { QRSepsisRisk } from './resources/questionnaireResponses/QRSepsisRisk';
 import { QRArrayElementMerge } from './resources/questionnaireResponses/QRArrayElementMerge';
+import { QRDuplicateValueMerge } from './resources/questionnaireResponses/QRDuplicateValueMerge';
+import { QRStaticDataNotDuplicated } from './resources/questionnaireResponses/QRStaticDataNotDuplicated';
 
 // Questionnaires
 import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergiesAdverseReactions';
@@ -48,6 +53,8 @@ import { QRegularMedicationsWithPatchAdd } from './resources/questionnaires/QReg
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
 import { QSepsisRisk } from './resources/questionnaires/QSepsisRisk';
 import { QArrayElementMerge } from './resources/questionnaires/QArrayElementMerge';
+import { QDuplicateValueMerge } from './resources/questionnaires/QDuplicateValueMerge';
+import { QStaticDataNotDuplicated } from './resources/questionnaires/QStaticDataNotDuplicated';
 import { parametersIsFhirPatch } from '../utils/typePredicates';
 
 // Mock the fetchQuestionnaire callback function
@@ -589,5 +596,51 @@ describe('extract ArrayElementMerge', () => {
     expect(extractedImmunization.protocolApplied?.[0]?.targetDisease).toBeDefined();
 
     expect(extractedImmunization).toEqual(extractedArrayElementMergeImmunization);
+  });
+});
+
+describe('extract DuplicateValueMerge', () => {
+  // A repeating templateExtractValue whose evaluated values contain a genuine duplicate (the same
+  // given name answered twice) must merge both occurrences into the array, not drop the repeat.
+  it('appends a repeated primitive value instead of dropping it as an apparent duplicate', async () => {
+    const result = await extract(
+      createInputParameters(QRDuplicateValueMerge, QDuplicateValueMerge, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    const extracted = returnParam?.resource as Bundle;
+    const extractedPatient = extracted.entry?.[0]?.resource as Patient;
+
+    expect(extractedPatient.name?.[0]?.given).toEqual(['Alex', 'Alex']);
+    expect(extractedPatient).toEqual(extractedDuplicateValueMergePatient);
+  });
+});
+
+describe('extract StaticDataNotDuplicated', () => {
+  // Static template data (here `prefix`) sitting alongside sibling templateExtractValues - two
+  // single-value (`family`, `use`) and one repeating (`given`) - in the same context must be
+  // spread into the merged element exactly once, not once per sibling or per inner repeat value.
+  it('does not duplicate static template data across sibling templateExtractValues', async () => {
+    const result = await extract(
+      createInputParameters(QRStaticDataNotDuplicated, QStaticDataNotDuplicated, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    const extracted = returnParam?.resource as Bundle;
+    const extractedPatient = extracted.entry?.[0]?.resource as Patient;
+
+    expect(extractedPatient.name?.[0]?.prefix).toEqual(['Dr']);
+    expect(extractedPatient.name?.[0]?.given).toEqual(['Alex', 'Chris']);
+    expect(extractedPatient).toEqual(extractedStaticDataNotDuplicatedPatient);
   });
 });
