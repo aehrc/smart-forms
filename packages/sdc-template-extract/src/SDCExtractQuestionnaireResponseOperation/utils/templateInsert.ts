@@ -5,6 +5,27 @@ import { buildValuesToInsert } from './buildValueToInsert';
 import { getStaticTemplateDataAtPath } from './staticTemplateData';
 import deepmerge from 'deepmerge';
 
+/**
+ * Merges two arrays by index rather than by concatenation (deepmerge's default).
+ *
+ * Value paths address array elements positionally (e.g. `protocolApplied[0].doseNumberPositiveInt`),
+ * so an incoming array must be merged into the element at the same index. Elements beyond the
+ * target's length are appended, preserving the previous behaviour for genuinely new entries.
+ */
+function mergeArrayByIndex(target: any[], source: any[], options: any): any[] {
+  const destination = target.slice();
+  source.forEach((item, index) => {
+    if (typeof destination[index] === 'undefined') {
+      destination[index] = options.cloneUnlessOtherwiseSpecified(item, options);
+    } else if (options.isMergeableObject(item)) {
+      destination[index] = deepmerge(target[index], item, options);
+    } else if (target.indexOf(item) === -1) {
+      destination.push(item);
+    }
+  });
+  return destination;
+}
+
 export function removeTemplateExtractValueExtension(
   entryPath: string,
   valuePath: string,
@@ -181,8 +202,14 @@ export function walkTemplateAndInsertValue(
 
   // Existing node is an object, and we are inserting an object, merge them
   if (typeof existingNode === 'object' && typeof valueToInsert === 'object') {
-    // Deep merge required to handle arrays within objects
-    current[finalSegment] = deepmerge(existingNode, valueToInsert);
+    // Deep merge required to handle arrays within objects.
+    // Arrays nested inside those objects are merged BY INDEX, not concatenated: a value path such
+    // as `Immunization.protocolApplied[0].doseNumberPositiveInt` targets a specific element of an
+    // existing template array, so concatenating would append a second, half-populated element
+    // instead of populating the one the path names.
+    current[finalSegment] = deepmerge(existingNode, valueToInsert, {
+      arrayMerge: mergeArrayByIndex
+    });
     return;
   }
 

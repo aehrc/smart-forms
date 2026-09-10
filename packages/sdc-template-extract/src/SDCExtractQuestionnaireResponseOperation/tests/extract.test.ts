@@ -3,6 +3,7 @@ import type { OutputParameters, ReturnParameter } from '../interfaces';
 import { createInputParameters } from '../utils/createInputParameters';
 import type {
   Bundle,
+  Immunization,
   Observation,
   Parameters,
   QuestionnaireResponseItem,
@@ -20,6 +21,7 @@ import { extractedRegularMedicationsModified } from './resources/extracted/extra
 import { extractedRegularMedicationsWithPatchAdd } from './resources/extracted/extractedRegularMedicationsWithPatchAdd';
 import { extractedComplexTemplateExtract } from './resources/extracted/extractedComplexTemplateExtract';
 import { extractedSepsisRisk } from './resources/extracted/extractedSepsisRisk';
+import { extractedArrayElementMergeImmunization } from './resources/extracted/extractedArrayElementMerge';
 
 // QuestionnaireResponses
 import { QRAllergiesAdverseReactions } from './resources/questionnaireResponses/QRAllergiesAdverseReactions';
@@ -32,6 +34,7 @@ import { QRRegularMedicationsModified } from './resources/questionnaireResponses
 import { QRRegularMedicationsWithPatchAdd } from './resources/questionnaireResponses/QRRegularMedicationsWithPatchAdd';
 import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRComplexTemplateExtract';
 import { QRSepsisRisk } from './resources/questionnaireResponses/QRSepsisRisk';
+import { QRArrayElementMerge } from './resources/questionnaireResponses/QRArrayElementMerge';
 
 // Questionnaires
 import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergiesAdverseReactions';
@@ -44,6 +47,7 @@ import { QRegularMedicationsModified } from './resources/questionnaires/QRegular
 import { QRegularMedicationsWithPatchAdd } from './resources/questionnaires/QRegularMedicationsWithPatchAdd';
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
 import { QSepsisRisk } from './resources/questionnaires/QSepsisRisk';
+import { QArrayElementMerge } from './resources/questionnaires/QArrayElementMerge';
 import { parametersIsFhirPatch } from '../utils/typePredicates';
 
 // Mock the fetchQuestionnaire callback function
@@ -558,3 +562,32 @@ function stripObservationSubjectReferenceAndDates(resource: any): any {
   const { subject, effectiveDateTime, issued, ...rest } = resource ?? {};
   return rest;
 }
+
+describe('extract ArrayElementMerge', () => {
+  // A templateExtractValue whose value path names an element that already exists in the template's
+  // array (`protocolApplied[0].doseNumberPositiveInt`) must populate THAT element, next to the
+  // static `targetDisease` declared beside it.
+  it('merges an evaluated value into the existing array element named by its value path', async () => {
+    const result = await extract(
+      createInputParameters(QRArrayElementMerge, QArrayElementMerge, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    const extracted = returnParam?.resource as Bundle;
+    // The template is a Bundle, so the extracted document Bundle is the first entry's resource
+    const extractedBundle = extracted.entry?.[0]?.resource as Bundle;
+    const extractedImmunization = extractedBundle.entry?.[0]?.resource as Immunization;
+
+    // The evaluated dose must not be appended as a second protocolApplied element
+    expect(extractedImmunization.protocolApplied).toHaveLength(1);
+    expect(extractedImmunization.protocolApplied?.[0]?.doseNumberPositiveInt).toBe(2);
+    expect(extractedImmunization.protocolApplied?.[0]?.targetDisease).toBeDefined();
+
+    expect(extractedImmunization).toEqual(extractedArrayElementMergeImmunization);
+  });
+});

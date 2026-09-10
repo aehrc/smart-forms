@@ -5,6 +5,10 @@ This log documents changes for [@aehrc/sdc-template-extract](https://www.npmjs.c
 
 Changelog only includes changes from version 1.0.6 onwards.
 
+## sdc-template-extract [Unreleased]
+#### Fixed
+- A `templateExtractValue` whose value path names an element that already exists in the template's array (e.g. `Immunization.protocolApplied[0].doseNumberPositiveInt`) now populates that element instead of appending a separate, half-populated one. Arrays nested inside a merged object are merged by index rather than concatenated.
+
 ## sdc-template-extract [1.0.15] - 2026-01-13
 #### Fixed
 - Fixed issues relating to the extraction of arrays, including issue [#1777](https://github.com/aehrc/smart-forms/issues/1777).
