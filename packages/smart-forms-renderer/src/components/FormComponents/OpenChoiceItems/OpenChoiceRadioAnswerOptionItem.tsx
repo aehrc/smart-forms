@@ -164,6 +164,7 @@ function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
             qItem={qItem}
             options={options}
             valueRadio={valueRadio}
+            answers={answers}
             openLabelText={openLabelText}
             openLabelValue={openLabelValue}
             openLabelSelected={openLabelSelected}

@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -25,7 +29,7 @@ import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
-  valueChoice: string | null;
+  qrAnswer: QuestionnaireResponseItemAnswer | null;
   feedback: string;
   readOnly: boolean;
   expressionUpdated: boolean;
@@ -41,7 +45,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
   const {
     qItem,
     options,
-    valueChoice,
+    qrAnswer,
     feedback,
     isRepeated,
     readOnly,
@@ -59,7 +63,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
       <ChoiceRadioAnswerOptionFields
         qItem={qItem}
         options={options}
-        valueRadio={valueChoice}
+        qrAnswer={qrAnswer}
         feedback={feedback}
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
@@ -86,7 +90,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
           <ChoiceRadioAnswerOptionFields
             qItem={qItem}
             options={options}
-            valueRadio={valueChoice}
+            qrAnswer={qrAnswer}
             feedback={feedback}
             readOnly={readOnly}
             expressionUpdated={expressionUpdated}

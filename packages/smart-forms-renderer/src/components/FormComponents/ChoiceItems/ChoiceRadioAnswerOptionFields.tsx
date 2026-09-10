@@ -15,13 +15,20 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
+import { getAnswerValueString } from '../../../utils/choice';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
-  valueRadio: string | null;
+  qrAnswer: QuestionnaireResponseItemAnswer | null;
   feedback: string;
   readOnly: boolean;
   expressionUpdated: boolean;
@@ -36,7 +43,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
   const {
     qItem,
     options,
-    valueRadio,
+    qrAnswer,
     feedback,
     readOnly,
     expressionUpdated,
@@ -47,20 +54,31 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
     onClear
   } = props;
 
+  // Match string for <RadioGroup value={...}>
+  const valueRadio = qrAnswer ? (getAnswerValueString(qrAnswer) ?? '') : '';
+
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    qrAnswer ? [qrAnswer] : []
+  );
+
   return (
-    <RadioFormGroup
-      qItem={qItem}
-      options={options}
-      valueRadio={valueRadio}
-      feedback={feedback}
-      readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
-      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-      isTabled={isTabled}
-      instructionsId={instructionsId}
-      onCheckedChange={onCheckedChange}
-      onClear={onClear}
-    />
+    <>
+      <RadioFormGroup
+        qItem={qItem}
+        options={visibleOptions}
+        valueRadio={valueRadio}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        instructionsId={instructionsId}
+        onCheckedChange={onCheckedChange}
+        onClear={onClear}
+      />
+      {hasUnavailableDisplayOptions ? <AnswerOptionUnavailableWarning /> : null}
+    </>
   );
 }
 

@@ -109,6 +109,8 @@ export interface RendererStrings {
   somethingWentWrong: string;
   /** Shown when the terminology server errors while expanding a value set. Supports `{valueSet}`. */
   terminologyServerFetchError: string;
+  /** Shown when one or more coded answerOptions have no display and were hidden from the list. */
+  answerOptionDisplayUnavailable: string;
 
   /** Clear-input button label/tooltip. */
   clear: string;
@@ -225,6 +227,7 @@ export const defaultRendererStrings: RendererStrings = {
   somethingWentWrong: 'Something went wrong here',
   terminologyServerFetchError:
     'There was an error fetching options from the terminology server for {valueSet}',
+  answerOptionDisplayUnavailable: 'Some items in this list were not able to be displayed',
   clear: 'Clear',
   removeItem: 'Remove item',
   nextPage: 'Next page',

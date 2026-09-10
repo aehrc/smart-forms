@@ -20,6 +20,8 @@ import type {
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface ChoiceCheckboxAnswerOptionFieldsProps {
@@ -51,20 +53,28 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
     onClear
   } = props;
 
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    answers
+  );
+
   return (
-    <CheckboxFormGroup
-      qItem={qItem}
-      options={options}
-      answers={answers}
-      feedback={feedback}
-      readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
-      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-      isTabled={isTabled}
-      instructionsId={instructionsId}
-      onCheckedChange={onCheckedChange}
-      onClear={onClear}
-    />
+    <>
+      <CheckboxFormGroup
+        qItem={qItem}
+        options={visibleOptions}
+        answers={answers}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        instructionsId={instructionsId}
+        onCheckedChange={onCheckedChange}
+        onClear={onClear}
+      />
+      {hasUnavailableDisplayOptions ? <AnswerOptionUnavailableWarning /> : null}
+    </>
   );
 }
 

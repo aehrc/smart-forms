@@ -15,7 +15,13 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
@@ -23,6 +29,7 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
+  answers: QuestionnaireResponseItemAnswer[];
   openLabelText: string;
   openLabelValue: string | null;
   openLabelSelected: boolean;
@@ -41,6 +48,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     qItem,
     options,
     valueRadio,
+    answers,
     openLabelText,
     openLabelValue,
     openLabelSelected,
@@ -54,28 +62,36 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     onClear
   } = props;
 
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    answers
+  );
+
   return (
-    <RadioFormGroup
-      data-test={`radio-group-${openLabelValue}`}
-      qItem={qItem}
-      options={options}
-      valueRadio={valueRadio}
-      feedback={feedback}
-      readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
-      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-      isTabled={isTabled}
-      instructionsId={instructionsId}
-      onCheckedChange={(newValue) => onValueChange(newValue, null)}
-      onClear={onClear}>
-      <RadioButtonWithOpenLabel
-        value={openLabelValue}
-        label={openLabelText}
+    <>
+      <RadioFormGroup
+        data-test={`radio-group-${openLabelValue}`}
+        qItem={qItem}
+        options={visibleOptions}
+        valueRadio={valueRadio}
+        feedback={feedback}
         readOnly={readOnly}
-        isSelected={openLabelSelected}
-        onInputChange={(input) => onValueChange(null, input)}
-      />
-    </RadioFormGroup>
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        instructionsId={instructionsId}
+        onCheckedChange={(newValue) => onValueChange(newValue, null)}
+        onClear={onClear}>
+        <RadioButtonWithOpenLabel
+          value={openLabelValue}
+          label={openLabelText}
+          readOnly={readOnly}
+          isSelected={openLabelSelected}
+          onInputChange={(input) => onValueChange(null, input)}
+        />
+      </RadioFormGroup>
+      {hasUnavailableDisplayOptions ? <AnswerOptionUnavailableWarning /> : null}
+    </>
   );
 }
 

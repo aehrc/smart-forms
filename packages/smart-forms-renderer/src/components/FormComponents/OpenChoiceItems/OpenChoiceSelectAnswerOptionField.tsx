@@ -28,8 +28,10 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
 import { useRendererConfigStore } from '../../../stores';
 import { interpolate } from '../../../i18n';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import StyledText from '../ItemParts/StyledText';
@@ -70,6 +72,11 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    valueSelect && typeof valueSelect !== 'string' ? [valueSelect] : []
+  );
+
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   const [inputValue, setInputValue] = React.useState('');
@@ -86,7 +93,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
       <Autocomplete
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
-        options={options}
+        options={visibleOptions}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
         inputValue={inputValue}
@@ -201,6 +208,9 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         }}
       />
 
+      {hasUnavailableDisplayOptions ? (
+        <AnswerOptionUnavailableWarning variant="helperText" />
+      ) : null}
       {feedback ? (
         <FormHelperText>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
