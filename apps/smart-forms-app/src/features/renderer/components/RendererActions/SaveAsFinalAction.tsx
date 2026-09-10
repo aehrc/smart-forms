@@ -17,27 +17,20 @@
 
 import type { SpeedDialActionProps } from '@mui/material';
 import {
-  buildBundleFromObservationArray,
-  extractObservationBased,
   getBaseLinkIdFromErrorKey,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
-import { useMemo, useState } from 'react';
-import { getExtractMechanism } from '../../utils/extract.ts';
+import { useState } from 'react';
 import SaveAsFinalActionButton from './SaveAsFinalActionButton.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
-import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
-import RendererSaveAsFinalOnlyDialog from './RendererSaveAsFinalOnlyDialog.tsx';
-import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
-import { validateExtractedBundle } from '../../../writeBack/utils/validateExtractedBundle.ts';
-import { populateQuestionnaire } from '@aehrc/sdc-populate';
-import { fetchResourceCallback } from '../../../prepopulate/utils/callback.ts';
+import SaveAsFinalOnlyDialog from '../../../writeBack/components/SaveAsFinalOnlyDialog.tsx';
+import SaveAsFinalWriteBackDialog from '../../../writeBack/components/SaveAsFinalWriteBackDialog.tsx';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import { formHasErrorsMessage } from '../../../../interfaces/snackbar.interface.ts';
 import { findFirstErrorTabIndex } from '../../utils/tabNavigation.ts';
+import useSaveAsFinalExtraction from '../../../writeBack/hooks/useSaveAsFinalExtraction.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -47,14 +40,9 @@ interface SaveAsFinalActionProps extends SpeedDialActionProps {
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const { isSpeedDial, onCloseSpeedDial, ...speedDialActionProps } = props;
 
-  const { smartClient, patient, user, encounter, extraLaunchContext } = useSmartClient();
+  const { smartClient } = useSmartClient();
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
-  const [isExtracting, setExtracting] = useState(false);
-  const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
-  const [invalidBundleEntryIndices, setInvalidBundleEntryIndices] = useState<Set<number> | null>(
-    null
-  );
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const tabs = useQuestionnaireStore.use.tabs();
@@ -66,6 +54,15 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const responseHasErrors = useQuestionnaireResponseStore.use.responseHasErrors();
   const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
   const highlightRequiredItems = useQuestionnaireResponseStore.use.highlightRequiredItems();
+
+  const {
+    writeBackEnabled,
+    isExtracting,
+    extractedBundle,
+    invalidBundleEntryIndices,
+    runExtraction,
+    resetExtractionState
+  } = useSaveAsFinalExtraction({ onExtracted: () => handleOpenDialog() });
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -101,76 +98,6 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   }
 
   // Events handlers
-  async function handleTemplateExtract() {
-    // In the user-facing UI, always perform a modified-only extraction
-    const modifiedOnly = true;
-
-    setExtracting(true);
-
-    // FhirClient not available, skip whole save process
-    if (!smartClient || !patient || !user) {
-      setExtracting(false);
-      return;
-    }
-
-    // If modifiedOnly is true, populate a fresh copy of the questionnaire to compare against
-    let responseToCompare: QuestionnaireResponse | null = null;
-    if (modifiedOnly) {
-      const populateRes = await populateQuestionnaire({
-        questionnaire: sourceQuestionnaire,
-        fetchResourceCallback: fetchResourceCallback,
-        fetchResourceRequestConfig: {
-          sourceServerUrl: smartClient.state.serverUrl,
-          authToken: smartClient.state.tokenResponse?.access_token
-        },
-        patient: patient,
-        user: user,
-        encounter: encounter ?? undefined
-      });
-
-      responseToCompare = populateRes.populateResult?.populatedResponse ?? null;
-    }
-
-    // Perform template-based extraction to get a transaction bundle
-    const responseToExtract = structuredClone(updatableResponse);
-    const inAppExtractOutput = await inAppExtract(
-      responseToExtract,
-      sourceQuestionnaire,
-      modifiedOnly ? responseToCompare : null
-    );
-
-    const { extractResult } = inAppExtractOutput;
-
-    if (extractResultIsOperationOutcome(extractResult)) {
-      console.error(extractResult);
-      setExtracting(false);
-      return;
-    }
-
-    // Validate before updating state — ensures WriteBackBundleSelectorDialog mounts with
-    // invalidBundleEntryIndices already set, so its selectedKeys initializer excludes invalid entries
-    const validationResults = extraLaunchContext.enableBundleValidation
-      ? await validateExtractedBundle(extractResult.extractedBundle, smartClient)
-      : new Set<number>();
-
-    // All four updates land in the same React 18 batch → single render → component mounts correctly
-    setExtractedBundle(extractResult.extractedBundle);
-    setInvalidBundleEntryIndices(validationResults.size > 0 ? validationResults : null);
-    setExtracting(false);
-
-    // Open dialog after extraction is complete
-    handleOpenDialog();
-  }
-
-  function handleObservationExtract() {
-    const extractedObservations = extractObservationBased(sourceQuestionnaire, updatableResponse);
-    const bundleFromObservations = buildBundleFromObservationArray(extractedObservations);
-    setExtractedBundle(bundleFromObservations);
-
-    // Open dialog after extraction is complete
-    handleOpenDialog();
-  }
-
   function handleOpenDialog() {
     // Close speedDial (if open)
     if (onCloseSpeedDial) {
@@ -201,10 +128,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   //   }
   // }}
   function handleDialogExited() {
-    // Reset extract-related states back to false
-    setExtracting(false);
-    setExtractedBundle(null);
-    setInvalidBundleEntryIndices(null);
+    resetExtractionState();
   }
 
   // Check if an in-progress QR has been saved before via versionId
@@ -213,13 +137,6 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const isAmendment = responseStatus === 'completed' || responseStatus === 'amended';
   const buttonIsDisabled =
     !smartClient || (formChangesHistory.length === 0 && !(versionId && !isAmendment));
-
-  // Check if questionnaire can be template-based extracted
-  const extractMechanism = useMemo(
-    () => getExtractMechanism(sourceQuestionnaire),
-    [sourceQuestionnaire]
-  );
-  const writeBackEnabled = !!extractMechanism;
 
   const numOfExtractedBundleEntries = extractedBundle?.entry?.length || 0;
 
@@ -235,20 +152,14 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           onSaveAsFinalActionClick={async () => {
             if (handleValidationErrors()) return;
 
-            if (extractMechanism === 'template-based') {
-              await handleTemplateExtract();
-            }
-
-            if (extractMechanism === 'observation-based') {
-              handleObservationExtract();
-            }
+            await runExtraction();
           }}
           {...speedDialActionProps}
         />
 
         {extractedBundle && numOfExtractedBundleEntries > 0 ? (
           // An extracted bundle exists and have at least one entry
-          <RendererSaveAsFinalWriteBackDialog
+          <SaveAsFinalWriteBackDialog
             dialogOpen={saveAsFinalDialogOpen}
             isAmendment={isAmendment}
             extractedBundle={extractedBundle}
@@ -258,7 +169,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           />
         ) : (
           // Extraction failed or no entries in the extracted bundle
-          <RendererSaveAsFinalOnlyDialog
+          <SaveAsFinalOnlyDialog
             open={saveAsFinalDialogOpen}
             isAmendment={isAmendment}
             additionalContentText={'There are no items to write back to the patient record.'}
@@ -283,7 +194,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
         }}
         {...speedDialActionProps}
       />
-      <RendererSaveAsFinalOnlyDialog
+      <SaveAsFinalOnlyDialog
         open={saveAsFinalDialogOpen}
         closeDialog={handleCloseDialog}
         isAmendment={isAmendment}
