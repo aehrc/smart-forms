@@ -5,9 +5,10 @@ This log documents changes for [@aehrc/sdc-template-extract](https://www.npmjs.c
 
 Changelog only includes changes from version 1.0.6 onwards.
 
-## sdc-template-extract [Unreleased]
+## sdc-template-extract [1.0.16] - 2026-09-10
 #### Fixed
-- A `templateExtractValue` whose value path names an element that already exists in the template's array (e.g. `Immunization.protocolApplied[0].doseNumberPositiveInt`) now populates that element instead of appending a separate, half-populated one. Arrays nested inside a merged object are merged by index rather than concatenated.
+- A `templateExtractValue` whose value path names an element that already exists in the template's array (e.g. `Immunization.protocolApplied[0].doseNumberPositiveInt`) now populates that element instead of appending a separate, half-populated one, with nested arrays merged by index rather than concatenated. As part of the same fix, repeating `templateExtractValue`s are no longer dropped as duplicates when they genuinely repeated the same value (e.g. the same given name answered twice), or collapsed together into a single element when object-typed (e.g. repeating `Coding`s), and instead append as separate elements.
+- Fixed a `templateExtractValue`'s multi-value split being spliced into separate, reversed-order array elements instead of one merged element, when an earlier-declared sibling value in the same context evaluated empty. See issue [#2107](https://github.com/aehrc/smart-forms/issues/2107)
 
 ## sdc-template-extract [1.0.15] - 2026-01-13
 #### Fixed

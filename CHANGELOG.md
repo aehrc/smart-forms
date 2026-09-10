@@ -10,6 +10,18 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.5.0] - 2026-09-10
+### Added
+- Added a headless engine entrypoint, published as `@aehrc/smart-forms-renderer/engine`, that re-exports the SDC engine - form lifecycle, `QuestionnaireResponse` construction/traversal, item inspection, answer parsing, repopulation and observation-based extraction - without pulling in Material UI, Emotion, `react-dom` or other DOM/UI dependencies. An `exports` map is now published covering every path the package previously exposed only via internal `lib/...` deep imports.
+- Added i18n support for renderer-owned UI text ("chrome") and locale-aware, order-aware date formatting/validation (e.g. year-first locales correctly get `YYYY/MM`), configured via the existing `rendererConfigStore`'s `locale` and `rendererStrings` options. Consuming apps supply their own translation catalogs; defaults remain unchanged (English, DD/MM/YYYY), so existing consumers are unaffected.
+- Styled warning-level validation feedback (from `targetConstraint` violations and `OperationOutcome` issues) differently from errors - amber helper text with no red border - and exported `useValidationFeedbackSeverity` so consumers can act on feedback severity directly. `useValidationFeedback` is kept as a deprecated wrapper. See issue [#1984](https://github.com/aehrc/smart-forms/issues/1984)
+### Fixed
+- Fixed answerOption-based choice fields (Select, Autocomplete, Radio, Checkbox) showing raw codes, becoming unresponsive, or desyncing from the stored answer when a terminology `$lookup` fails or an option's display text changes. Options whose display cannot be resolved are now filtered out of the list with a single warning shown below the field, since raw codes are not acceptable in a clinician-facing UI, while a previously-answered option is preserved using its live or originally-recorded display instead of vanishing. Several related falsy-value (`0`, `''`) and key-collision matching bugs are also fixed. See issue [#1931](https://github.com/aehrc/smart-forms/issues/1931)
+- Fixed autocomplete choice fields showing "No options" while a terminology search is still below the debounce threshold, instead of a "Type to search..." prompt.
+- Fixed repeating group validation errors displaying on every instance instead of only the invalid one - errors are now scoped by the instance's position within the `QuestionnaireResponse`, including when that position differs from the rendered row position (e.g. after a `gtable` row is deselected).
+- Fixed clearing an autocomplete/choice field leaving a stale answer in the `QuestionnaireResponse` instead of removing it, and fixed repeat group instances/`gtable` rows not being removed when clearing their last answer left them empty.
+- Fixed wrapped, multi-line question labels rendering below their field instead of beside it.
+
 ## [1.4.0] - 2026-07-03
 ### Added
 - Instruction text (`display` items with `questionnaire-displayCategory: instructions`) is now programmatically associated with its parent input field via `aria-describedby` across all field types. Screen readers now announce the instruction text when the field receives focus, rather than requiring a separate tab to the instruction item. See issue [#1640](https://github.com/aehrc/smart-forms/issues/1640)
