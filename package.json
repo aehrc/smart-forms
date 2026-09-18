@@ -16,6 +16,7 @@
   "workspaces": [
     "apps/smart-forms-app",
     "packages/*",
+    "forms/*",
     "services/*",
     "deployment/forms-server/*",
     "deployment/ehr-proxy/*",

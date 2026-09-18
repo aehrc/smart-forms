@@ -1,0 +1,40 @@
+{
+  "name": "@aehrc/gpccmp-form",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GP Chronic Condition Management Plan questionnaire and its behavioural test suite.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aehrc/smart-forms.git"
+  },
+  "author": "AEHRC",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aehrc/smart-forms/issues"
+  },
+  "homepage": "https://github.com/aehrc/smart-forms#readme",
+  "type": "module",
+  "scripts": {
+    "test": "TZ=Australia/Sydney vitest run --config ./vitest.config.ts",
+    "test-headed": "TZ=Australia/Sydney VITEST_HEADED=1 vitest run --config ./vitest.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@aehrc/questionnaire-test-toolkit": "^0.1.0",
+    "@aehrc/smart-forms-renderer": "^1.4.0",
+    "@playwright/test": "^1.60.0",
+    "@tanstack/react-query": "^5.90.5",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.3.2",
+    "@types/fhir": "^0.0.41",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitest/browser": "^3.2.4",
+    "fhirclient": "^2.6.3",
+    "jsdom": "^29.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,7 +1,7 @@
 # Dockerfile
 
 # Step 1: Use a Node.js image to build the app
-FROM --platform=$BUILDPLATFORM node:18 AS builder
+FROM --platform=$BUILDPLATFORM node:20 AS builder
 
 # Set working directory inside the container
 WORKDIR /app
@@ -21,6 +21,7 @@ COPY packages/sdc-assemble/package*.json ./packages/sdc-assemble/
 COPY packages/sdc-populate/package*.json ./packages/sdc-populate/
 COPY packages/sdc-template-extract/package*.json ./packages/sdc-template-extract/
 COPY packages/smart-forms-renderer/package*.json ./packages/smart-forms-renderer/
+COPY packages/questionnaire-test-toolkit/package*.json ./packages/questionnaire-test-toolkit/
 COPY apps/smart-forms-app/package*.json ./apps/smart-forms-app/
 
 # Install all workspace dependencies from the root
@@ -31,6 +32,7 @@ COPY packages/sdc-assemble/ ./packages/sdc-assemble/
 COPY packages/sdc-populate/ ./packages/sdc-populate/
 COPY packages/sdc-template-extract/ ./packages/sdc-template-extract/
 COPY packages/smart-forms-renderer/ ./packages/smart-forms-renderer/
+COPY packages/questionnaire-test-toolkit/ ./packages/questionnaire-test-toolkit/
 COPY apps/smart-forms-app/ ./apps/smart-forms-app/
 
 # Build packages in dependency order (mirrors deploy_app.yml)

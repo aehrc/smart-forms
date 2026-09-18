@@ -12,7 +12,7 @@ import {
   findAllByLinkIdOrLabel,
   getSelectText,
   getRadioValue
-} from './testUtils.ts';
+} from '@aehrc/questionnaire-test-toolkit';
 import {
   aboutTheHealthCheckInProgressQuestionnaireResponse,
   aboutTheHealthCheckQuestionnaireResponse,
