@@ -22,6 +22,20 @@ To install, run this command:
 npm install @aehrc/smart-forms-renderer
 ```
 
+### Typography
+
+The renderer theme asks for the [Inter](https://rsms.me/inter/) typeface, falling back to your platform's default sans-serif font. The library does not load any webfont itself, so provide Inter in your own application if you want the intended typography. The simplest way is to self-host it:
+
+```bash
+npm install @fontsource/inter
+```
+
+```ts title="Your application entrypoint"
+import '@fontsource/inter';
+```
+
+Linking a hosted stylesheet or declaring your own `@font-face` works equally well.
+
 ## Usage
 
 ### Basic Usage
