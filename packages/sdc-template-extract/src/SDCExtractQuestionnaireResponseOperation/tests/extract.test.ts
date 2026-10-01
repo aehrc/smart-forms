@@ -42,6 +42,7 @@ import { QRArrayElementMerge } from './resources/questionnaireResponses/QRArrayE
 import { QRDuplicateValueMerge } from './resources/questionnaireResponses/QRDuplicateValueMerge';
 import { QRStaticDataNotDuplicated } from './resources/questionnaireResponses/QRStaticDataNotDuplicated';
 import { QRRepeatingComplexValueMerge } from './resources/questionnaireResponses/QRRepeatingComplexValueMerge';
+import { QRResourceContextComparison } from './resources/questionnaireResponses/QRResourceContextComparison';
 
 // Questionnaires
 import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergiesAdverseReactions';
@@ -58,6 +59,7 @@ import { QArrayElementMerge } from './resources/questionnaires/QArrayElementMerg
 import { QDuplicateValueMerge } from './resources/questionnaires/QDuplicateValueMerge';
 import { QStaticDataNotDuplicated } from './resources/questionnaires/QStaticDataNotDuplicated';
 import { QRepeatingComplexValueMerge } from './resources/questionnaires/QRepeatingComplexValueMerge';
+import { QResourceContextComparison } from './resources/questionnaires/QResourceContextComparison';
 import { parametersIsFhirPatch } from '../utils/typePredicates';
 
 // Mock the fetchQuestionnaire callback function
@@ -668,5 +670,74 @@ describe('extract RepeatingComplexValueMerge', () => {
 
     expect(extractedImmunization.protocolApplied?.[0]?.targetDisease).toHaveLength(2);
     expect(extractedImmunization).toEqual(extractedRepeatingComplexValueMergeImmunization);
+  });
+});
+
+describe('extract ResourceContextComparison (modified only)', () => {
+  // In a modified-only extract, %resource in the templates must evaluate against the comparison
+  // response when the comparison resources are built, and against the current response otherwise.
+  function setAnswer(
+    questionnaireResponse: typeof QRResourceContextComparison,
+    linkId: string,
+    value: string
+  ) {
+    const qrItem = questionnaireResponse.item?.[0]?.item?.find((item) => item.linkId === linkId);
+    if (qrItem) {
+      qrItem.answer = [{ valueString: value }];
+    }
+  }
+
+  async function extractModifiedOnly(
+    questionnaireResponse: typeof QRResourceContextComparison,
+    comparisonSourceResponse: typeof QRResourceContextComparison
+  ) {
+    const result = await extract(
+      createInputParameters(
+        questionnaireResponse,
+        QResourceContextComparison,
+        comparisonSourceResponse
+      ),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    return returnParam?.resource as Bundle;
+  }
+
+  it('detects a change to an answer read via %resource', async () => {
+    const comparisonSourceResponse = structuredClone(QRResourceContextComparison);
+    const questionnaireResponse = structuredClone(QRResourceContextComparison);
+    setAnswer(questionnaireResponse, 'resourceAnswer', 'Changed by user');
+
+    const extracted = await extractModifiedOnly(questionnaireResponse, comparisonSourceResponse);
+
+    expect(extracted.entry).toHaveLength(1);
+    const extractedObservation = extracted.entry?.[0]?.resource as Observation;
+    expect(extractedObservation.valueString).toBe('Changed by user');
+  });
+
+  it('detects a change to an answer read via a relative path', async () => {
+    const comparisonSourceResponse = structuredClone(QRResourceContextComparison);
+    const questionnaireResponse = structuredClone(QRResourceContextComparison);
+    setAnswer(questionnaireResponse, 'relativeAnswer', 'Changed by user');
+
+    const extracted = await extractModifiedOnly(questionnaireResponse, comparisonSourceResponse);
+
+    expect(extracted.entry).toHaveLength(1);
+    const extractedObservation = extracted.entry?.[0]?.resource as Observation;
+    expect(extractedObservation.code.text).toBe('Changed by user');
+  });
+
+  it('extracts nothing when no answer has changed', async () => {
+    const extracted = await extractModifiedOnly(
+      structuredClone(QRResourceContextComparison),
+      structuredClone(QRResourceContextComparison)
+    );
+
+    expect(extracted.entry ?? []).toHaveLength(0);
   });
 });
