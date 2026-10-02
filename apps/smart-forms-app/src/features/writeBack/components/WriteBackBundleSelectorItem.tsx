@@ -1,10 +1,12 @@
-import { Box, Checkbox, Chip, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Box, Button, Checkbox, Chip, Typography } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
   getChipMethodDetails,
   getFhirPatchResourceDisplay,
   getResourceDisplay
 } from '../utils/extractedBundleSelector.ts';
-import type { BundleEntry, FhirResource } from 'fhir/r4';
+import type { BundleEntry, FhirResource, OperationOutcomeIssue } from 'fhir/r4';
 import { parametersIsFhirPatch } from '@aehrc/sdc-template-extract';
 import WriteBackSelectorFhirPatchEntries from './WriteBackSelectorFhirPatchEntries.tsx';
 
@@ -14,7 +16,8 @@ interface WriteBackBundleSelectorItemProps {
   selectedKeys: Set<string>;
   allValidKeys: Set<string>;
   populatedResourceMap: Map<string, FhirResource>;
-  isInvalid: boolean;
+  // Error/fatal issues from $validate; an entry that has any can't be selected
+  validationIssues?: OperationOutcomeIssue[];
   isEntrySelected: (
     bundleEntryIndex: number,
     operationEntryIndex?: number
@@ -30,9 +33,20 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
     allValidKeys,
     isEntrySelected,
     populatedResourceMap,
-    isInvalid,
+    validationIssues,
     onToggleCheckbox
   } = props;
+
+  const isInvalid = !!validationIssues && validationIssues.length > 0;
+
+  const [resourceCopied, setResourceCopied] = useState(false);
+
+  function handleCopyResource() {
+    navigator.clipboard
+      .writeText(JSON.stringify(bundleEntry.resource, null, 2))
+      .then(() => setResourceCopied(true))
+      .catch(() => console.warn('Failed to copy the resource to the clipboard'));
+  }
 
   const resource = bundleEntry.resource;
   const bundleEntryRequest = bundleEntry.request;
@@ -133,6 +147,38 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
           <Chip label={chipLabel} color={chipColorVariant} size="small" />
         </Box>
       </Box>
+
+      {/* Show why the entry failed $validate */}
+      {isInvalid ? (
+        <Box component="ul" sx={{ mt: 1, mb: 0, pl: 3 }}>
+          {validationIssues.map((issue, issueIndex) => (
+            <Box component="li" key={issueIndex} sx={{ color: 'error.main', mt: 0.5 }}>
+              <Typography variant="body2" color="error" sx={{ overflowWrap: 'anywhere' }}>
+                {issue.diagnostics ?? issue.details?.text ?? issue.code}
+              </Typography>
+              {issue.expression && issue.expression.length > 0 ? (
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontFamily: 'monospace', overflowWrap: 'anywhere' }}>
+                  {issue.expression.join(', ')}
+                </Typography>
+              ) : null}
+            </Box>
+          ))}
+        </Box>
+      ) : null}
+
+      {/* Lets the user take the failing resource to a validator */}
+      {isInvalid ? (
+        <Button
+          onClick={handleCopyResource}
+          size="small"
+          startIcon={<ContentCopyIcon />}
+          sx={{ mt: 1, ml: 1 }}>
+          {resourceCopied ? 'Copied to clipboard' : 'Copy JSON'}
+        </Button>
+      ) : null}
 
       {/* Render FhirPatchEntries */}
       {resource.resourceType === 'Parameters' ? (
