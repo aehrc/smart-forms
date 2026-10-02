@@ -136,7 +136,20 @@ describe('validateExtractedBundle', () => {
     ]);
     const result = await validateExtractedBundle(bundle, client);
     expect(result.size).toBe(1);
-    expect(result.has(0)).toBe(true);
+    expect(result.get(0)).toEqual(errorOutcome.issue);
+  });
+
+  it('keeps only the error and fatal issues of an invalid entry', async () => {
+    const mixedOutcome: OperationOutcome = {
+      resourceType: 'OperationOutcome',
+      issue: [...okOutcome.issue, ...errorOutcome.issue, ...warningOutcome.issue]
+    };
+    const client = makeClient(jest.fn().mockResolvedValue(mixedOutcome));
+    const bundle = makeBundle([
+      { resource: { resourceType: 'Condition' }, request: { method: 'POST', url: 'Condition' } }
+    ]);
+    const result = await validateExtractedBundle(bundle, client);
+    expect(result.get(0)).toEqual(errorOutcome.issue);
   });
 
   it('does not include entry when $validate returns only warnings', async () => {
