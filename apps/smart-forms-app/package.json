@@ -73,6 +73,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@aehrc/questionnaire-test-toolkit": "^0.1.0",
     "@jest/globals": "^30.3.0",
     "@playwright/test": "^1.60.0",
     "@sentry/cli": "^2.57.0",

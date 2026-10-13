@@ -1,6 +1,7 @@
 import { vi, beforeAll } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
-import { AboriginalForm, terminologyServerUrl } from './aboriginalFormUtils';
+import { AboriginalForm } from './aboriginalFormUtils';
+import { terminologyServerUrl } from '@aehrc/questionnaire-test-toolkit';
 import {
   nonSnomedCondition,
   patient,
@@ -30,7 +31,7 @@ import {
   selectTab,
   chooseSelectOption,
   checkRadioOption
-} from './testUtils';
+} from '@aehrc/questionnaire-test-toolkit';
 import { FhirResource, MedicationStatement } from 'fhir/r4';
 
 vi.mock('fhirclient', async () => {

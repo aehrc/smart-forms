@@ -11,7 +11,7 @@ import {
   findByLinkIdOrLabel,
   checkCheckBox,
   checkCheckboxOption
-} from './testUtils.ts';
+} from '@aehrc/questionnaire-test-toolkit';
 import { AboriginalForm } from './aboriginalFormUtils.tsx';
 
 vi.mock('fhirclient', () => ({
