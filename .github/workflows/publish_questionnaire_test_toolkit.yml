@@ -37,3 +37,5 @@ jobs:
       - name: Publish
         run: npm publish --provenance --access public
         working-directory: packages/questionnaire-test-toolkit
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -7,17 +7,6 @@ Extracted from `apps/smart-forms-app/src/test/` so that a form's test suite can 
 form rather than inside the application. Consumed by the Aboriginal and Torres Strait
 Islander Health Check suite in this repository.
 
-## Status: prepared for publication, not yet released
-
-The package is built, packaged and workflow-ready, but no version has been released to npm. The
-decision to publish is AEHRC/CSIRO's — publishing means a public name, semver commitments, a
-changelog and a named owner, which is an organisational commitment rather than a repository
-refactor.
-
-Publication exists to make one thing possible: a form's test suite in **another repository**
-consuming these helpers. That is not achievable from a `private: true` workspace package, and it is
-the whole reason the build below was added.
-
 ## The contract
 
 `src/index.ts` **is** the public API. Everything re-exported there may be relied upon by a form's
