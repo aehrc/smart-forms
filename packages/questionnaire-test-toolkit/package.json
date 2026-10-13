@@ -42,21 +42,21 @@
     "access": "public"
   },
   "dependencies": {
-    "@aehrc/sdc-populate": "^4.7.1",
-    "@aehrc/sdc-template-extract": "^1.0.15",
+    "@aehrc/sdc-populate": "^4.7.2",
+    "@aehrc/sdc-template-extract": "^1.0.16",
     "@testing-library/user-event": "^14.6.1",
     "@types/fhir": "^0.0.41",
     "fhirpath": "^4.10.1"
   },
   "peerDependencies": {
-    "@aehrc/smart-forms-renderer": "^1.4.0",
+    "@aehrc/smart-forms-renderer": "^1.5.0",
     "@tanstack/react-query": "^5.90.5",
     "@testing-library/dom": "^10.4.0",
     "@types/react": "^18.0.0 || ^19.0.0",
     "react": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@aehrc/smart-forms-renderer": "^1.4.0",
+    "@aehrc/smart-forms-renderer": "^1.5.0",
     "@tanstack/react-query": "^5.90.5",
     "@testing-library/dom": "^10.4.0",
     "@types/react": "^18.3.18",
