@@ -103,12 +103,12 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
           ...qrOpenChoice,
           answer: [{ id: answerKey, valueCoding: option.valueCoding }]
         });
-      } else if (option['valueString']) {
+      } else if (option['valueString'] !== undefined) {
         onQrItemChange({
           ...qrOpenChoice,
           answer: [{ id: answerKey, valueString: sanitizeInput(option.valueString) }]
         });
-      } else if (option['valueInteger']) {
+      } else if (option['valueInteger'] !== undefined) {
         onQrItemChange({
           ...qrOpenChoice,
           answer: [{ id: answerKey, valueInteger: option.valueInteger }]

@@ -206,13 +206,13 @@ function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponse
           };
         }
 
-        if (option.valueString) {
+        if (option.valueString !== undefined) {
           return {
             valueString: option.valueString
           };
         }
 
-        if (option.valueInteger) {
+        if (option.valueInteger !== undefined) {
           return {
             valueInteger: option.valueInteger
           };
