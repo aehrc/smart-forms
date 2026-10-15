@@ -101,15 +101,39 @@ describe('fileUtils', () => {
       return file;
     };
 
-    it('should return null when file is null', async () => {
-      const result = await createAttachmentAnswer(null, 'http://example.com', 'test.png');
+    it('should return null when both file and url are absent', async () => {
+      const result = await createAttachmentAnswer(null, '', 'test.png');
       expect(result).toBeNull();
     });
 
-    it('should return null when file is provided but url is empty', async () => {
-      const file = createMockFile('test.png', 1024, 'image/png');
-      const result = await createAttachmentAnswer(file, '', 'test.png');
-      expect(result).toBeNull();
+    it('should create a url-only attachment when no file is uploaded', async () => {
+      const result = await createAttachmentAnswer(null, 'http://example.com', 'test.png');
+
+      expect(result).toEqual({
+        url: 'http://example.com',
+        title: 'test.png'
+      });
+    });
+
+    it('should create attachment without url when url is empty', async () => {
+      const file = createMockFile('test.txt', 512, 'text/plain');
+
+      const promise = createAttachmentAnswer(file, '', 'test.txt');
+
+      setTimeout(() => {
+        if (mockFileReader.onload) {
+          mockFileReader.onload();
+        }
+      }, 0);
+
+      const result = await promise;
+
+      expect(result).toEqual({
+        contentType: 'text/plain',
+        data: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
+        size: 512,
+        title: 'test.txt'
+      });
     });
 
     it('should create attachment with all properties when successful', async () => {
@@ -134,22 +158,6 @@ describe('fileUtils', () => {
         url: 'http://example.com/upload',
         title: 'custom-name.png'
       });
-    });
-
-    it('should create attachment without url when url is provided but empty', async () => {
-      const file = createMockFile('test.txt', 512, 'text/plain');
-
-      const promise = createAttachmentAnswer(file, '', 'test.txt');
-
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload();
-        }
-      }, 0);
-
-      const result = await promise;
-
-      expect(result).toBeNull(); // Should return null due to empty URL check
     });
 
     it('should create attachment without title when fileName is empty', async () => {
@@ -302,10 +310,7 @@ describe('fileUtils', () => {
       it('should handle whitespace-only URLs and filenames', async () => {
         const file = createMockFile('test.txt', 1024, 'text/plain');
 
-        const result1 = await createAttachmentAnswer(file, '   ', 'test.txt');
-        expect(result1).not.toBeNull(); // Whitespace URL is truthy
-
-        const promise = createAttachmentAnswer(file, 'http://example.com', '   ');
+        const promise1 = createAttachmentAnswer(file, '   ', 'test.txt');
 
         setTimeout(() => {
           if (mockFileReader.onload) {
@@ -313,7 +318,18 @@ describe('fileUtils', () => {
           }
         }, 0);
 
-        const result2 = await promise;
+        const result1 = await promise1;
+        expect(result1?.url).toBeUndefined(); // Whitespace-only URL is not a url
+
+        const promise2 = createAttachmentAnswer(file, 'http://example.com', '   ');
+
+        setTimeout(() => {
+          if (mockFileReader.onload) {
+            mockFileReader.onload();
+          }
+        }, 0);
+
+        const result2 = await promise2;
         expect(result2?.title).toBe('   ');
       });
     });

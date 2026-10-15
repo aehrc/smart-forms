@@ -38,29 +38,32 @@ export async function createAttachmentAnswer(
   url: string,
   fileName: string
 ): Promise<Attachment | null> {
-  if (!file || url === '') {
+  const trimmedUrl = url.trim();
+
+  if (!file && trimmedUrl === '') {
     return null;
   }
 
-  try {
-    const base64Data = (await fileToBase64(file)) as string;
-    const attachment: Attachment = {
-      contentType: file.type,
-      data: base64Data,
-      size: file.size
-    };
+  const attachment: Attachment = {};
 
-    if (url) {
-      attachment.url = url;
+  if (file) {
+    try {
+      attachment.contentType = file.type;
+      attachment.data = (await fileToBase64(file)) as string;
+      attachment.size = file.size;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
-
-    if (fileName) {
-      attachment.title = fileName;
-    }
-
-    return attachment;
-  } catch (error) {
-    console.error(error);
-    return null;
   }
+
+  if (trimmedUrl) {
+    attachment.url = trimmedUrl;
+  }
+
+  if (fileName) {
+    attachment.title = fileName;
+  }
+
+  return attachment;
 }
