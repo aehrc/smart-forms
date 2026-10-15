@@ -97,10 +97,6 @@ export async function saveQuestionnaireResponse(
       ...questionnaireResponseToSave.meta,
       source: 'https://smartforms.csiro.au'
     },
-    text: {
-      status: 'generated',
-      div: qrToHTML(questionnaire, questionnaireResponseToSave)
-    },
     subject: {
       reference: `Patient/${patient.id}`,
       type: 'Patient',
@@ -112,6 +108,13 @@ export async function saveQuestionnaireResponse(
       display: constructName(user.name)
     },
     authored: dayjs().format()
+  };
+
+  // Generate the narrative last, so it renders the subject, author and authored values set above
+  // rather than the stale ones the response came in with
+  questionnaireResponseToSave.text = {
+    status: 'generated',
+    div: qrToHTML(questionnaire, questionnaireResponseToSave)
   };
 
   // TODO pre-pop should filter out all empty strings really
