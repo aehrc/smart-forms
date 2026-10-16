@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-import type { Bundle, OperationOutcome } from 'fhir/r4';
+import type { Bundle, OperationOutcomeIssue } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import { HEADERS } from '../../../api/headers.ts';
 import { responseIsOperationOutcome } from '../../../utils/operationOutcome.ts';
 
 /**
- * Calls $validate for each bundle entry and returns a set of entry indices that have
- * error/fatal issues. Resources are sent wrapped in a Parameters envelope, which is valid
+ * Calls $validate for each bundle entry and returns a map of entry index to its error/fatal
+ * issues, for the entries that have any. Resources are sent wrapped in a Parameters envelope, which is valid
  * for all resource types including FHIRPatch (Parameters) entries.
  * If the server does not support $validate, the entry is treated as valid (best-effort).
  */
 export async function validateExtractedBundle(
   bundle: Bundle,
   smartClient: Client
-): Promise<Set<number>> {
-  const invalidEntryIndices = new Set<number>();
+): Promise<Map<number, OperationOutcomeIssue[]>> {
+  const invalidEntryIssues = new Map<number, OperationOutcomeIssue[]>();
   const entries = bundle.entry ?? [];
 
   await Promise.all(
@@ -49,12 +49,15 @@ export async function validateExtractedBundle(
           })
         });
 
-        if (responseIsOperationOutcome(response) && outcomeHasErrors(response)) {
+        const errorIssues = responseIsOperationOutcome(response)
+          ? (response.issue ?? []).filter((i) => i.severity === 'error' || i.severity === 'fatal')
+          : [];
+        if (errorIssues.length > 0) {
           console.warn(
             `$validate errors for ${resource.resourceType} at bundle index ${index}:`,
             response
           );
-          invalidEntryIndices.add(index);
+          invalidEntryIssues.set(index, errorIssues);
         }
       } catch (e) {
         console.warn(
@@ -65,9 +68,5 @@ export async function validateExtractedBundle(
     })
   );
 
-  return invalidEntryIndices;
-}
-
-function outcomeHasErrors(outcome: OperationOutcome): boolean {
-  return outcome.issue?.some((i) => i.severity === 'error' || i.severity === 'fatal') ?? false;
+  return invalidEntryIssues;
 }

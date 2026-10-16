@@ -59,7 +59,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
     writeBackEnabled,
     isExtracting,
     extractedBundle,
-    invalidBundleEntryIndices,
+    invalidBundleEntryIssues,
     runExtraction,
     resetExtractionState
   } = useSaveAsFinalExtraction({ onExtracted: () => handleOpenDialog() });
@@ -163,7 +163,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
             dialogOpen={saveAsFinalDialogOpen}
             isAmendment={isAmendment}
             extractedBundle={extractedBundle}
-            invalidBundleEntryIndices={invalidBundleEntryIndices ?? undefined}
+            invalidBundleEntryIssues={invalidBundleEntryIssues ?? undefined}
             onCloseDialog={handleCloseDialog}
             onDialogExited={handleDialogExited}
           />
