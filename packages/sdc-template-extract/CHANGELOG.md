@@ -5,6 +5,10 @@ This log documents changes for [@aehrc/sdc-template-extract](https://www.npmjs.c
 
 Changelog only includes changes from version 1.0.6 onwards.
 
+## sdc-template-extract [Unreleased]
+#### Fixed
+- Modified-only extraction (with a `comparison-source-response`) now evaluates `%resource` and `%rootResource` against the comparison response when building the comparison resources. Previously they pointed at the current response, so answers read through `%resource` always compared as unchanged and their resources were dropped from the extracted bundle.
+
 ## sdc-template-extract [1.0.16] - 2026-09-10
 #### Fixed
 - A `templateExtractValue` whose value path names an element that already exists in the template's array (e.g. `Immunization.protocolApplied[0].doseNumberPositiveInt`) now populates that element instead of appending a separate, half-populated one, with nested arrays merged by index rather than concatenated. As part of the same fix, repeating `templateExtractValue`s are no longer dropped as duplicates when they genuinely repeated the same value (e.g. the same given name answered twice), or collapsed together into a single element when object-typed (e.g. repeating `Coding`s), and instead append as separate elements.
