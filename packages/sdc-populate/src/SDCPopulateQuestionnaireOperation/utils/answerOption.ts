@@ -66,7 +66,8 @@ export function findInAnswerOptions(
     }
 
     if (typeof option.valueInteger === 'number') {
-      if (value === option.valueInteger.toString()) {
+      // value may be a JS number from a FHIRPath result, not just a string
+      if (String(value) === option.valueInteger.toString()) {
         return {
           valueInteger: option.valueInteger
         };

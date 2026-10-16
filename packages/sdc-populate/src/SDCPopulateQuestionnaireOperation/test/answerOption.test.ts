@@ -127,6 +127,21 @@ describe('findInAnswerOptions zero-valued integer options', () => {
   });
 });
 
+describe('findInAnswerOptions integer options with number-typed values', () => {
+  // A FHIRPath result (e.g. Observation.valueInteger) arrives as a JS number, not a string
+  const options = [{ valueInteger: 0 }, { valueInteger: 5 }];
+
+  it('matches a number-typed value against valueInteger', () => {
+    expect(findInAnswerOptions(options, 5 as never)).toEqual({ valueInteger: 5 });
+    expect(findInAnswerOptions(options, 0 as never)).toEqual({ valueInteger: 0 });
+  });
+
+  it('does not match a number-typed value that differs from every valueInteger', () => {
+    expect(findInAnswerOptions(options, 7 as never)).toBeUndefined();
+    expect(findInAnswerOptions(options, 5.5 as never)).toBeUndefined();
+  });
+});
+
 describe('findInAnswerOptions rejects non-Coding code-bearing objects', () => {
   it('does not match a value-less Quantity against a coding option by code', () => {
     const options = [{ valueCoding: { code: 'mg', display: 'milligram' } }];
