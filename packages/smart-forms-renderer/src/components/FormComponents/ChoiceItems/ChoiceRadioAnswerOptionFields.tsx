@@ -57,7 +57,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
   } = props;
 
   // Match string for <RadioGroup value={...}>
-  const valueRadio = qrAnswer ? (getAnswerValueString(qrAnswer) ?? '') : '';
+  const valueRadio = qrAnswer ? getAnswerValueString(qrAnswer) : null;
 
   const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
     options,

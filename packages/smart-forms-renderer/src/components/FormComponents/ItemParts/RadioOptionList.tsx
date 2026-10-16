@@ -52,7 +52,7 @@ function RadioOptionList(props: RadioOptionListProps) {
           );
         }
 
-        if (option['valueString']) {
+        if (option['valueString'] !== undefined) {
           return (
             <ChoiceRadioSingle
               key={option.valueString}
@@ -68,7 +68,7 @@ function RadioOptionList(props: RadioOptionListProps) {
           );
         }
 
-        if (option['valueInteger']) {
+        if (option['valueInteger'] !== undefined) {
           return (
             <ChoiceRadioSingle
               key={option.valueInteger}

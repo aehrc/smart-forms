@@ -165,9 +165,9 @@ export function getAnswerOptionLabel(option: QuestionnaireItemAnswerOption | str
 
   if (option['valueCoding']) {
     return option.valueCoding.display ?? `${option.valueCoding.code}`;
-  } else if (option['valueString']) {
+  } else if (option['valueString'] !== undefined) {
     return option.valueString;
-  } else if (option['valueInteger']) {
+  } else if (option['valueInteger'] !== undefined) {
     return option.valueInteger.toString();
   } else {
     return '';
