@@ -132,13 +132,13 @@ describe('findInAnswerOptions integer options with number-typed values', () => {
   const options = [{ valueInteger: 0 }, { valueInteger: 5 }];
 
   it('matches a number-typed value against valueInteger', () => {
-    expect(findInAnswerOptions(options, 5 as never)).toEqual({ valueInteger: 5 });
-    expect(findInAnswerOptions(options, 0 as never)).toEqual({ valueInteger: 0 });
+    expect(findInAnswerOptions(options, 5)).toEqual({ valueInteger: 5 });
+    expect(findInAnswerOptions(options, 0)).toEqual({ valueInteger: 0 });
   });
 
   it('does not match a number-typed value that differs from every valueInteger', () => {
-    expect(findInAnswerOptions(options, 7 as never)).toBeUndefined();
-    expect(findInAnswerOptions(options, 5.5 as never)).toBeUndefined();
+    expect(findInAnswerOptions(options, 7)).toBeUndefined();
+    expect(findInAnswerOptions(options, 5.5)).toBeUndefined();
   });
 });
 
