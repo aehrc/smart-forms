@@ -18,24 +18,39 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { BundleEntry, OperationOutcomeIssue } from 'fhir/r4';
 import WriteBackBundleSelectorItem from '../components/WriteBackBundleSelectorItem';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext';
+import type { ConfigContextType } from '../../configChecker/contexts/ConfigContext';
+import { FALLBACK_CONFIG } from '../../configChecker/utils/config';
 
 const bundleEntry: BundleEntry = {
   resource: { resourceType: 'Bundle', type: 'document' },
   request: { method: 'POST', url: 'Bundle' }
 };
 
-function renderItem(validationIssues?: OperationOutcomeIssue[]) {
+function renderItem(validationIssues?: OperationOutcomeIssue[], showDeveloperMessages = true) {
+  const configContext: ConfigContextType = {
+    config: { ...FALLBACK_CONFIG, showDeveloperMessages },
+    configLoading: false,
+    configValid: true,
+    configError: null,
+    configErrorType: null,
+    currentClientId: '',
+    onSetCurrentClientId: jest.fn()
+  };
+
   return render(
-    <WriteBackBundleSelectorItem
-      bundleEntry={bundleEntry}
-      bundleEntryIndex={0}
-      selectedKeys={new Set()}
-      allValidKeys={new Set(['bundle-0'])}
-      populatedResourceMap={new Map()}
-      validationIssues={validationIssues}
-      isEntrySelected={() => false}
-      onToggleCheckbox={jest.fn()}
-    />
+    <ConfigContext.Provider value={configContext}>
+      <WriteBackBundleSelectorItem
+        bundleEntry={bundleEntry}
+        bundleEntryIndex={0}
+        selectedKeys={new Set()}
+        allValidKeys={new Set(['bundle-0'])}
+        populatedResourceMap={new Map()}
+        validationIssues={validationIssues}
+        isEntrySelected={() => false}
+        onToggleCheckbox={jest.fn()}
+      />
+    </ConfigContext.Provider>
   );
 }
 
@@ -63,6 +78,15 @@ describe('WriteBackBundleSelectorItem', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
     expect(screen.getByText('Constraint failed: ch-ekm-patient-birthdate')).toBeInTheDocument();
     expect(screen.getByText('Composition is missing')).toBeInTheDocument();
+  });
+
+  it('hides the issue list and copy button when developer messages are off', () => {
+    renderItem([{ severity: 'error', code: 'invalid', diagnostics: 'Invalid' }], false);
+
+    expect(screen.getByRole('checkbox')).toBeDisabled();
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    expect(screen.queryByText('Invalid')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /copy/i })).not.toBeInTheDocument();
   });
 
   it('copies the resource of an invalid entry to the clipboard', async () => {

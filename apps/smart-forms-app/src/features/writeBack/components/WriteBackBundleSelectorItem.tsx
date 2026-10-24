@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Box, Button, Checkbox, Chip, Typography } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
@@ -9,6 +9,7 @@ import {
 import type { BundleEntry, FhirResource, OperationOutcomeIssue } from 'fhir/r4';
 import { parametersIsFhirPatch } from '@aehrc/sdc-template-extract';
 import WriteBackSelectorFhirPatchEntries from './WriteBackSelectorFhirPatchEntries.tsx';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
 
 interface WriteBackBundleSelectorItemProps {
   bundleEntry: BundleEntry;
@@ -37,7 +38,12 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
     onToggleCheckbox
   } = props;
 
+  const { config } = useContext(ConfigContext);
+
   const isInvalid = !!validationIssues && validationIssues.length > 0;
+
+  // The issue list and Copy JSON are for developers, so clinical deployments can hide them
+  const showValidationDetails = isInvalid && (config.showDeveloperMessages ?? true);
 
   const [resourceCopied, setResourceCopied] = useState(false);
 
@@ -149,7 +155,7 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
       </Box>
 
       {/* Show why the entry failed $validate */}
-      {isInvalid ? (
+      {showValidationDetails ? (
         <Box component="ul" sx={{ mt: 1, mb: 0, pl: 3 }}>
           {validationIssues.map((issue, issueIndex) => (
             <Box component="li" key={issueIndex} sx={{ color: 'error.main', mt: 0.5 }}>
@@ -170,7 +176,7 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
       ) : null}
 
       {/* Lets the user take the failing resource to a validator */}
-      {isInvalid ? (
+      {showValidationDetails ? (
         <Button
           onClick={handleCopyResource}
           size="small"
