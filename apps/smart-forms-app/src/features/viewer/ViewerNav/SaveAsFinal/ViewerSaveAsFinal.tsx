@@ -40,7 +40,7 @@ function ViewerSaveAsFinal() {
     writeBackEnabled,
     isExtracting,
     extractedBundle,
-    invalidBundleEntryIndices,
+    invalidBundleEntryIssues,
     runExtraction,
     resetExtractionState
   } = useSaveAsFinalExtraction({ onExtracted: () => setDialogOpen(true) });
@@ -90,7 +90,7 @@ function ViewerSaveAsFinal() {
           dialogOpen={dialogOpen}
           isAmendment={false}
           extractedBundle={extractedBundle}
-          invalidBundleEntryIndices={invalidBundleEntryIndices ?? undefined}
+          invalidBundleEntryIssues={invalidBundleEntryIssues ?? undefined}
           onCloseDialog={handleCloseDialog}
           onDialogExited={handleDialogExited}
         />
