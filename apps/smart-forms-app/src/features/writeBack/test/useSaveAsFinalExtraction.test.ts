@@ -17,7 +17,7 @@
 
 import { act, renderHook } from '@testing-library/react';
 import { useSnackbar } from 'notistack';
-import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Bundle, OperationOutcomeIssue, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
@@ -244,7 +244,7 @@ describe('useSaveAsFinalExtraction', () => {
       );
       expect(mockInAppExtract).toHaveBeenCalledWith(mockResponse, mockQuestionnaire, mockResponse);
       expect(result.current.extractedBundle).toBe(mockBundle);
-      expect(result.current.invalidBundleEntryIndices).toBeNull();
+      expect(result.current.invalidBundleEntryIssues).toBeNull();
       expect(result.current.isExtracting).toBe(false);
       expect(onExtracted).toHaveBeenCalledTimes(1);
       // Bundle validation is opt-in via extraLaunchContext
@@ -265,7 +265,7 @@ describe('useSaveAsFinalExtraction', () => {
       });
 
       expect(mockValidateExtractedBundle).not.toHaveBeenCalled();
-      expect(result.current.invalidBundleEntryIndices).toBeNull();
+      expect(result.current.invalidBundleEntryIssues).toBeNull();
     });
 
     it('validates the extracted bundle when enableBundleValidation is set', async () => {
@@ -274,7 +274,16 @@ describe('useSaveAsFinalExtraction', () => {
           extraLaunchContext: { disableWriteBackSelection: false, enableBundleValidation: true }
         })
       );
-      mockValidateExtractedBundle.mockResolvedValue(new Set([0, 2]));
+      const errorIssue: OperationOutcomeIssue = {
+        severity: 'error',
+        code: 'invalid',
+        diagnostics: 'Missing required field'
+      };
+      const invalidEntryIssues = new Map([
+        [0, [errorIssue]],
+        [2, [errorIssue]]
+      ]);
+      mockValidateExtractedBundle.mockResolvedValue(invalidEntryIssues);
 
       const { result } = renderHook(() => useSaveAsFinalExtraction({ onExtracted: jest.fn() }));
 
@@ -283,7 +292,7 @@ describe('useSaveAsFinalExtraction', () => {
       });
 
       expect(mockValidateExtractedBundle).toHaveBeenCalledWith(mockBundle, mockSmartClient);
-      expect(result.current.invalidBundleEntryIndices).toEqual(new Set([0, 2]));
+      expect(result.current.invalidBundleEntryIssues).toBe(invalidEntryIssues);
     });
 
     it('bails out without extracting when smartClient/patient/user is missing', async () => {
@@ -348,7 +357,7 @@ describe('useSaveAsFinalExtraction', () => {
     });
 
     expect(result.current.extractedBundle).toBeNull();
-    expect(result.current.invalidBundleEntryIndices).toBeNull();
+    expect(result.current.invalidBundleEntryIssues).toBeNull();
     expect(result.current.isExtracting).toBe(false);
   });
 });
