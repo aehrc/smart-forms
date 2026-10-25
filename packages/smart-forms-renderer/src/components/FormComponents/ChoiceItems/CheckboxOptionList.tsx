@@ -68,7 +68,7 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
           );
         }
 
-        if (option['valueString']) {
+        if (option['valueString'] !== undefined) {
           return (
             <CheckboxSingle
               key={option.valueString}
@@ -86,7 +86,7 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
           );
         }
 
-        if (option['valueInteger']) {
+        if (option['valueInteger'] !== undefined) {
           return (
             <CheckboxSingle
               key={option.valueInteger}
