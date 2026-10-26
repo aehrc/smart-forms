@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/questionnaire-test-toolkit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Behavioural test toolkit for FHIR Questionnaire forms: DOM interaction helpers and a renderer harness.",
   "scripts": {
     "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",

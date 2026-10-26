@@ -35,12 +35,16 @@ import type { BehavioralTestWrapperProps, RequestDefinition } from './behavioral
  *
  * When a patient is supplied, the questionnaire is populated first. Resource requests made by
  * population are resolved from requestDefinitions, which keeps the test independent of a FHIR
- * server. The rendered response can be extracted through the Save button exposed by the wrapper.
+ * server. A practitioner (`user`) and launch context resources (`fhirContext`) participate in the
+ * same population when supplied. The rendered response can be extracted through the Save button
+ * exposed by the wrapper.
  */
 export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
   const {
     questionnaire,
     patient,
+    user,
+    fhirContext,
     requestDefinitions,
     terminologyServerUrl = defaultTerminologyServerUrl
   } = props;
@@ -63,6 +67,8 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
           const result = await populateQuestionnaire({
             questionnaire,
             patient,
+            user,
+            fhirContext,
             fetchResourceCallback: buildFetchResourceCallback(requestDefinitions ?? []),
             fetchResourceRequestConfig: { sourceServerUrl: 'http://mock.example' }
           });
@@ -79,6 +85,7 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
             terminologyServerUrl,
             additionalContext: {
               patient,
+              user,
               ...populatedContext
             }
           });
@@ -94,7 +101,7 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
     };
 
     void load();
-  }, [questionnaire, patient, requestDefinitions, terminologyServerUrl]);
+  }, [questionnaire, patient, user, fhirContext, requestDefinitions, terminologyServerUrl]);
 
   if (isPopulating) {
     return <div>Loading...</div>;

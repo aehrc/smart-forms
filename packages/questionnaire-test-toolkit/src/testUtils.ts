@@ -154,6 +154,12 @@ export async function selectTab(canvasElement: HTMLElement, linkId: string) {
     throw new Error(`Tab was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
+  // Clicking an already expanded accordion tab collapses it, so leave it alone. Tabs without an
+  // aria-expanded attribute keep the existing click behaviour.
+  if (button.getAttribute('aria-expanded') === 'true') {
+    return;
+  }
+
   await act(async () => {
     fireEvent.click(button);
   });

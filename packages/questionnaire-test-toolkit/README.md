@@ -38,6 +38,20 @@ never gets a second copy of React or of renderer state. `@types/fhir` is a depen
 `@types/react` a peer because both appear in the emitted declarations (`fhir/r4` for `Patient` and
 `Questionnaire`, `react/jsx-runtime` for the wrapper's return type).
 
+## Wrapper props and population
+
+`BehavioralTestWrapper` populates the questionnaire before mounting it. `patient` is required for
+any population: supplying `requestDefinitions` without a patient throws synchronously. The
+optional `user` (a `Practitioner`) and `fhirContext` (launch context resources, resolved through
+`requestDefinitions` like any other fetch) join the patient in population and in the renderer's
+launch context, so expressions and initial values that read `%user`, `%context` or related
+variables work in tests. All three props are dependencies of the population effect: changing any
+of them repopulates the form.
+
+`selectTab` is idempotent for accordion-style tabs: selecting a tab whose button already reports
+`aria-expanded="true"` leaves it open instead of collapsing it. Tabs without an
+`aria-expanded` attribute keep the ordinary click behaviour.
+
 ## Notes for maintainers
 
 **Seven helpers are not exercised by any suite in this repository.** `inputFile`, `inputTime`,
