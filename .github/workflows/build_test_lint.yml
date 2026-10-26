@@ -3,6 +3,29 @@ name: Smart Forms Build-Test-Lint Workflow
 on: [workflow_dispatch, push, workflow_call]
 
 jobs:
+  questionnaire-test-toolkit-tests:
+    name: Tests - Questionnaire Test Toolkit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build workspace dependencies
+        run: |
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+      - name: Run toolkit regression tests
+        run: npm test -w packages/questionnaire-test-toolkit
+      - name: Typecheck toolkit and regression tests
+        run: npm run typecheck -w packages/questionnaire-test-toolkit
+
   build-smart-forms-app:
     name: Build Smart Forms App
     runs-on: ubuntu-latest
