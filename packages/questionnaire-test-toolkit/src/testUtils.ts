@@ -193,6 +193,121 @@ export async function inputInteger(canvasElement: HTMLElement, linkId: string, t
   return await inputText(canvasElement, linkId, text);
 }
 
+/**
+ * Adds an instance to the unique repeat collection identified by `linkIdOrLabel` and waits for
+ * the rendered instance count to increase. Returns the new instance container, which can be
+ * passed directly to the scoped input helpers (e.g. `inputText(newInstance, 'name', 'value')`).
+ *
+ * The collection's own add button is used; add buttons of nested repeat groups inside an
+ * existing instance are never matched. Fails when the add button is disabled (e.g. the final
+ * row is empty).
+ */
+export async function addRepeatGroup(
+  canvasElement: HTMLElement,
+  linkIdOrLabel: string
+): Promise<HTMLElement> {
+  const instance = await findByLinkIdOrLabel(canvasElement, linkIdOrLabel);
+  const linkId = instance.getAttribute('data-linkid') ?? linkIdOrLabel;
+
+  // The add button belongs to the nearest ancestor of the instance that has one outside the
+  // instance itself; buttons inside instances belong to nested repeat groups.
+  let scope: HTMLElement | null = instance;
+  let collection: HTMLElement | null = null;
+  let addButton: HTMLButtonElement | null = null;
+  while (scope && !addButton) {
+    addButton =
+      Array.from(
+        scope.querySelectorAll<HTMLButtonElement>('[data-test="button-add-repeat-item"]')
+      ).find((button) => !instance.contains(button)) ?? null;
+    if (addButton) {
+      collection = scope;
+    }
+    scope = scope.parentElement;
+  }
+
+  if (!addButton || !collection) {
+    throw new Error(`Add button for repeat group "${linkIdOrLabel}" was not found`);
+  }
+
+  assertInteractive(addButton, linkIdOrLabel);
+
+  const repeatCollection = collection;
+  const repeatAddButton = addButton;
+  const instanceSelector = `[data-linkid="${linkId}"]`;
+  const instanceCountBefore =
+    repeatCollection.querySelectorAll<HTMLElement>(instanceSelector).length;
+
+  await act(async () => {
+    fireEvent.click(repeatAddButton);
+  });
+
+  await waitFor(
+    () => {
+      const countAfter = repeatCollection.querySelectorAll<HTMLElement>(instanceSelector).length;
+      if (countAfter <= instanceCountBefore) {
+        throw new Error(`Repeat group "${linkIdOrLabel}" did not add an instance`);
+      }
+    },
+    { timeout: 5000 }
+  );
+
+  const instancesAfter = Array.from(collection.querySelectorAll<HTMLElement>(instanceSelector));
+  const newInstance = instancesAfter[instancesAfter.length - 1];
+  if (!newInstance) {
+    throw new Error(`Repeat group "${linkIdOrLabel}" did not add an instance`);
+  }
+
+  return newInstance;
+}
+
+/**
+ * Removes the repeat instance identified by `instanceContainer` (as returned by
+ * `addRepeatGroup` or `findByLinkIdOrLabel`) using that instance's own remove button, and waits
+ * for the removal to complete. Fails when the instance has no enabled remove button (e.g. the
+ * remaining empty placeholder of a repeat group).
+ */
+export async function removeRepeatGroup(instanceContainer: HTMLElement) {
+  const linkId = instanceContainer.getAttribute('data-linkid') ?? 'repeat group';
+
+  // The instance's remove button is a sibling of the instance wrapper in the repeat collection
+  // stack. Walk up from the instance and pick the first remove button outside the instance
+  // itself; remove buttons inside the instance belong to nested repeat groups.
+  let scope: HTMLElement | null = instanceContainer;
+  let removeButton: HTMLButtonElement | null = null;
+  while (scope && !removeButton) {
+    removeButton =
+      Array.from(scope.querySelectorAll<HTMLButtonElement>('span[role="button"] button')).find(
+        (button) => !instanceContainer.contains(button)
+      ) ?? null;
+    scope = scope.parentElement;
+  }
+
+  if (!removeButton) {
+    throw new Error(`Remove button for repeat instance "${linkId}" was not found`);
+  }
+
+  assertInteractive(removeButton, linkId);
+
+  await act(async () => {
+    fireEvent.click(removeButton);
+  });
+
+  // The instance's Collapse closes; MUI marks the collapsed section hidden once the transition
+  // completes. The generous timeout covers slow removal transitions under load.
+  await waitFor(
+    () => {
+      const collapse = instanceContainer.closest('.MuiCollapse-root') as HTMLElement | null;
+      const isRemoved =
+        !instanceContainer.isConnected ||
+        (collapse !== null && collapse.style.visibility.includes('hidden'));
+      if (!isRemoved) {
+        throw new Error(`Repeat instance "${linkId}" was not removed`);
+      }
+    },
+    { timeout: 10000 }
+  );
+}
+
 export async function selectTab(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const button =

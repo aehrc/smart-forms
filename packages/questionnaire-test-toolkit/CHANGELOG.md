@@ -21,6 +21,21 @@ This log documents changes for
   supplied, the Save button performs modified-only extraction against it instead
   of extracting everything; changing it updates the next extraction without
   rebuilding the form or losing unsaved edits.
+- Added optional `fetchResourceCallback` to `BehavioralTestWrapper`, mutually
+  exclusive with `requestDefinitions` and requiring a patient. The callback
+  receives the same query URL and request configuration population uses, making
+  it the seam for suite-owned strict fixtures and request spies. A rejected
+  request fails the harness visibly even when the population module would only
+  report a warning; changing the callback rebuilds the form like any other
+  population input.
+- Added `addRepeatGroup(container, linkIdOrLabel)` and
+  `removeRepeatGroup(instanceContainer)` repeat-group helpers. The add helper
+  locates the unique repeat collection in scope (never matching nested groups'
+  buttons), waits for the instance count to increase, and returns the new
+  instance container for the scoped input helpers; the remove helper targets
+  the selected instance's own enabled remove button and waits for removal. Both
+  fail on disabled buttons such as an empty final row or the remaining empty
+  placeholder.
 - Initialisation failures now render a visible error (including the failure
   reason) instead of silently leaving an unbuilt or stale form; the Save button
   is not rendered after a failure.

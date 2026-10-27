@@ -17,7 +17,7 @@
 
 import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type { InAppExtractOutput } from '@aehrc/sdc-template-extract';
-import type { FhirContext } from '@aehrc/sdc-populate';
+import type { FetchResourceCallback, FhirContext } from '@aehrc/sdc-populate';
 
 export type RequestDefinition = {
   urlPrefix: string;
@@ -54,6 +54,15 @@ export interface BehavioralTestWrapperProps {
    * must not reach that server.
    */
   terminologyServerUrl?: string;
+  /**
+   * Optional callback used to resolve resource requests made during population. Mutually
+   * exclusive with `requestDefinitions`; a patient is required for either. This is the seam for
+   * suite-owned strict fixtures and request spies: the callback receives the same URL and
+   * request configuration population uses, and a rejected request fails the harness visibly even
+   * if the population module would only report a warning. Changing this prop rebuilds the form
+   * like any other population input.
+   */
+  fetchResourceCallback?: FetchResourceCallback;
 }
 
 /**

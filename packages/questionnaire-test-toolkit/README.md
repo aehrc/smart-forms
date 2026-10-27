@@ -87,6 +87,27 @@ debounced store updates and Testing Library timers continue to run. Clinical age
 (especially leap-day handling) should use explicit DOB fixtures rather than
 `getBirthDateForAge`.
 
+## Strict population fixtures and request spies
+
+`fetchResourceCallback` is the seam for suite-owned population fixtures: the callback receives
+the exact query URL population issues (e.g.
+`QuestionnaireResponse?questionnaire=...&status=completed&_count=1&_sort=-authored&patient=...`
+or `Observation?code=8867-4&...`). Serve known queries with server-shaped searchset Bundles
+(an explicit empty Bundle for an expected empty search) and reject unexpected queries — the
+wrapper turns a rejected request into a visible initialisation failure even when the population
+module only warns. `requestDefinitions` remains the default adapter and the two are mutually
+exclusive; a patient is required for either. Keep callback references stable across re-renders
+unless you want a rebuild.
+
+## Repeat group helpers
+
+`addRepeatGroup` and `removeRepeatGroup` target the renderer's stacked repeat instances (groups
+with `repeats: true` and no `gtable`/`check-box` item control). The add helper returns the new
+instance container, which can be passed directly to the scoped input helpers:
+`inputText(await addRepeatGroup(container, 'Medications'), 'Medication name', 'Ibuprofen')`.
+For a `gtable` repeat, use the table rows directly. Nested repeat groups' buttons are never
+matched by accident.
+
 ## Notes for maintainers
 
 **Seven helpers are not exercised by any suite in this repository.** `inputFile`, `inputTime`,

@@ -24,8 +24,8 @@ import {
   useRendererQueryClient
 } from '@aehrc/smart-forms-renderer';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { populateQuestionnaire } from '@aehrc/sdc-populate';
-import { useEffect, useState } from 'react';
+import { populateQuestionnaire, type FetchResourceCallback } from '@aehrc/sdc-populate';
+import { useEffect, useRef, useState } from 'react';
 import { inAppExtract, type InAppExtractOutput } from '@aehrc/sdc-template-extract';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import { terminologyServerUrl as defaultTerminologyServerUrl } from './behavioralTestConstants';
@@ -54,6 +54,7 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
     user,
     fhirContext,
     requestDefinitions,
+    fetchResourceCallback,
     terminologyServerUrl = defaultTerminologyServerUrl
   } = props;
 
@@ -62,15 +63,25 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
   if (requestDefinitions && !patient) {
     throw new Error('Patient must be provided when request definitions are provided');
   }
+  if (requestDefinitions && fetchResourceCallback) {
+    throw new Error('Provide either requestDefinitions or fetchResourceCallback, not both');
+  }
+  if (fetchResourceCallback && !patient) {
+    throw new Error('Patient must be provided when a fetchResourceCallback is provided');
+  }
 
   const queryClient = useRendererQueryClient();
   const [isPopulating, setIsPopulating] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
+  // Rejections thrown by the resource callback may be swallowed by the population module and
+  // reported only as a warning. Record them so an unexpected request still fails the harness.
+  const callbackError = useRef<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
       setIsPopulating(true);
       setInitError(null);
+      callbackError.current = null;
 
       try {
         // Saved answers take precedence over generated ones, but population still runs to
@@ -80,19 +91,42 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
           questionnaireResponse !== undefined ? structuredClone(questionnaireResponse) : undefined;
 
         if (patient) {
+          const resourceCallback: FetchResourceCallback =
+            fetchResourceCallback ?? buildFetchResourceCallback(requestDefinitions ?? []);
+
           const result = await populateQuestionnaire({
             questionnaire,
             patient,
             user,
             fhirContext,
-            fetchResourceCallback: buildFetchResourceCallback(requestDefinitions ?? []),
+            fetchResourceCallback: async (query, requestConfig) => {
+              try {
+                return await resourceCallback(query, requestConfig);
+              } catch (error) {
+                callbackError.current = error instanceof Error ? error.message : String(error);
+                throw error;
+              }
+            },
             fetchResourceRequestConfig: { sourceServerUrl: 'http://mock.example' }
           });
 
           const { populateSuccess, populateResult } = result;
           if (!populateSuccess || !populateResult) {
             throw new Error(
-              'Population failed. The rendered form was not initialised and the Save button is not available.'
+              'Population failed. ' +
+                (callbackError.current
+                  ? `A resource request failed: ${callbackError.current}`
+                  : 'No issue details were reported by the population module.') +
+                ' The rendered form was not initialised and the Save button is not available.'
+            );
+          }
+
+          // A rejected request is a harness failure even when the population module tolerates
+          // it and only reports a warning.
+          if (callbackError.current) {
+            throw new Error(
+              `Population request failed: ${callbackError.current}. ` +
+                'The rendered form was not initialised and the Save button is not available.'
             );
           }
 
@@ -136,6 +170,7 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
     user,
     fhirContext,
     requestDefinitions,
+    fetchResourceCallback,
     terminologyServerUrl
   ]);
 
