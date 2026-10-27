@@ -29,6 +29,35 @@ import type { ExtractResult, InAppExtractOutput } from '@aehrc/sdc-template-extr
 import { extractResultIsOperationOutcome } from '@aehrc/sdc-template-extract';
 import type { ExtractResultSpy } from './behavioralTestTypes';
 
+/**
+ * Fails with the question identifier and the reason when the supplied control cannot be
+ * interacted with. `fireEvent` cannot see `readOnly`, `disabled` or disabled fieldsets, so
+ * without this check helpers would silently "succeed" at interactions a real user cannot
+ * perform.
+ */
+function assertInteractive(element: Element, linkId: string): void {
+  const reason = describeNonInteractiveReason(element);
+  if (reason) {
+    throw new Error(`Question "${linkId}" cannot be interacted with: ${reason}`);
+  }
+}
+
+function describeNonInteractiveReason(element: Element): string | null {
+  const input = element as HTMLInputElement;
+
+  if (input.disabled) {
+    return 'the control is disabled';
+  }
+  if (input.readOnly) {
+    return 'the control is read-only';
+  }
+  if (element.closest('fieldset:disabled')) {
+    return 'the control is inside a disabled fieldset';
+  }
+
+  return null;
+}
+
 export async function inputText(
   canvasElement: HTMLElement,
   linkId: string,
@@ -43,8 +72,42 @@ export async function inputText(
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
+  assertInteractive(input, linkId);
+
   await act(async () => {
     fireEvent.change(input, { target: { value: text } });
+  });
+
+  // Here we await for debounced store update
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  });
+}
+
+/**
+ * Checks the supplied checkbox unless it is already checked, verifies the click actually took
+ * effect and waits for the debounced store update. Shared by the checkbox helpers to keep the
+ * guard, click and verification sequence consistent.
+ */
+async function checkCheckboxInput(
+  checkbox: Element,
+  linkId: string,
+  checkedDescription: string
+): Promise<void> {
+  assertInteractive(checkbox, linkId);
+
+  const checkboxInput = checkbox as HTMLInputElement;
+  if (!checkboxInput.checked) {
+    await act(async () => {
+      fireEvent.click(checkboxInput);
+    });
+  }
+
+  // Confirm the click actually checked the box instead of silently doing nothing.
+  await waitFor(() => {
+    if (!checkboxInput.checked) {
+      throw new Error(`${checkedDescription} was not checked after interaction`);
+    }
   });
 
   // Here we await for debounced store update
@@ -62,14 +125,7 @@ export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) 
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.click(input);
-  });
-
-  // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await checkCheckboxInput(input, linkId, `Checkbox "${linkId}"`);
 }
 
 export async function inputFile(
@@ -96,6 +152,10 @@ export async function inputFile(
   if (!textareaName) {
     throw new Error(`File input was not found inside [data-linkid="File name (optional)"] block`);
   }
+
+  assertInteractive(input, linkId);
+  assertInteractive(textareaUrl, linkId);
+  assertInteractive(textareaName, linkId);
 
   const fileList = Array.isArray(files) ? files : [files];
   await userEvent.upload(input, fileList);
@@ -146,12 +206,147 @@ export async function inputInteger(canvasElement: HTMLElement, linkId: string, t
   return await inputText(canvasElement, linkId, text);
 }
 
+/**
+ * Adds an instance to the unique repeat collection identified by `linkIdOrLabel` and waits for
+ * the rendered instance count to increase. Returns the new instance container, which can be
+ * passed directly to the scoped input helpers (e.g. `inputText(newInstance, 'name', 'value')`).
+ *
+ * The collection's own add button is used; add buttons of nested repeat groups inside an
+ * existing instance are never matched. Fails when the collection is ambiguous in scope, its
+ * add button is hidden, or the button is disabled (e.g. the final row is empty).
+ */
+export async function addRepeatGroup(
+  canvasElement: HTMLElement,
+  linkIdOrLabel: string
+): Promise<HTMLElement> {
+  const instances = await findAllByLinkIdOrLabel(canvasElement, linkIdOrLabel);
+  const instance = instances[0];
+  const linkId = instance.getAttribute('data-linkid') ?? linkIdOrLabel;
+
+  // RepeatGroupView renders instances in Collapse children of a TransitionGroup, followed by
+  // the collection's Add button. Resolve that boundary even when the button is absent; never
+  // keep walking upwards looking for a button in a sibling or enclosing collection.
+  const collections = new Set(
+    instances.map((element) => {
+      const collapse = element.closest('.MuiCollapse-root');
+      // A descendant question must not be mistaken for its enclosing repeat instance.
+      return collapse?.querySelector('[data-linkid]') === element
+        ? collapse.parentElement?.parentElement
+        : null;
+    })
+  );
+  if (collections.size > 1) {
+    throw new Error(
+      `Repeat group "${linkIdOrLabel}" matches multiple collections; provide an instance scope`
+    );
+  }
+  const [collection] = collections;
+  const buttons =
+    collection && canvasElement.contains(collection)
+      ? Array.from(
+          collection.querySelectorAll<HTMLButtonElement>('[data-test="button-add-repeat-item"]')
+        ).filter(
+          (button) =>
+            button.closest('.MuiCollapse-root') === collection.closest('.MuiCollapse-root')
+        )
+      : [];
+  const addButton = buttons.length === 1 ? buttons[0] : null;
+
+  if (!addButton || !collection) {
+    throw new Error(`Add button for repeat group "${linkIdOrLabel}" was not found`);
+  }
+
+  assertInteractive(addButton, linkIdOrLabel);
+
+  const repeatCollection = collection;
+  const repeatAddButton = addButton;
+  const instanceSelector = `[data-linkid="${linkId}"]`;
+  const instanceCountBefore =
+    repeatCollection.querySelectorAll<HTMLElement>(instanceSelector).length;
+
+  await act(async () => {
+    fireEvent.click(repeatAddButton);
+  });
+
+  await waitFor(
+    () => {
+      const countAfter = repeatCollection.querySelectorAll<HTMLElement>(instanceSelector).length;
+      if (countAfter <= instanceCountBefore) {
+        throw new Error(`Repeat group "${linkIdOrLabel}" did not add an instance`);
+      }
+    },
+    { timeout: 5000 }
+  );
+
+  const instancesAfter = Array.from(collection.querySelectorAll<HTMLElement>(instanceSelector));
+  const newInstance = instancesAfter[instancesAfter.length - 1];
+  if (!newInstance) {
+    throw new Error(`Repeat group "${linkIdOrLabel}" did not add an instance`);
+  }
+
+  return newInstance;
+}
+
+/**
+ * Removes the repeat instance identified by `instanceContainer` (as returned by
+ * `addRepeatGroup` or `findByLinkIdOrLabel`) using that instance's own remove button, and waits
+ * for the removal to complete. Fails when the instance has no enabled remove button (e.g. the
+ * remaining empty placeholder of a repeat group).
+ */
+export async function removeRepeatGroup(instanceContainer: HTMLElement) {
+  const linkId = instanceContainer.getAttribute('data-linkid') ?? 'repeat group';
+
+  // The instance's remove button is a sibling of the instance wrapper in the repeat collection
+  // stack. Walk up from the instance and pick the first remove button outside the instance
+  // itself; remove buttons inside the instance belong to nested repeat groups.
+  let scope: HTMLElement | null = instanceContainer;
+  let removeButton: HTMLButtonElement | null = null;
+  while (scope && !removeButton) {
+    removeButton =
+      Array.from(scope.querySelectorAll<HTMLButtonElement>('span[role="button"] button')).find(
+        (button) => !instanceContainer.contains(button)
+      ) ?? null;
+    scope = scope.parentElement;
+  }
+
+  if (!removeButton) {
+    throw new Error(`Remove button for repeat instance "${linkId}" was not found`);
+  }
+
+  assertInteractive(removeButton, linkId);
+
+  await act(async () => {
+    fireEvent.click(removeButton);
+  });
+
+  // The instance's Collapse closes; MUI marks the collapsed section hidden once the transition
+  // completes. The generous timeout covers slow removal transitions under load.
+  await waitFor(
+    () => {
+      const collapse = instanceContainer.closest('.MuiCollapse-root') as HTMLElement | null;
+      const isRemoved =
+        !instanceContainer.isConnected ||
+        (collapse !== null && collapse.style.visibility.includes('hidden'));
+      if (!isRemoved) {
+        throw new Error(`Repeat instance "${linkId}" was not removed`);
+      }
+    },
+    { timeout: 10000 }
+  );
+}
+
 export async function selectTab(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const button =
     questionElement?.querySelector('button') ?? questionElement?.querySelector('[role="button"]');
   if (!button) {
     throw new Error(`Tab was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+
+  // Clicking an already expanded accordion tab collapses it, so leave it alone. Tabs without an
+  // aria-expanded attribute keep the existing click behaviour.
+  if (button.getAttribute('aria-expanded') === 'true') {
+    return;
   }
 
   await act(async () => {
@@ -181,6 +376,10 @@ export async function inputDateTime(
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
+  assertInteractive(inputDate, linkId);
+  assertInteractive(inputTime, linkId);
+  assertInteractive(inputAmPm, linkId);
+
   await act(async () => {
     fireEvent.change(inputDate, { target: { value: date } });
     fireEvent.change(inputTime, { target: { value: time } });
@@ -201,9 +400,19 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
+  assertInteractive(radio, linkId);
+
   await act(async () => {
     fireEvent.click(radio);
   });
+
+  // Confirm the click actually selected the option instead of silently doing nothing.
+  await waitFor(() => {
+    if (!(radio as HTMLInputElement).checked) {
+      throw new Error(`Radio option "${text}" for "${linkId}" was not selected after interaction`);
+    }
+  });
+
   // Here we await for debounced store update
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -224,13 +433,7 @@ export async function checkCheckboxOption(
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.click(checkbox);
-  });
-  // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await checkCheckboxInput(checkbox, linkId, `Checkbox option "${text}" for "${linkId}"`);
 }
 
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {
@@ -293,6 +496,8 @@ export async function chooseSelectOption(
     throw new Error(`There is no input inside ${linkId}`);
   }
 
+  assertInteractive(input, linkId);
+
   await act(async () => {
     fireEvent.focus(input);
     fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
@@ -304,6 +509,19 @@ export async function chooseSelectOption(
   await act(async () => {
     fireEvent.click(option);
   });
+
+  // Confirm the click actually recorded the selection instead of silently doing nothing. A
+  // successful selection closes the options list; a silent no-op (e.g. a click that a real user
+  // could not perform) leaves the clicked option in the DOM. The selected display text is not
+  // checked because terminology-sourced options do not always round-trip their display label.
+  await waitFor(
+    () => {
+      if (screen.queryByRole('option', { name: optionLabel })) {
+        throw new Error(`Select "${linkId}" did not record option "${optionLabel}"`);
+      }
+    },
+    { timeout: 5000 }
+  );
 }
 
 export async function chooseQuantityOption(
@@ -325,6 +543,9 @@ export async function chooseQuantityOption(
   if (!inputWeight) {
     throw new Error(`There is no input inside ${linkId}`);
   }
+
+  assertInteractive(inputComaparator, linkId);
+  assertInteractive(inputWeight, linkId);
 
   await act(async () => {
     fireEvent.focus(inputComaparator);
@@ -407,6 +628,8 @@ export async function inputOpenChoiceOtherText(
     throw new Error(`Input or textarea was not found inside ${`[data-test=${linkId}] block`}`);
   }
 
+  assertInteractive(textarea, linkId);
+
   await act(async () => {
     fireEvent.change(textarea, { target: { value: text } });
   });
@@ -447,7 +670,17 @@ export async function getVisibleTab(canvasElement: HTMLElement): Promise<HTMLEle
 export function getBirthDateForAge(ageInYears: number): string {
   const today = new Date();
   const birthDate = new Date(today.getFullYear() - ageInYears, today.getMonth(), today.getDate());
-  return birthDate.toISOString().slice(0, 10);
+
+  // Format the intended local calendar date directly. Converting through toISOString() shifts the
+  // date in timezones ahead of UTC (e.g. Australia/Sydney) and can even move the year when the
+  // birthday is near the New Year boundary. Invalid target dates roll over per the Date
+  // constructor: a 29 February birthday in a non-leap target year resolves to 1 March. Suites with
+  // a clinical leap-day policy should use explicit DOB fixtures instead.
+  const year = birthDate.getFullYear();
+  const month = String(birthDate.getMonth() + 1).padStart(2, '0');
+  const day = String(birthDate.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 }
 
 export async function invokeExtract(
@@ -458,20 +691,37 @@ export async function invokeExtract(
   if (!button) {
     throw new Error('Save button not found');
   }
+
+  const callsBefore = onExtractResultMock.mock.calls?.length ?? 0;
+
   await act(async () => {
     fireEvent.click(button);
   });
 
   await waitFor(
     () => {
-      if (!onExtractResultMock.mock.lastCall) {
-        throw new Error('Expected onExtractResult to be called');
+      const calls = onExtractResultMock.mock.calls;
+
+      // Spies without a call log keep the lastCall-based wait.
+      if (calls === undefined) {
+        if (!onExtractResultMock.mock.lastCall) {
+          throw new Error('Expected onExtractResult to be called');
+        }
+        return;
+      }
+
+      // Wait for the callback of the click just dispatched, rather than accepting a callback from
+      // an earlier extraction.
+      if (calls.length <= callsBefore) {
+        throw new Error('Expected onExtractResult to be called for this extraction');
       }
     },
     { timeout: 5000 }
   );
 
-  const lastCall = onExtractResultMock.mock.lastCall;
+  const calls = onExtractResultMock.mock.calls;
+  const lastCall =
+    calls !== undefined ? calls[calls.length - 1] : onExtractResultMock.mock.lastCall;
   if (!lastCall) {
     throw new Error('Expected onExtractResult to be called');
   }

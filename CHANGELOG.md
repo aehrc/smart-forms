@@ -7,6 +7,7 @@ For changelogs of other libraries, please refer to their respective repositories
 - SDC-Populate: [/packages/sdc-populate/CHANGELOG.md](/packages/sdc-populate/CHANGELOG.md)
 - SDC-Assemble: [/packages/sdc-assemble/CHANGELOG.md](/packages/sdc-assemble/CHANGELOG.md)
 - SDC-Template-Extract: [/packages/sdc-template-extract/CHANGELOG.md](/packages/sdc-template-extract/CHANGELOG.md)
+- Questionnaire-Test-Toolkit: [/packages/questionnaire-test-toolkit/CHANGELOG.md](/packages/questionnaire-test-toolkit/CHANGELOG.md)
 
 Changelog only includes changes from version 0.36.0 onwards.
 

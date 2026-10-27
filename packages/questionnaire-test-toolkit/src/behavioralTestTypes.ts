@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import type { Patient, Questionnaire } from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type { InAppExtractOutput } from '@aehrc/sdc-template-extract';
+import type { FetchResourceCallback, FhirContext } from '@aehrc/sdc-populate';
 
 export type RequestDefinition = {
   urlPrefix: string;
@@ -26,7 +27,25 @@ export type RequestDefinition = {
 
 export interface BehavioralTestWrapperProps {
   patient?: Patient;
+  user?: Practitioner;
+  fhirContext?: FhirContext[];
   requestDefinitions?: RequestDefinition[];
+  /**
+   * An optional saved response to load, e.g. to resume an in-progress form or amend a completed
+   * one. When supplied together with a patient, its answers take precedence over newly generated
+   * population answers while population still runs to resolve patient/user/FHIR launch context.
+   * When supplied without a patient, no population runs. Changing this prop rebuilds the form
+   * from the new response.
+   */
+  questionnaireResponse?: QuestionnaireResponse;
+  /**
+   * An optional baseline for modified-only extraction. When supplied, the Save button extracts
+   * only changes relative to this response instead of extracting everything. It is independent
+   * of the loaded response: the test supplies the baseline explicitly and the wrapper never
+   * refreshes it. Changing this prop updates the next extraction without rebuilding the form or
+   * losing unsaved edits.
+   */
+  comparisonSourceResponse?: QuestionnaireResponse;
   onExtractResult?: (extractResult: InAppExtractOutput) => void;
   questionnaire: Questionnaire;
   /**
@@ -35,6 +54,15 @@ export interface BehavioralTestWrapperProps {
    * must not reach that server.
    */
   terminologyServerUrl?: string;
+  /**
+   * Optional callback used to resolve resource requests made during population. Mutually
+   * exclusive with `requestDefinitions`; a patient is required for either. This is the seam for
+   * suite-owned strict fixtures and request spies: the callback receives the same URL and
+   * request configuration population uses, and a rejected request fails the harness visibly even
+   * if the population module would only report a warning. Changing this prop rebuilds the form
+   * like any other population input.
+   */
+  fetchResourceCallback?: FetchResourceCallback;
 }
 
 /**
@@ -50,5 +78,11 @@ export interface BehavioralTestWrapperProps {
 export interface ExtractResultSpy {
   readonly mock: {
     readonly lastCall?: readonly unknown[] | undefined;
+    /**
+     * All recorded calls, newest last. Optional so that hand-rolled structural spies without a
+     * call log keep working; `invokeExtract` uses it when present to wait for the callback of the
+     * click it just dispatched rather than accepting an earlier call.
+     */
+    readonly calls?: readonly unknown[][] | undefined;
   };
 }
