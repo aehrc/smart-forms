@@ -29,6 +29,35 @@ import type { ExtractResult, InAppExtractOutput } from '@aehrc/sdc-template-extr
 import { extractResultIsOperationOutcome } from '@aehrc/sdc-template-extract';
 import type { ExtractResultSpy } from './behavioralTestTypes';
 
+/**
+ * Fails with the question identifier and the reason when the supplied control cannot be
+ * interacted with. `fireEvent` cannot see `readOnly`, `disabled` or disabled fieldsets, so
+ * without this check helpers would silently "succeed" at interactions a real user cannot
+ * perform.
+ */
+function assertInteractive(element: Element, linkId: string): void {
+  const reason = describeNonInteractiveReason(element);
+  if (reason) {
+    throw new Error(`Question "${linkId}" cannot be interacted with: ${reason}`);
+  }
+}
+
+function describeNonInteractiveReason(element: Element): string | null {
+  const input = element as HTMLInputElement;
+
+  if (input.disabled) {
+    return 'the control is disabled';
+  }
+  if (input.readOnly) {
+    return 'the control is read-only';
+  }
+  if (element.closest('fieldset:disabled')) {
+    return 'the control is inside a disabled fieldset';
+  }
+
+  return null;
+}
+
 export async function inputText(
   canvasElement: HTMLElement,
   linkId: string,
@@ -42,6 +71,8 @@ export async function inputText(
   if (!input) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
+
+  assertInteractive(input, linkId);
 
   await act(async () => {
     fireEvent.change(input, { target: { value: text } });
@@ -62,8 +93,20 @@ export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) 
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.click(input);
+  assertInteractive(input, linkId);
+
+  const checkbox = input as HTMLInputElement;
+  if (!checkbox.checked) {
+    await act(async () => {
+      fireEvent.click(checkbox);
+    });
+  }
+
+  // Confirm the click actually checked the box instead of silently doing nothing.
+  await waitFor(() => {
+    if (!checkbox.checked) {
+      throw new Error(`Checkbox "${linkId}" was not checked after interaction`);
+    }
   });
 
   // Here we await for debounced store update
@@ -96,6 +139,10 @@ export async function inputFile(
   if (!textareaName) {
     throw new Error(`File input was not found inside [data-linkid="File name (optional)"] block`);
   }
+
+  assertInteractive(input, linkId);
+  assertInteractive(textareaUrl, linkId);
+  assertInteractive(textareaName, linkId);
 
   const fileList = Array.isArray(files) ? files : [files];
   await userEvent.upload(input, fileList);
@@ -187,6 +234,10 @@ export async function inputDateTime(
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
+  assertInteractive(inputDate, linkId);
+  assertInteractive(inputTime, linkId);
+  assertInteractive(inputAmPm, linkId);
+
   await act(async () => {
     fireEvent.change(inputDate, { target: { value: date } });
     fireEvent.change(inputTime, { target: { value: time } });
@@ -207,9 +258,19 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
+  assertInteractive(radio, linkId);
+
   await act(async () => {
     fireEvent.click(radio);
   });
+
+  // Confirm the click actually selected the option instead of silently doing nothing.
+  await waitFor(() => {
+    if (!(radio as HTMLInputElement).checked) {
+      throw new Error(`Radio option "${text}" for "${linkId}" was not selected after interaction`);
+    }
+  });
+
   // Here we await for debounced store update
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -230,9 +291,24 @@ export async function checkCheckboxOption(
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.click(checkbox);
+  assertInteractive(checkbox, linkId);
+
+  const checkboxInput = checkbox as HTMLInputElement;
+  if (!checkboxInput.checked) {
+    await act(async () => {
+      fireEvent.click(checkboxInput);
+    });
+  }
+
+  // Confirm the click actually checked the option instead of silently doing nothing.
+  await waitFor(() => {
+    if (!checkboxInput.checked) {
+      throw new Error(
+        `Checkbox option "${text}" for "${linkId}" was not checked after interaction`
+      );
+    }
   });
+
   // Here we await for debounced store update
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -299,6 +375,8 @@ export async function chooseSelectOption(
     throw new Error(`There is no input inside ${linkId}`);
   }
 
+  assertInteractive(input, linkId);
+
   await act(async () => {
     fireEvent.focus(input);
     fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
@@ -310,6 +388,19 @@ export async function chooseSelectOption(
   await act(async () => {
     fireEvent.click(option);
   });
+
+  // Confirm the click actually recorded the selection instead of silently doing nothing. A
+  // successful selection closes the options list; a silent no-op (e.g. a click that a real user
+  // could not perform) leaves the clicked option in the DOM. The selected display text is not
+  // checked because terminology-sourced options do not always round-trip their display label.
+  await waitFor(
+    () => {
+      if (screen.queryByRole('option', { name: optionLabel })) {
+        throw new Error(`Select "${linkId}" did not record option "${optionLabel}"`);
+      }
+    },
+    { timeout: 5000 }
+  );
 }
 
 export async function chooseQuantityOption(
@@ -331,6 +422,9 @@ export async function chooseQuantityOption(
   if (!inputWeight) {
     throw new Error(`There is no input inside ${linkId}`);
   }
+
+  assertInteractive(inputComaparator, linkId);
+  assertInteractive(inputWeight, linkId);
 
   await act(async () => {
     fireEvent.focus(inputComaparator);
@@ -413,6 +507,8 @@ export async function inputOpenChoiceOtherText(
     throw new Error(`Input or textarea was not found inside ${`[data-test=${linkId}] block`}`);
   }
 
+  assertInteractive(textarea, linkId);
+
   await act(async () => {
     fireEvent.change(textarea, { target: { value: text } });
   });
@@ -453,7 +549,17 @@ export async function getVisibleTab(canvasElement: HTMLElement): Promise<HTMLEle
 export function getBirthDateForAge(ageInYears: number): string {
   const today = new Date();
   const birthDate = new Date(today.getFullYear() - ageInYears, today.getMonth(), today.getDate());
-  return birthDate.toISOString().slice(0, 10);
+
+  // Format the intended local calendar date directly. Converting through toISOString() shifts the
+  // date in timezones ahead of UTC (e.g. Australia/Sydney) and can even move the year when the
+  // birthday is near the New Year boundary. Invalid target dates roll over per the Date
+  // constructor: a 29 February birthday in a non-leap target year resolves to 1 March. Suites with
+  // a clinical leap-day policy should use explicit DOB fixtures instead.
+  const year = birthDate.getFullYear();
+  const month = String(birthDate.getMonth() + 1).padStart(2, '0');
+  const day = String(birthDate.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 }
 
 export async function invokeExtract(
@@ -464,20 +570,37 @@ export async function invokeExtract(
   if (!button) {
     throw new Error('Save button not found');
   }
+
+  const callsBefore = onExtractResultMock.mock.calls?.length ?? 0;
+
   await act(async () => {
     fireEvent.click(button);
   });
 
   await waitFor(
     () => {
-      if (!onExtractResultMock.mock.lastCall) {
-        throw new Error('Expected onExtractResult to be called');
+      const calls = onExtractResultMock.mock.calls;
+
+      // Spies without a call log keep the lastCall-based wait.
+      if (calls === undefined) {
+        if (!onExtractResultMock.mock.lastCall) {
+          throw new Error('Expected onExtractResult to be called');
+        }
+        return;
+      }
+
+      // Wait for the callback of the click just dispatched, rather than accepting a callback from
+      // an earlier extraction.
+      if (calls.length <= callsBefore) {
+        throw new Error('Expected onExtractResult to be called for this extraction');
       }
     },
     { timeout: 5000 }
   );
 
-  const lastCall = onExtractResultMock.mock.lastCall;
+  const calls = onExtractResultMock.mock.calls;
+  const lastCall =
+    calls !== undefined ? calls[calls.length - 1] : onExtractResultMock.mock.lastCall;
   if (!lastCall) {
     throw new Error('Expected onExtractResult to be called');
   }

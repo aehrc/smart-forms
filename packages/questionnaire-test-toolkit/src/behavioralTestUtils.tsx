@@ -27,6 +27,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { useEffect, useState } from 'react';
 import { inAppExtract, type InAppExtractOutput } from '@aehrc/sdc-template-extract';
+import type { QuestionnaireResponse } from 'fhir/r4';
 import { terminologyServerUrl as defaultTerminologyServerUrl } from './behavioralTestConstants';
 import type { BehavioralTestWrapperProps, RequestDefinition } from './behavioralTestTypes';
 
@@ -38,10 +39,17 @@ import type { BehavioralTestWrapperProps, RequestDefinition } from './behavioral
  * server. A practitioner (`user`) and launch context resources (`fhirContext`) participate in the
  * same population when supplied. The rendered response can be extracted through the Save button
  * exposed by the wrapper.
+ *
+ * A saved `questionnaireResponse` may be supplied to resume or amend a form. Its answers take
+ * precedence over newly generated population answers, while population still runs (when a patient
+ * is supplied) to resolve launch context for expressions. `comparisonSourceResponse` switches the
+ * Save button to modified-only extraction without rebuilding the form.
  */
 export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
   const {
     questionnaire,
+    questionnaireResponse,
+    comparisonSourceResponse,
     patient,
     user,
     fhirContext,
@@ -57,12 +65,20 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
 
   const queryClient = useRendererQueryClient();
   const [isPopulating, setIsPopulating] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
       setIsPopulating(true);
+      setInitError(null);
 
       try {
+        // Saved answers take precedence over generated ones, but population still runs to
+        // resolve patient/user/FHIR launch context for expressions. The saved response is cloned
+        // so population and the renderer never mutate the caller's fixture.
+        const savedResponse =
+          questionnaireResponse !== undefined ? structuredClone(questionnaireResponse) : undefined;
+
         if (patient) {
           const result = await populateQuestionnaire({
             questionnaire,
@@ -75,13 +91,15 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
 
           const { populateSuccess, populateResult } = result;
           if (!populateSuccess || !populateResult) {
-            return;
+            throw new Error(
+              'Population failed. The rendered form was not initialised and the Save button is not available.'
+            );
           }
 
-          const { populatedResponse, populatedContext } = populateResult;
+          const { populatedContext } = populateResult;
           await buildForm({
             questionnaire,
-            questionnaireResponse: populatedResponse,
+            questionnaireResponse: savedResponse ?? populateResult.populatedResponse,
             terminologyServerUrl,
             additionalContext: {
               patient,
@@ -89,29 +107,58 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
               ...populatedContext
             }
           });
+        } else if (savedResponse) {
+          await buildForm({
+            questionnaire,
+            questionnaireResponse: savedResponse,
+            terminologyServerUrl
+          });
         } else {
           await buildForm({
             questionnaire,
             terminologyServerUrl
           });
         }
+      } catch (error) {
+        setInitError(
+          error instanceof Error ? error.message : `Initialisation failed: ${String(error)}`
+        );
       } finally {
         setIsPopulating(false);
       }
     };
 
     void load();
-  }, [questionnaire, patient, user, fhirContext, requestDefinitions, terminologyServerUrl]);
+  }, [
+    questionnaire,
+    questionnaireResponse,
+    patient,
+    user,
+    fhirContext,
+    requestDefinitions,
+    terminologyServerUrl
+  ]);
 
   if (isPopulating) {
     return <div>Loading...</div>;
+  }
+
+  if (initError !== null) {
+    return (
+      <div data-testid="toolkit-init-error" role="alert">
+        {initError}
+      </div>
+    );
   }
 
   return (
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <BaseRenderer />
-        <SaveControl onExtractResult={props.onExtractResult} />
+        <SaveControl
+          onExtractResult={props.onExtractResult}
+          comparisonSourceResponse={comparisonSourceResponse}
+        />
       </QueryClientProvider>
     </RendererThemeProvider>
   );
@@ -147,9 +194,11 @@ function buildFetchResourceCallback(requestDefinitions: RequestDefinition[]) {
 }
 
 function SaveControl({
-  onExtractResult
+  onExtractResult,
+  comparisonSourceResponse
 }: {
   onExtractResult?: (extractResult: InAppExtractOutput) => void;
+  comparisonSourceResponse?: QuestionnaireResponse;
 }) {
   const qr = useQuestionnaireResponseStore.use.updatableResponse();
   const q = useQuestionnaireStore.use.sourceQuestionnaire();
@@ -159,7 +208,12 @@ function SaveControl({
       data-testid="save-button"
       type="button"
       onClick={async () => {
-        const result = await inAppExtract(qr, q, null);
+        // The comparison response is cloned so extraction never mutates the caller's fixture.
+        const result = await inAppExtract(
+          qr,
+          q,
+          comparisonSourceResponse !== undefined ? structuredClone(comparisonSourceResponse) : null
+        );
         onExtractResult?.(result);
       }}>
       Save
