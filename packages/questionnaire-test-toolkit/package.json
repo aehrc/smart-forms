@@ -1,11 +1,13 @@
 {
   "name": "@aehrc/questionnaire-test-toolkit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Behavioural test toolkit for FHIR Questionnaire forms: DOM interaction helpers and a renderer harness.",
   "scripts": {
     "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",
     "watch": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap --watch",
     "build": "npm run compile",
+    "pretest": "npm run build",
+    "test": "TZ=Australia/Sydney vitest run",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
@@ -36,7 +38,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "publishConfig": {
     "access": "public"
@@ -59,8 +62,14 @@
     "@aehrc/smart-forms-renderer": "^1.5.0",
     "@tanstack/react-query": "^5.90.5",
     "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "jsdom": "^29.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }
