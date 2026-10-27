@@ -114,8 +114,8 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
           if (!populateSuccess || !populateResult) {
             throw new Error(
               'Population failed. ' +
-                (callbackError.current
-                  ? `A resource request failed: ${callbackError.current}`
+                (callbackError.current !== null
+                  ? `A resource request failed: ${callbackError.current || 'No error message was provided.'}`
                   : 'No issue details were reported by the population module.') +
                 ' The rendered form was not initialised and the Save button is not available.'
             );
@@ -123,9 +123,9 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
 
           // A rejected request is a harness failure even when the population module tolerates
           // it and only reports a warning.
-          if (callbackError.current) {
+          if (callbackError.current !== null) {
             throw new Error(
-              `Population request failed: ${callbackError.current}. ` +
+              `Population request failed: ${callbackError.current || 'No error message was provided'}. ` +
                 'The rendered form was not initialised and the Save button is not available.'
             );
           }

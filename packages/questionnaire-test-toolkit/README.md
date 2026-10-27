@@ -76,7 +76,7 @@ population, or extraction.
 
 A failed initialisation renders a visible error (a `[data-testid="toolkit-init-error"]` element
 with the failure reason) and no Save button. This includes a failed population step, even when a
-saved response was supplied.
+saved response was supplied. Rejected population callbacks fail even if their error message is empty.
 
 ## Dates and clocks
 
@@ -106,7 +106,9 @@ with `repeats: true` and no `gtable`/`check-box` item control). The add helper r
 instance container, which can be passed directly to the scoped input helpers:
 `inputText(await addRepeatGroup(container, 'Medications'), 'Medication name', 'Ibuprofen')`.
 For a `gtable` repeat, use the table rows directly. Nested repeat groups' buttons are never
-matched by accident.
+matched by accident. A hidden Add button fails without modifying sibling or enclosing collections.
+If the same nested group appears in multiple outer instances, pass the relevant outer instance
+container; an ambiguous collection match is rejected before clicking.
 
 ## Notes for maintainers
 

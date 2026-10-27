@@ -84,6 +84,38 @@ export async function inputText(
   });
 }
 
+/**
+ * Checks the supplied checkbox unless it is already checked, verifies the click actually took
+ * effect and waits for the debounced store update. Shared by the checkbox helpers to keep the
+ * guard, click and verification sequence consistent.
+ */
+async function checkCheckboxInput(
+  checkbox: Element,
+  linkId: string,
+  checkedDescription: string
+): Promise<void> {
+  assertInteractive(checkbox, linkId);
+
+  const checkboxInput = checkbox as HTMLInputElement;
+  if (!checkboxInput.checked) {
+    await act(async () => {
+      fireEvent.click(checkboxInput);
+    });
+  }
+
+  // Confirm the click actually checked the box instead of silently doing nothing.
+  await waitFor(() => {
+    if (!checkboxInput.checked) {
+      throw new Error(`${checkedDescription} was not checked after interaction`);
+    }
+  });
+
+  // Here we await for debounced store update
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  });
+}
+
 export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const input =
@@ -93,26 +125,7 @@ export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) 
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  assertInteractive(input, linkId);
-
-  const checkbox = input as HTMLInputElement;
-  if (!checkbox.checked) {
-    await act(async () => {
-      fireEvent.click(checkbox);
-    });
-  }
-
-  // Confirm the click actually checked the box instead of silently doing nothing.
-  await waitFor(() => {
-    if (!checkbox.checked) {
-      throw new Error(`Checkbox "${linkId}" was not checked after interaction`);
-    }
-  });
-
-  // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await checkCheckboxInput(input, linkId, `Checkbox "${linkId}"`);
 }
 
 export async function inputFile(
@@ -199,31 +212,45 @@ export async function inputInteger(canvasElement: HTMLElement, linkId: string, t
  * passed directly to the scoped input helpers (e.g. `inputText(newInstance, 'name', 'value')`).
  *
  * The collection's own add button is used; add buttons of nested repeat groups inside an
- * existing instance are never matched. Fails when the add button is disabled (e.g. the final
- * row is empty).
+ * existing instance are never matched. Fails when the collection is ambiguous in scope, its
+ * add button is hidden, or the button is disabled (e.g. the final row is empty).
  */
 export async function addRepeatGroup(
   canvasElement: HTMLElement,
   linkIdOrLabel: string
 ): Promise<HTMLElement> {
-  const instance = await findByLinkIdOrLabel(canvasElement, linkIdOrLabel);
+  const instances = await findAllByLinkIdOrLabel(canvasElement, linkIdOrLabel);
+  const instance = instances[0];
   const linkId = instance.getAttribute('data-linkid') ?? linkIdOrLabel;
 
-  // The add button belongs to the nearest ancestor of the instance that has one outside the
-  // instance itself; buttons inside instances belong to nested repeat groups.
-  let scope: HTMLElement | null = instance;
-  let collection: HTMLElement | null = null;
-  let addButton: HTMLButtonElement | null = null;
-  while (scope && !addButton) {
-    addButton =
-      Array.from(
-        scope.querySelectorAll<HTMLButtonElement>('[data-test="button-add-repeat-item"]')
-      ).find((button) => !instance.contains(button)) ?? null;
-    if (addButton) {
-      collection = scope;
-    }
-    scope = scope.parentElement;
+  // RepeatGroupView renders instances in Collapse children of a TransitionGroup, followed by
+  // the collection's Add button. Resolve that boundary even when the button is absent; never
+  // keep walking upwards looking for a button in a sibling or enclosing collection.
+  const collections = new Set(
+    instances.map((element) => {
+      const collapse = element.closest('.MuiCollapse-root');
+      // A descendant question must not be mistaken for its enclosing repeat instance.
+      return collapse?.querySelector('[data-linkid]') === element
+        ? collapse.parentElement?.parentElement
+        : null;
+    })
+  );
+  if (collections.size > 1) {
+    throw new Error(
+      `Repeat group "${linkIdOrLabel}" matches multiple collections; provide an instance scope`
+    );
   }
+  const [collection] = collections;
+  const buttons =
+    collection && canvasElement.contains(collection)
+      ? Array.from(
+          collection.querySelectorAll<HTMLButtonElement>('[data-test="button-add-repeat-item"]')
+        ).filter(
+          (button) =>
+            button.closest('.MuiCollapse-root') === collection.closest('.MuiCollapse-root')
+        )
+      : [];
+  const addButton = buttons.length === 1 ? buttons[0] : null;
 
   if (!addButton || !collection) {
     throw new Error(`Add button for repeat group "${linkIdOrLabel}" was not found`);
@@ -406,28 +433,7 @@ export async function checkCheckboxOption(
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  assertInteractive(checkbox, linkId);
-
-  const checkboxInput = checkbox as HTMLInputElement;
-  if (!checkboxInput.checked) {
-    await act(async () => {
-      fireEvent.click(checkboxInput);
-    });
-  }
-
-  // Confirm the click actually checked the option instead of silently doing nothing.
-  await waitFor(() => {
-    if (!checkboxInput.checked) {
-      throw new Error(
-        `Checkbox option "${text}" for "${linkId}" was not checked after interaction`
-      );
-    }
-  });
-
-  // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await checkCheckboxInput(checkbox, linkId, `Checkbox option "${text}" for "${linkId}"`);
 }
 
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {

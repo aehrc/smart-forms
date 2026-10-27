@@ -3,7 +3,10 @@ import { render, waitFor } from '@testing-library/react';
 import type { FetchResourceCallback } from '@aehrc/sdc-populate';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { BehavioralTestWrapper, getInputText } from '@aehrc/questionnaire-test-toolkit';
-import type { BehavioralTestWrapperProps, RequestDefinition } from '@aehrc/questionnaire-test-toolkit';
+import type {
+  BehavioralTestWrapperProps,
+  RequestDefinition
+} from '@aehrc/questionnaire-test-toolkit';
 import { contextQuestionnaire } from './fixtures/contextQuestionnaire';
 
 const patient: Patient = { resourceType: 'Patient', id: 'patient-1' };
@@ -76,6 +79,31 @@ describe('fetchResourceCallback seam', () => {
     expect(errorElement.textContent).toContain('Unexpected population query');
     expect(container.querySelector('button[data-testid="save-button"]')).toBeNull();
   });
+
+  test.each([new Error(''), ''])(
+    'a rejection with an empty message (%j) still blocks Save',
+    async (error) => {
+      const callback: FetchResourceCallback = async () => {
+        throw error;
+      };
+
+      const { container } = render(
+        <BehavioralTestWrapper
+          questionnaire={contextQuestionnaire}
+          patient={patient}
+          fhirContext={fhirContext}
+          fetchResourceCallback={callback}
+        />
+      );
+
+      await waitFor(() => {
+        expect(
+          container.querySelector('[data-testid="toolkit-init-error"]')?.textContent
+        ).toContain('Population request failed');
+      });
+      expect(container.querySelector('[data-testid="save-button"]')).toBeNull();
+    }
+  );
 
   test('changing the callback rebuilds the population context', async () => {
     const roleTwo = {

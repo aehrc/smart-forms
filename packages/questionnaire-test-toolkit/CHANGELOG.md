@@ -45,6 +45,12 @@ Except where a PR is linked below, the entries in this section are implemented i
 
 ### Fixed
 
+- Fixed `addRepeatGroup` searching beyond the target collection when its Add
+  button is hidden, which could modify a sibling collection. Hidden buttons and
+  ambiguous collection matches now fail before clicking; scope nested repeats
+  to an outer instance when necessary.
+- Fixed rejected population callbacks with empty error messages allowing
+  initialisation to continue. These failures now render an error without Save.
 - Fixed `selectTab` collapsing an already expanded accordion section. Selecting
   an expanded section now leaves it open; buttons without `aria-expanded` retain
   their existing click behavior. See [#2193](https://github.com/aehrc/smart-forms/pull/2193).
