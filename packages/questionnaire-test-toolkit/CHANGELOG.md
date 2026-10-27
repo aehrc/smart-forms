@@ -5,6 +5,10 @@ This log documents changes for
 
 ## Unreleased
 
+Except where a PR is linked below, the entries in this section are implemented in
+[beda-software/smart-forms#27](https://github.com/beda-software/smart-forms/pull/27); update that
+link to the upstream PR number once the pull request is retargeted to `aehrc/smart-forms`.
+
 ### Added
 
 - Added optional `user` (`Practitioner`) and `fhirContext` props to
