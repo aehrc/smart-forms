@@ -19,6 +19,8 @@ not the same act as promising it to consumers.
 Consume it as `@aehrc/questionnaire-test-toolkit`, never by relative path — that keeps a later move
 to a separate repository a path rewrite rather than a rebuild.
 
+See the [Changelog](./CHANGELOG.md) for consumer-visible changes.
+
 ## Built, not consumed as source
 
 `main`, `module`, `types` and `exports` point at `dist/`, produced by `tsup` in dual ESM/CJS with
