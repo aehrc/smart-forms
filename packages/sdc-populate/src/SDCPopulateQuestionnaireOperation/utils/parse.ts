@@ -85,6 +85,24 @@ export function parseItemInitialToAnswer(
 }
 
 /**
+ * Reads the default answers of a QuestionnaireItem: item.initial, or the answerOptions marked
+ * initialSelected (an item with answerOption cannot have item.initial, see que-11).
+ * Returns null when the item has no default.
+ */
+export function getItemInitialAnswers(
+  qItem: QuestionnaireItem
+): QuestionnaireResponseItemAnswer[] | null {
+  const initials = qItem.initial ?? qItem.answerOption?.filter((option) => option.initialSelected);
+  if (!initials || initials.length === 0) {
+    return null;
+  }
+
+  return initials
+    .map((initial) => parseItemInitialToAnswer(initial))
+    .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null);
+}
+
+/**
  * Parses a value and QuestionnaireItem into a QuestionnaireResponseItemAnswer.
  * Handles answerOption matching, type conversion, and FHIR-specific logic.
  */

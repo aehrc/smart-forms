@@ -475,3 +475,129 @@ describe('populate - open-choice answers outside answerOptions', () => {
     expect(choiceItem?.answer).toBeUndefined();
   });
 });
+
+const SNOMED = 'http://snomed.info/sct';
+
+// answerOption.initialSelected is the only way to give an answerOption item a default: R4 que-11
+// forbids item.initial alongside answerOption.
+const qInitialSelected = {
+  resourceType: 'Questionnaire',
+  id: 'initial-selected-test',
+  status: 'active',
+  item: [
+    {
+      linkId: 'patient-id',
+      type: 'string',
+      text: 'Patient id',
+      extension: [
+        {
+          url: SDC_INITIAL_EXPR,
+          valueExpression: { language: 'text/fhirpath', expression: '%patient.id' }
+        }
+      ]
+    },
+    {
+      linkId: 'vaccinated',
+      type: 'choice',
+      text: 'Vaccinated?',
+      answerOption: [
+        { valueCoding: { system: SNOMED, code: '373066001', display: 'Yes' } },
+        { valueCoding: { system: SNOMED, code: '373067005', display: 'No' } },
+        {
+          valueCoding: { system: SNOMED, code: '261665006', display: 'Unknown' },
+          initialSelected: true
+        }
+      ]
+    },
+    {
+      linkId: 'colours',
+      type: 'choice',
+      text: 'Colours',
+      repeats: true,
+      answerOption: [
+        { valueString: 'red', initialSelected: true },
+        { valueString: 'green' },
+        { valueString: 'blue', initialSelected: true }
+      ]
+    },
+    {
+      linkId: 'smoker',
+      type: 'choice',
+      text: 'Smoker?',
+      answerOption: [
+        { valueCoding: { system: SNOMED, code: '373066001', display: 'Yes' } },
+        {
+          valueCoding: { system: SNOMED, code: '373067005', display: 'No' },
+          initialSelected: true
+        }
+      ],
+      item: [{ linkId: 'smoker-details', type: 'string', text: 'Details' }]
+    },
+    {
+      linkId: 'recorded-status',
+      type: 'choice',
+      text: 'Recorded status',
+      extension: [
+        {
+          url: SDC_INITIAL_EXPR,
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: "%patient.active.iif($this, 'active', 'inactive')"
+          }
+        }
+      ],
+      answerOption: [{ valueString: 'active' }, { valueString: 'inactive', initialSelected: true }]
+    },
+    {
+      linkId: 'no-default',
+      type: 'choice',
+      text: 'No default',
+      answerOption: [{ valueString: 'a' }, { valueString: 'b' }]
+    }
+  ]
+};
+
+describe('populate - answerOption.initialSelected', () => {
+  it('answers items from their initialSelected answerOptions, unless an initialExpression gives a value', async () => {
+    const mockContext = {
+      resource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      rootResource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      patient: { resourceType: 'Patient', id: 'test-patient', active: true }
+    };
+
+    (createFhirPathContext as jest.Mock).mockImplementation(async () => mockContext);
+    (resolveLookupPromises as jest.Mock).mockImplementation(async () => ({}));
+
+    const inputParameters: InputParameters = {
+      resourceType: 'Parameters',
+      parameter: [
+        { name: 'questionnaire', resource: qInitialSelected as any },
+        { name: 'subject', valueReference: { type: 'Patient', reference: 'Patient/test-patient' } }
+      ]
+    };
+
+    const result = await populate(
+      inputParameters,
+      mockFetchResourceCallback,
+      mockFetchResourceCallbackConfig,
+      mockTerminologyCallback,
+      mockTerminologyCallbackConfig
+    );
+
+    const response = (result as OutputParameters).parameter.find((p) => p.name === 'response')
+      ?.resource as QuestionnaireResponse;
+    const answersOf = (linkId: string) => response.item?.find((i) => i.linkId === linkId)?.answer;
+
+    expect(answersOf('patient-id')).toEqual([{ valueString: 'test-patient' }]);
+    expect(answersOf('vaccinated')).toEqual([
+      { valueCoding: { system: SNOMED, code: '261665006', display: 'Unknown' } }
+    ]);
+    expect(answersOf('colours')).toEqual([{ valueString: 'red' }, { valueString: 'blue' }]);
+    // An item with child items takes the other code path (constructGroupItem)
+    expect(answersOf('smoker')).toEqual([
+      { valueCoding: { system: SNOMED, code: '373067005', display: 'No' } }
+    ]);
+    expect(answersOf('recorded-status')).toEqual([{ valueString: 'active' }]);
+    expect(response.item?.find((i) => i.linkId === 'no-default')).toBeUndefined();
+  });
+});
