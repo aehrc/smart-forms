@@ -196,7 +196,7 @@ function getInitialValueAnswersFromRepeatGroup(
 
 function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] {
   // For answerOption.initialSelected
-  if (qItem.type === 'choice' && qItem.answerOption) {
+  if ((qItem.type === 'choice' || qItem.type === 'open-choice') && qItem.answerOption) {
     return qItem.answerOption
       .filter((option) => option.initialSelected)
       .map((option): QuestionnaireResponseItemAnswer | null => {
