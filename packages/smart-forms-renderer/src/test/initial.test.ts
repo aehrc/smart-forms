@@ -19,6 +19,7 @@
  */
 
 import { expect, test } from '@jest/globals';
+import type { Questionnaire } from 'fhir/r4';
 import { initialiseQuestionnaireResponse } from '../utils';
 import { qInitialValueSample } from './data/initialValueSample';
 
@@ -35,4 +36,49 @@ it('item.initial is properly pre-filled into QuestionnaireResponse', () => {
       display: undefined
     }
   });
+});
+
+it('answerOption.initialSelected is pre-filled for open-choice items, same as choice items', () => {
+  const qOpenChoiceInitialSelected: Questionnaire = {
+    resourceType: 'Questionnaire',
+    status: 'active',
+    item: [
+      {
+        linkId: 'contact-method-choice',
+        text: 'Preferred contact method (choice)',
+        type: 'choice',
+        answerOption: [
+          { valueCoding: { system: 'http://example.org/contact-method', code: 'phone', display: 'Phone' } },
+          {
+            valueCoding: { system: 'http://example.org/contact-method', code: 'email', display: 'Email' },
+            initialSelected: true
+          }
+        ]
+      },
+      {
+        linkId: 'contact-method-open-choice',
+        text: 'Preferred contact method (open-choice)',
+        type: 'open-choice',
+        answerOption: [
+          { valueCoding: { system: 'http://example.org/contact-method', code: 'phone', display: 'Phone' } },
+          {
+            valueCoding: { system: 'http://example.org/contact-method', code: 'email', display: 'Email' },
+            initialSelected: true
+          }
+        ]
+      }
+    ]
+  };
+
+  const outputResponse = initialiseQuestionnaireResponse(qOpenChoiceInitialSelected);
+
+  const choiceItem = outputResponse?.item?.find((i) => i.linkId === 'contact-method-choice');
+  const openChoiceItem = outputResponse?.item?.find((i) => i.linkId === 'contact-method-open-choice');
+
+  const expectedAnswer = [
+    { valueCoding: { system: 'http://example.org/contact-method', code: 'email', display: 'Email' } }
+  ];
+
+  expect(choiceItem?.answer).toStrictEqual(expectedAnswer);
+  expect(openChoiceItem?.answer).toStrictEqual(expectedAnswer);
 });
