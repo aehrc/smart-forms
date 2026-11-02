@@ -65,7 +65,7 @@ function AttachmentField(props: AttachmentFieldProps) {
 
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
-  const { uploadedFile, url, fileName } = attachmentValues;
+  const { uploadedFile, url, fileName, fileError } = attachmentValues;
 
   // TODO: Consider accessible items for attachment fields too if #1096 is fixed.
 
@@ -87,6 +87,7 @@ function AttachmentField(props: AttachmentFieldProps) {
           <Box>
             <AttachmentFileCollector
               uploadedFile={uploadedFile}
+              errorMessage={fileError ? rendererStrings[fileError] : ''}
               readOnly={readOnly}
               isTabled={isTabled}
               instructionsId={instructionsId}
