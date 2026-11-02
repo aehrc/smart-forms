@@ -61,7 +61,8 @@ function Launch() {
         iss,
         clientId: currentClientId,
         scope: launchScopes,
-        redirectUri: window.location.origin
+        // Trailing slash matches the redirect URI registered in the SMART Forms integration spec
+        redirectUri: `${window.location.origin}/`
       })
       .catch((err) => {
         console.error(err);
