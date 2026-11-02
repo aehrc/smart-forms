@@ -23,9 +23,10 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
+import type { AttachmentFileDetails } from './AttachmentItem';
 
 interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
-  uploadedFile: File | null;
+  uploadedFile: AttachmentFileDetails | null;
   errorMessage: string;
   readOnly: boolean;
   instructionsId: string | undefined;

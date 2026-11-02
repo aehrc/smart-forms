@@ -32,8 +32,10 @@ import type { AttachmentFileError } from '../../../utils/fileUtils';
 import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 
+export type AttachmentFileDetails = Partial<Pick<File, 'name' | 'size' | 'type'>>;
+
 export interface AttachmentValues {
-  uploadedFile: File | null;
+  uploadedFile: AttachmentFileDetails | null;
   url: string;
   fileName: string;
   fileError?: AttachmentFileError;
@@ -52,12 +54,19 @@ function AttachmentItem(props: BaseItemProps) {
 
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const initialAttachment = qrItem?.answer?.[0]?.valueAttachment;
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<AttachmentFileDetails | null>(() =>
+    initialAttachment?.data
+      ? {
+          size: initialAttachment.size,
+          type: initialAttachment.contentType
+        }
+      : null
+  );
   const [fileError, setFileError] = useState<AttachmentFileError>();
   const [url, setUrl] = useState(initialAttachment?.url ?? '');
   const [fileName, setFileName] = useState(initialAttachment?.title ?? '');
-  const acceptedFile = useRef<{ file: File | null; attachment?: Attachment }>({
-    file: null,
+  const acceptedFile = useRef<{ file: AttachmentFileDetails | null; attachment?: Attachment }>({
+    file: uploadedFile,
     attachment: initialAttachment
   });
   const latestRead = useRef(0);
@@ -72,11 +81,15 @@ function AttachmentItem(props: BaseItemProps) {
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   const writeAnswer = useEventCallback(() => {
+    const saved = acceptedFile.current.attachment;
+    // A different URL identifies a different file unless the answer still contains its bytes.
+    const keepFileMetadata = saved?.data || saved?.url?.trim() === url.trim();
     const attachment = getAttachmentAnswer({
-      ...acceptedFile.current.attachment,
+      ...(keepFileMetadata ? saved : undefined),
       url,
       title: fileName
     });
+    acceptedFile.current.attachment = attachment ?? undefined;
     const newQrItem = createEmptyQrItem(qItem, answerKey);
     if (attachment) {
       newQrItem.answer = [{ id: answerKey, valueAttachment: attachment }];
@@ -116,11 +129,20 @@ function AttachmentItem(props: BaseItemProps) {
     saveText();
   }
 
+  // A reopened answer has no File to name it, so label it with the current title.
+  const displayedFile = useMemo(
+    () =>
+      uploadedFile && !(uploadedFile instanceof File)
+        ? { ...uploadedFile, name: fileName.trim() }
+        : uploadedFile,
+    [uploadedFile, fileName]
+  );
+
   return (
     <DndProvider backend={HTML5Backend} context={window}>
       <AttachmentFieldWrapper
         qItem={qItem}
-        attachmentValues={{ uploadedFile, url, fileName, fileError }}
+        attachmentValues={{ uploadedFile: displayedFile, url, fileName, fileError }}
         feedback={feedback}
         feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}

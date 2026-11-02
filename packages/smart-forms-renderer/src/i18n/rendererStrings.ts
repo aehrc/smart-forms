@@ -124,6 +124,8 @@ export interface RendererStrings {
   attachFile: string;
   /** Remove-file button tooltip. */
   removeFile: string;
+  /** Label for an attached file without a saved title. */
+  attachedFile: string;
   /** Shown when the browser can't identify an uploaded file's type. */
   attachmentTypeUnknown: string;
   /** Shown when the browser can't read an uploaded file. */
@@ -238,6 +240,7 @@ export const defaultRendererStrings: RendererStrings = {
   previousPage: 'Previous page',
   attachFile: 'Attach file',
   removeFile: 'Remove file',
+  attachedFile: 'Attached file',
   attachmentTypeUnknown: 'The file type is unknown. Choose a file with a recognized type.',
   attachmentReadError: 'The file could not be read. Try attaching it again.',
   pickDate: 'Pick a date',
