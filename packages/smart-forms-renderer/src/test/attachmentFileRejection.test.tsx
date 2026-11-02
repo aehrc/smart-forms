@@ -169,13 +169,13 @@ test('keeps URL-only metadata on title edits and drops it when the URL changes',
 
 test('labels a reopened embedded file with the current title', async () => {
   await renderAttachment({ data: 'UmVwb3J0', contentType: 'text/plain', title: 'Draft' });
-  expect(screen.getByText('Draft')).toBeVisible();
+  const fileLabel = screen.getByText('Draft', { selector: ':not(textarea)' });
+  expect(fileLabel).toBeVisible();
 
   const titleField = screen.getByLabelText('File name (optional)');
   fireEvent.change(titleField, { target: { value: 'Final report' } });
-  expect(screen.getByText('Final report')).toBeVisible();
-  expect(screen.queryByText('Draft')).toBeNull();
+  expect(fileLabel).toHaveTextContent(/^Final report$/);
 
   fireEvent.change(titleField, { target: { value: '' } });
-  expect(screen.getByText('Attached file')).toBeVisible();
+  expect(fileLabel).toHaveTextContent(/^Attached file$/);
 });
