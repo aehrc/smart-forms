@@ -245,6 +245,26 @@ const qChoiceAnswerOptionFalsyValues = questionnaireFactory([
     repeats: false,
     extension: [itemControlExtFactory('radio-button')],
     answerOption: [{ valueInteger: 0, initialSelected: true }, { valueInteger: 1 }]
+  },
+  {
+    linkId: 'styled-blank-select',
+    text: 'Styled blank option (Select)',
+    type: 'choice',
+    repeats: false,
+    answerOption: [
+      {
+        valueString: '',
+        _valueString: {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+              valueString: '<div style="color:red;font-weight:bold">(none)</div>'
+            }
+          ]
+        }
+      },
+      { valueString: 'A' }
+    ]
   }
 ]);
 
@@ -301,5 +321,13 @@ export const ChoiceAnswerOptionFalsyValues: Story = createStory({
     const blankAnswers = await getAnswers('blank-option-radio');
     expect(blankAnswers).toHaveLength(1);
     expect(blankAnswers[0].valueString).toBe('');
+
+    // Styled blank-string select: the rendering-xhtml label shows in the option and the selected value
+    await chooseSelectOption(canvasElement, 'styled-blank-select', '(none)');
+    const styledBlankAnswers = await getAnswers('styled-blank-select');
+    expect(styledBlankAnswers).toHaveLength(1);
+    expect(styledBlankAnswers[0].valueString).toBe('');
+    const styledBlankElement = await findByLinkIdOrLabel(canvasElement, 'styled-blank-select');
+    expect(styledBlankElement.textContent).toContain('(none)');
   }
 }) as Story;

@@ -212,3 +212,58 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = createStory({
     expect(input?.value).toBe(avsTargetOpenLabelInput);
   }
 }) as Story;
+
+/* Open Choice AnswerOption blank option story (valueString: '' alongside the open label) */
+const qOpenChoiceAnswerOptionBlankOption = questionnaireFactory([
+  {
+    linkId: 'open-choice-radio-blank',
+    text: 'Blank option (Open-choice radio)',
+    type: 'open-choice',
+    repeats: false,
+    extension: [itemControlExtFactory('radio-button'), openLabelExtFactory('Other')],
+    answerOption: [{ valueString: '' }, { valueString: 'A' }]
+  },
+  {
+    linkId: 'open-choice-checkbox-blank',
+    text: 'Blank option (Open-choice checkbox)',
+    type: 'open-choice',
+    repeats: true,
+    extension: [itemControlExtFactory('check-box'), openLabelExtFactory('Other')],
+    answerOption: [{ valueString: '' }, { valueString: 'A' }]
+  }
+]);
+
+export const OpenChoiceAnswerOptionBlankOption: Story = createStory({
+  args: {
+    questionnaire: qOpenChoiceAnswerOptionBlankOption
+  },
+  play: async ({ canvasElement }) => {
+    /* Radio: selecting "Other" with no text checks only "Other" and stores no answer */
+    await checkRadioOption(canvasElement, 'open-choice-radio-blank', 'Other');
+    const radioElement = await findByLinkIdOrLabel(canvasElement, 'open-choice-radio-blank');
+    expect(radioElement.querySelectorAll('input[type="radio"]:checked')).toHaveLength(1);
+    expect(
+      radioElement.querySelector('[data-test="radio-single-Other"] input') as HTMLInputElement
+    ).toBeChecked();
+    expect(await getAnswers('open-choice-radio-blank')).toHaveLength(0);
+
+    // Selecting the blank option afterwards stores valueString '' and unchecks "Other"
+    await checkRadioOption(canvasElement, 'open-choice-radio-blank', '');
+    expect(radioElement.querySelectorAll('input[type="radio"]:checked')).toHaveLength(1);
+    const radioAnswers = await getAnswers('open-choice-radio-blank');
+    expect(radioAnswers).toHaveLength(1);
+    expect(radioAnswers[0].valueString).toBe('');
+
+    /* Checkbox: checking "Other" with no text checks only "Other" and stores no answer */
+    const checkboxElement = await findByLinkIdOrLabel(canvasElement, 'open-choice-checkbox-blank');
+    const openLabelCheckbox = checkboxElement.querySelector(
+      '[data-test="q-item-checkbox-open-label-box"] input[type="checkbox"]'
+    ) as HTMLInputElement;
+    fireEvent.click(openLabelCheckbox);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    expect(checkboxElement.querySelectorAll('input[type="checkbox"]:checked')).toHaveLength(1);
+    expect(openLabelCheckbox).toBeChecked();
+    expect(await getAnswers('open-choice-checkbox-blank')).toHaveLength(0);
+  }
+}) as Story;

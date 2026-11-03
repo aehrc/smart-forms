@@ -174,7 +174,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
           return (
             <li key={key} {...rest}>
               <span>
-                {option.valueString ? (
+                {option.valueString !== undefined ? (
                   <StyledText
                     textToDisplay={getAnswerOptionLabel(option)}
                     element={option._valueString}
@@ -197,7 +197,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
           const { onDelete, ...rest } = getItemProps();
           return (
             <span {...rest}>
-              {typeof value !== 'string' && value.valueString && selectedOption ? (
+              {typeof value !== 'string' && value.valueString !== undefined && selectedOption ? (
                 <StyledText
                   textToDisplay={getAnswerOptionLabel(value)}
                   element={selectedOption._valueString}

@@ -24,7 +24,7 @@ import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import { getOpenLabelText } from '../../../utils/extensions';
-import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
+import { EMPTY_OPEN_LABEL_RADIO_VALUE, getOldOpenLabelAnswer } from '../../../utils/openChoice';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
@@ -79,7 +79,7 @@ function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
 
   // Allow open label to remain selected even if its input was cleared
   if (openLabelSelected && valueRadio === null) {
-    valueRadio = '';
+    valueRadio = EMPTY_OPEN_LABEL_RADIO_VALUE;
   }
 
   // Process answerOptionsToggleExpressions
@@ -103,6 +103,13 @@ function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
     }
 
     if (changedOptionValue !== null) {
+      // Open label selected with an empty input - keep it selected without storing an empty answer
+      if (changedOptionValue === EMPTY_OPEN_LABEL_RADIO_VALUE) {
+        onQrItemChange(createEmptyQrItem(qItem, answerKey));
+        setOpenLabelSelected(true);
+        return;
+      }
+
       const qrAnswer = findInAnswerOptions(options, changedOptionValue);
 
       // If selected answer can be found in options, it is a non-open label selection
