@@ -507,6 +507,14 @@ describe('openChoice utils', () => {
       expect(result).toBe('42');
     });
 
+    it('should return "0" for valueInteger 0', () => {
+      expect(getAnswerOptionLabel({ valueInteger: 0 })).toBe('0');
+    });
+
+    it('should return empty string for valueString empty string without falling through', () => {
+      expect(getAnswerOptionLabel({ valueString: '', valueInteger: 7 })).toBe('');
+    });
+
     it('should return empty string for unrecognized option type', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueBoolean: true
