@@ -1,5 +1,5 @@
 # Builder stage
-FROM node:19-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /usr/share/app
 
@@ -10,7 +10,7 @@ COPY package*.json .
 RUN npm ci
 
 # Create image stage
-FROM node:19-alpine
+FROM node:24-alpine
 
 COPY --from=builder /usr/share/app/services/assemble-express/lib /usr/share/app
 COPY --from=builder /usr/share/app/packages/sdc-assemble /usr/share/app/packages/sdc-assemble
