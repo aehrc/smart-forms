@@ -17,8 +17,13 @@
 
 // This file is kept identical in populate-express, assemble-express and extract-express.
 
+import http from 'node:http';
+import type { AddressInfo } from 'node:net';
+import type { Server } from 'node:http';
 import {
+  fetchFhirResource,
   fetchJson,
+  fetchWithoutRedirects,
   installOutboundFetchGuard,
   isAllowedOutboundUrl,
   isUnderBase,
@@ -26,6 +31,7 @@ import {
   parseBaseUrl,
   parseBaseUrlList,
   readBaseUrlSetting,
+  readJson,
   resolveQueryUrl
 } from './outboundUrl';
 
@@ -52,7 +58,9 @@ describe('parseBaseUrl', () => {
     ['https://user:pass@allowed.example/fhir', 'must not contain credentials'],
     ['https://user@allowed.example/fhir', 'must not contain credentials'],
     ['https://allowed.example/fhir?x=1', 'must not contain a query or fragment'],
-    ['https://allowed.example/fhir#frag', 'must not contain a query or fragment']
+    ['https://allowed.example/fhir#frag', 'must not contain a query or fragment'],
+    ['https://allowed.example/fhir;jsessionid=1', 'must not contain ";"'],
+    ['https://allowed.example/fh%2eir', 'must not contain ";"']
   ])('rejects %s', (raw, message) => {
     expect(() => parseBaseUrl(raw, 'X')).toThrow(message);
   });
@@ -107,6 +115,12 @@ describe('isUnderBase', () => {
     ['encoded dot segments leaving the base', 'https://allowed.example/fhir/%2e%2e/admin'],
     ['encoded slash', 'https://allowed.example/fhir/..%2fadmin'],
     ['encoded backslash', 'https://allowed.example/fhir/..%5Cadmin'],
+    ['servlet path parameter dot segment', 'https://allowed.example/fhir/..;/admin'],
+    ['path parameter on a segment', 'https://allowed.example/fhir/Patient;x=1/1'],
+    ['double-encoded slash', 'https://allowed.example/fhir/..%252fadmin'],
+    ['encoded percent', 'https://allowed.example/fhir/a%25b'],
+    ['encoded dot that survives normalisation', 'https://allowed.example/fhir/%2e%2e%2e/admin'],
+    ['encoded dot inside a segment', 'https://allowed.example/fhir/..%2E/admin'],
     ['non-http scheme', 'ftp://allowed.example/fhir/Patient/123']
   ];
 
@@ -152,6 +166,14 @@ describe('isAllowedOutboundUrl', () => {
     expect(isAllowedOutboundUrl('http://other.example/r4/Patient', [base, other])).toBe(false);
   });
 
+  it('refuses an ambiguous path as written, even when normalisation would remove it', () => {
+    // The URL parser turns this into /fhir/x/admin, but a server reading the raw path may not
+    expect(new URL('https://allowed.example/fhir/x/..;/../admin').pathname).toBe('/fhir/x/admin');
+    expect(isAllowedOutboundUrl('https://allowed.example/fhir/x/..;/../admin', [base])).toBe(false);
+    expect(isAllowedOutboundUrl('https://allowed.example/fhir/..;/admin', [base])).toBe(false);
+    expect(isAllowedOutboundUrl('https://allowed.example/fhir/Patient?x=a;b', [base])).toBe(true);
+  });
+
   it('rejects anything that does not parse, and everything when nothing is allowed', () => {
     expect(isAllowedOutboundUrl('not a url', [base])).toBe(false);
     expect(isAllowedOutboundUrl('/fhir/Patient', [base])).toBe(false);
@@ -180,11 +202,14 @@ describe('resolveQueryUrl', () => {
     expect(resolved.pathname).toBe('/fhir/evil.example/Patient/1');
   });
 
-  it('refuses a relative query that climbs out of the base path', () => {
-    expect(() => resolveQueryUrl('../admin', base, [], 'TEST_URL')).toThrow(
-      'it resolves outside TEST_URL'
-    );
-  });
+  it.each(['../admin', '..;/admin', 'x/..;/../admin', '..%252fadmin', '%2e%2e%2e/admin'])(
+    'refuses the relative query %s that could leave the base path',
+    (query) => {
+      expect(() => resolveQueryUrl(query, base, [], 'TEST_URL')).toThrow(
+        'it resolves outside TEST_URL'
+      );
+    }
+  );
 
   it('refuses a relative query when no base is configured', () => {
     expect(() => resolveQueryUrl('Patient/123', null, extra, 'TEST_URL')).toThrow(
@@ -210,6 +235,8 @@ describe('resolveQueryUrl', () => {
     'https://allowed.example:8443/fhir/Patient/1',
     'http://allowed.example/fhir/Patient/1',
     'https://allowed.example/fhirx/Patient/1',
+    'https://allowed.example/fhir/..;/actuator/env',
+    'https://allowed.example/fhir/x/..;/../actuator/env',
     'http://169.254.169.254/latest/meta-data/',
     'file:///etc/passwd',
     'urn:uuid:7f3e1b9a-0000-4000-8000-000000000000'
@@ -257,10 +284,14 @@ describe('fetchJson', () => {
     });
 
     expect(result).toEqual({ resourceType: 'Patient', id: '1' });
-    expect(fetchMock).toHaveBeenCalledWith(new URL('https://allowed.example/fhir/Patient/1'), {
-      headers: { Accept: 'application/json' },
-      redirect: 'manual'
-    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://allowed.example/fhir/Patient/1'),
+      expect.objectContaining({
+        headers: { Accept: 'application/json' },
+        redirect: 'manual',
+        signal: expect.any(AbortSignal)
+      })
+    );
   });
 
   it('treats a redirect as an error and does not follow it', async () => {
@@ -309,6 +340,112 @@ describe('fetchJson', () => {
   });
 });
 
+describe('fetchFhirResource', () => {
+  const originalFetch = globalThis.fetch;
+  let fetchMock: jest.Mock;
+
+  beforeEach(() => {
+    fetchMock = jest.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+  });
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  it('returns a FHIR resource', async () => {
+    fetchMock.mockResolvedValue(new Response('{"resourceType":"Bundle","type":"searchset"}'));
+    await expect(
+      fetchFhirResource(new URL('https://allowed.example/fhir/Patient?name=x'))
+    ).resolves.toEqual({ resourceType: 'Bundle', type: 'searchset' });
+  });
+
+  it.each(['{"secret":"value"}', '["secret"]', '"secret"', '42', 'null', '{"resourceType":42}'])(
+    'rejects the JSON %s without echoing it',
+    async (body) => {
+      fetchMock.mockResolvedValue(new Response(body, { status: 200 }));
+
+      const promise = fetchFhirResource(new URL('https://allowed.example/fhir/Patient/1'));
+      await expect(promise).rejects.toThrow(
+        'Response from https://allowed.example/fhir/Patient/1 was not a FHIR resource. Status: 200'
+      );
+      await expect(promise).rejects.not.toThrow('secret');
+    }
+  );
+});
+
+describe('timeouts against a hung server', () => {
+  const sockets = new Set<import('node:net').Socket>();
+  let server: Server;
+  let hungBase: URL;
+
+  beforeAll(async () => {
+    // Never responds to /hang; sends headers but never finishes the body on /stall
+    server = http.createServer((req, res) => {
+      if (req.url?.endsWith('/stall')) {
+        res.writeHead(200, { 'Content-Type': 'application/fhir+json' });
+        res.write('{"resourceType":"Patient","secret":"');
+      }
+    });
+    server.on('connection', (socket) => {
+      sockets.add(socket);
+      socket.on('close', () => sockets.delete(socket));
+    });
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', () => resolve()));
+    hungBase = parseBaseUrl(`http://127.0.0.1:${(server.address() as AddressInfo).port}/fhir`, 'X');
+  });
+
+  afterAll(async () => {
+    sockets.forEach((socket) => socket.destroy());
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  });
+
+  async function expectTimeout(promise: Promise<unknown>, path: string) {
+    let error: unknown;
+    try {
+      await promise;
+    } catch (e) {
+      error = e;
+    }
+    expect(error).toBeInstanceOf(OutboundRequestError);
+    expect((error as OutboundRequestError).httpStatus).toBe(504);
+    expect((error as OutboundRequestError).message).toBe(
+      `Request to ${hungBase.origin}/fhir/${path} timed out after 200 ms.`
+    );
+  }
+
+  it('aborts a request that gets no response', async () => {
+    await expectTimeout(fetchJson(new URL('hang', hungBase), {}, 200), 'hang');
+  });
+
+  it('aborts a response whose body never finishes, without echoing the partial body', async () => {
+    await expectTimeout(fetchJson(new URL('stall', hungBase), {}, 200), 'stall');
+  });
+
+  it('aborts a body read after fetchWithoutRedirects', async () => {
+    const url = new URL('stall', hungBase);
+    const response = await fetchWithoutRedirects(url, {}, 200);
+    await expectTimeout(readJson(response, url, 200), 'stall');
+  });
+
+  it('keeps a caller abort signal working alongside the timeout', async () => {
+    const controller = new AbortController();
+    const promise = fetchJson(new URL('hang', hungBase), { signal: controller.signal }, 10_000);
+    controller.abort();
+    await expect(promise).rejects.toThrow(expect.objectContaining({ name: 'AbortError' }));
+  });
+
+  it('aborts library requests through the global fetch guard', async () => {
+    const originalFetch = globalThis.fetch;
+    try {
+      installOutboundFetchGuard([hungBase], 200);
+      await expectTimeout(fetch(new URL('hang', hungBase).href), 'hang');
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+});
+
 describe('installOutboundFetchGuard', () => {
   const originalFetch = globalThis.fetch;
   let fetchMock: jest.Mock;
@@ -325,10 +462,14 @@ describe('installOutboundFetchGuard', () => {
 
   it('passes allowed requests through without following redirects', async () => {
     await fetch('https://allowed.example/fhir/Patient/1', { headers: { A: 'b' } });
-    expect(fetchMock).toHaveBeenCalledWith('https://allowed.example/fhir/Patient/1', {
-      headers: { A: 'b' },
-      redirect: 'manual'
-    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://allowed.example/fhir/Patient/1',
+      expect.objectContaining({
+        headers: { A: 'b' },
+        redirect: 'manual',
+        signal: expect.any(AbortSignal)
+      })
+    );
   });
 
   it.each([
@@ -336,6 +477,8 @@ describe('installOutboundFetchGuard', () => {
     'https://allowed.example@evil.example/fhir',
     'https://allowed.example:444/fhir',
     'https://allowed.example/fhirx',
+    'https://allowed.example/fhir/..;/admin',
+    'https://allowed.example/fhir/x/..;/../admin',
     '/relative/path'
   ])('refuses %s without sending it', async (target) => {
     await expect(fetch(target)).rejects.toThrow(OutboundRequestError);
