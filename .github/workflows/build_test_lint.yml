@@ -248,6 +248,33 @@ jobs:
           path: packages/sdc-template-extract/coverage
           retention-days: 30
 
+  jest-express-services-tests:
+    name: Jest Tests - Express Services
+    runs-on: ubuntu-latest
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages (service dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+
+      - name: Run jest tests
+        run: |
+          npm run test -w services/populate-express
+          npm run test -w services/assemble-express
+          npm run test -w services/extract-express
+
   playwright-test:
     name: Playwright Tests
     timeout-minutes: 60

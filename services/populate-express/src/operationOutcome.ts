@@ -48,12 +48,16 @@ export function createOperationOutcome(errorMessage: string): OperationOutcome {
 
 export function addEndpointToNotFoundIssues(
   issuesParameter: IssuesParameter,
-  ehrServerUrl: string
+  ehrServerUrl: string | null
 ): IssuesParameter {
+  const location = ehrServerUrl
+    ? ` at ${ehrServerUrl}.`
+    : ' because EHR_SERVER_URL is not configured on this service.';
+
   if (issuesParameter?.resource && issuesParameter.resource.issue.length > 0) {
     issuesParameter.resource.issue.forEach((issue) => {
       if (issue.code === 'not-found' && issue.details?.text) {
-        issue.details.text += ` at ${ehrServerUrl}. You might have to resolve it manually and pass the context as a resource instead of a reference.`;
+        issue.details.text += `${location} You might have to resolve it manually and pass the context as a resource instead of a reference.`;
       }
     });
   }

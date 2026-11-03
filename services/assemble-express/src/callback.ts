@@ -17,33 +17,30 @@
 
 import { HEADERS } from './globals';
 import type { FetchQuestionnaireCallback } from '@aehrc/sdc-assemble';
+import type { AssembleConfig } from './config';
+import { fetchJson, isUnderBase, resolveQueryUrl } from './outboundUrl';
 
-export interface RequestConfig {
-  url: string;
-  authToken?: string;
+/**
+ * Creates the callback sdc-assemble uses to fetch subquestionnaires by canonical URL.
+ * Requests only go to FORMS_SERVER_URL; without it, subquestionnaires cannot be fetched.
+ */
+export function createFetchQuestionnaireCallback(
+  config: AssembleConfig
+): FetchQuestionnaireCallback {
+  return async (canonicalUrl: string) => {
+    const formsServer = config.formsServer;
+    const requestUrl = resolveQueryUrl(
+      `Questionnaire?url=${canonicalUrl}`,
+      formsServer?.url ?? null,
+      [],
+      'FORMS_SERVER_URL'
+    );
+
+    const headers =
+      formsServer?.authToken && isUnderBase(requestUrl, formsServer.url)
+        ? { ...HEADERS, Authorization: `Bearer ${formsServer.authToken}` }
+        : HEADERS;
+
+    return fetchJson(requestUrl, { headers });
+  };
 }
-
-export const fetchQuestionnaireCallback: FetchQuestionnaireCallback = async (
-  canonicalUrl: string,
-  requestConfig: RequestConfig
-) => {
-  const { url, authToken } = requestConfig;
-
-  let requestUrl = url;
-  if (!requestUrl.endsWith('/')) {
-    requestUrl += '/';
-  }
-  requestUrl += `Questionnaire?url=${canonicalUrl}`;
-
-  const headers = authToken ? { ...HEADERS, Authorization: `Bearer ${authToken}` } : HEADERS;
-
-  const response = await fetch(requestUrl, {
-    headers: headers
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
-  }
-
-  return response.json();
-};
