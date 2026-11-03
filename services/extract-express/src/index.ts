@@ -23,6 +23,7 @@ import {
   createInvalidFhirMappingLanguageMap,
   createInvalidParametersOutcome,
   createInvalidQuestionnaireCanonicalOutcome,
+  createNoEhrServerUrlSetOutcome,
   createNoFormsServerUrlSetOutcome,
   createNoQuestionnairesFoundOutcome,
   createNoTargetStructureMapCanonicalFoundOutcome,
@@ -39,211 +40,214 @@ import {
 import dotenv from 'dotenv';
 import { getFhirMappingLanguageMap } from './fhirMappingLanguage';
 import { getStructureMapFromDebugOutputParameters } from './debug';
+import type { ExtractConfig } from './config';
+import { allOutboundBases, displayBaseUrl, loadConfig } from './config';
+import { installOutboundFetchGuard, OutboundRequestError } from './outboundUrl';
 
-const app = express();
 const port = 3003;
 
-// Configuring environment variables
-dotenv.config();
-const EHR_SERVER_URL = process.env['EHR_SERVER_URL'];
-const EHR_SERVER_AUTH_TOKEN = process.env['EHR_SERVER_AUTH_TOKEN'];
+function sendError(res: express.Response, error: unknown) {
+  console.error(error);
+  if (error instanceof OutboundRequestError) {
+    res.status(error.httpStatus).json(createOperationOutcome(error.message));
+    return;
+  }
 
-const FORMS_SERVER_URL = process.env['FORMS_SERVER_URL'];
-const FORMS_SERVER_AUTH_TOKEN = process.env['FORMS_SERVER_AUTH_TOKEN'];
+  if (error instanceof Error) {
+    res.status(500).json(createOperationOutcome(error?.message)); // Sending the error message as an OperationOutcome
+    return;
+  }
 
-app.use(
-  cors({
-    origin: '*'
-  })
-);
+  // If the error is not an instance of Error, send a generic error message
+  res
+    .status(500)
+    .json(
+      createOperationOutcome(
+        'Something went wrong here. Please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
+      )
+    );
+}
 
-// Allows the app to accept JSON and URL encoded data up to 50MB
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.text());
+/**
+ * Creates the $extract and $convert Express app. StructureMap/$transform is invoked only on
+ * EHR_SERVER_URL, and Questionnaires and StructureMaps are read only from FORMS_SERVER_URL; nothing
+ * in the incoming request (such as the Host or X-Forwarded-* headers) selects a server.
+ */
+export function createApp(config: ExtractConfig): express.Express {
+  const app = express();
+  const { ehrServer, formsServer } = config;
 
-// Allows the app to work behind reverse proxies, forwarding the correct req.protocol to the /StructureMap/$transform call
-// Without this, doing a HTTPS $extract call will result in a HTTP $transform call
-app.set('trust proxy', true);
-
-app.get('/fhir/QuestionnaireResponse/\\$extract', (_, res) => {
-  res.send(
-    'This service is healthy!\nPerform a POST request to the same path for QuestionnaireResponse $extract.'
+  app.use(
+    cors({
+      origin: '*'
+    })
   );
-});
 
-app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
-  let ehrServerUrl = req.protocol + '://' + req.get('host') + '/fhir';
-  let ehrServerAuthToken: string | null = null;
+  // Allows the app to accept JSON and URL encoded data up to 50MB
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.text());
 
-  // Set EHR server URL and auth token if provided in env variables
-  if (EHR_SERVER_URL) {
-    ehrServerUrl = EHR_SERVER_URL;
-    ehrServerAuthToken = EHR_SERVER_AUTH_TOKEN ?? null;
-  }
+  // Allows the app to work behind reverse proxies. Proxy headers are not used to choose outbound servers.
+  app.set('trust proxy', true);
 
-  try {
-    // Ensure forms server URL is set
-    if (!FORMS_SERVER_URL) {
-      const outcome = createNoFormsServerUrlSetOutcome();
-      res.status(400).json(outcome);
-      return;
-    }
-
-    const body = req.body;
-    const questionnaireResponse = getQuestionnaireResponse(body);
-
-    // Get QR resource from input parameters
-    if (!questionnaireResponse) {
-      const outcome = createInvalidParametersOutcome();
-      res.status(400).json(outcome);
-      return;
-    }
-
-    // Get Questionnaire canonical URL from QR resource
-    const questionnaireCanonical = questionnaireResponse.questionnaire;
-    if (!questionnaireCanonical) {
-      const outcome = createInvalidQuestionnaireCanonicalOutcome();
-      res.status(400).json(outcome);
-      return;
-    }
-
-    // Get Questionnaire resource from it's canonical URL
-    const questionnaire = await getQuestionnaire(
-      questionnaireCanonical,
-      FORMS_SERVER_URL,
-      FORMS_SERVER_AUTH_TOKEN
+  app.get('/fhir/QuestionnaireResponse/\\$extract', (_, res) => {
+    res.send(
+      'This service is healthy!\nPerform a POST request to the same path for QuestionnaireResponse $extract.'
     );
-    if (!questionnaire) {
-      const outcome = createNoQuestionnairesFoundOutcome(questionnaireCanonical, FORMS_SERVER_URL);
-      res.status(400).json(outcome);
-      return;
-    }
+  });
 
-    // Get target StructureMap canonical URL from Questionnaire resource
-    const targetStructureMapCanonical = getTargetStructureMapCanonical(questionnaire);
-    if (!targetStructureMapCanonical) {
-      const outcome = createNoTargetStructureMapCanonicalFoundOutcome(
-        questionnaire.id ?? questionnaireCanonical
+  app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
+    try {
+      // Ensure forms server URL is set
+      if (!formsServer) {
+        const outcome = createNoFormsServerUrlSetOutcome();
+        res.status(400).json(outcome);
+        return;
+      }
+
+      // Ensure EHR server URL is set, it provides StructureMap/$transform
+      if (!ehrServer) {
+        const outcome = createNoEhrServerUrlSetOutcome();
+        res.status(400).json(outcome);
+        return;
+      }
+
+      const body = req.body;
+      const questionnaireResponse = getQuestionnaireResponse(body);
+
+      // Get QR resource from input parameters
+      if (!questionnaireResponse) {
+        const outcome = createInvalidParametersOutcome();
+        res.status(400).json(outcome);
+        return;
+      }
+
+      // Get Questionnaire canonical URL from QR resource
+      const questionnaireCanonical = questionnaireResponse.questionnaire;
+      if (!questionnaireCanonical) {
+        const outcome = createInvalidQuestionnaireCanonicalOutcome();
+        res.status(400).json(outcome);
+        return;
+      }
+
+      // Get Questionnaire resource from it's canonical URL
+      const questionnaire = await getQuestionnaire(questionnaireCanonical, formsServer);
+      if (!questionnaire) {
+        const outcome = createNoQuestionnairesFoundOutcome(
+          questionnaireCanonical,
+          displayBaseUrl(formsServer)
+        );
+        res.status(400).json(outcome);
+        return;
+      }
+
+      // Get target StructureMap canonical URL from Questionnaire resource
+      const targetStructureMapCanonical = getTargetStructureMapCanonical(questionnaire);
+      if (!targetStructureMapCanonical) {
+        const outcome = createNoTargetStructureMapCanonicalFoundOutcome(
+          questionnaire.id ?? questionnaireCanonical
+        );
+        res.status(400).json(outcome);
+        return;
+      }
+
+      // Get target StructureMap resource from it's canonical URL
+      const targetStructureMap = await getTargetStructureMap(
+        targetStructureMapCanonical,
+        formsServer
       );
-      res.status(400).json(outcome);
-      return;
-    }
+      if (!targetStructureMap) {
+        const outcome = createNoTargetStructureMapFoundOutcome(
+          questionnaireCanonical,
+          displayBaseUrl(formsServer)
+        );
+        res.status(400).json(outcome);
+        return;
+      }
 
-    // Get target StructureMap resource from it's canonical URL
-    const targetStructureMap = await getTargetStructureMap(
-      targetStructureMapCanonical,
-      FORMS_SERVER_URL,
-      FORMS_SERVER_AUTH_TOKEN
-    );
-    if (!targetStructureMap) {
-      const outcome = createNoTargetStructureMapFoundOutcome(
-        questionnaireCanonical,
-        FORMS_SERVER_URL
+      const transformInputParameters = createTransformInputParametersForExtract(
+        targetStructureMap,
+        questionnaireResponse
       );
-      res.status(400).json(outcome);
-      return;
-    }
 
-    const transformInputParameters = createTransformInputParametersForExtract(
-      targetStructureMap,
-      questionnaireResponse
+      const outputParameters = await invokeTransform(transformInputParameters, ehrServer);
+      res.json(outputParameters); // Forwarding the JSON response to the client
+    } catch (error) {
+      sendError(res, error);
+    }
+  });
+
+  app.get('/fhir/\\$convert', (_, res) => {
+    res.send(
+      'This service is healthy!\nHowever, this server only supports StructureMap/$convert.\nPerform a POST request to /fhir/StructureMap/$convert to convert a FHIR Mapping Language map to a StructureMap resource.'
     );
+  });
 
-    const outputParameters = await invokeTransform(
-      transformInputParameters,
-      ehrServerUrl,
-      ehrServerAuthToken ?? undefined
+  app.get('/fhir/StructureMap/\\$convert', (_, res) => {
+    res.send(
+      'This service is healthy!\nPerform a POST request to the same path to convert a FHIR Mapping Language map to a StructureMap resource.'
     );
-    res.json(outputParameters); // Forwarding the JSON response to the client
-  } catch (error) {
-    console.error(error);
-    if (error instanceof Error) {
-      res.status(500).json(createOperationOutcome(error?.message)); // Sending the error message as an OperationOutcome
-      return;
+  });
+
+  app.post('/fhir/StructureMap/\\$convert', async (req, res) => {
+    try {
+      // Ensure EHR server URL is set, it provides StructureMap/$transform
+      if (!ehrServer) {
+        const outcome = createNoEhrServerUrlSetOutcome();
+        res.status(400).json(outcome);
+        return;
+      }
+
+      // Get FHIR Mapping Language map from the request body
+      const body = req.body;
+      const fhirMappingLanguageMap = getFhirMappingLanguageMap(body);
+
+      if (!fhirMappingLanguageMap) {
+        const outcome = createInvalidFhirMappingLanguageMap();
+        res.status(400).json(outcome);
+        return;
+      }
+
+      const transformInputParameters =
+        createTransformInputParametersForConvert(fhirMappingLanguageMap);
+
+      const outputParameters = await invokeTransform(transformInputParameters, ehrServer, true);
+
+      // Get StructureMap resource from the output parameters
+      const structureMap = getStructureMapFromDebugOutputParameters(outputParameters);
+      if (!structureMap) {
+        const outcome = createFailStructureMapConversionOutcome();
+        res.status(400).json(outcome);
+        return;
+      }
+
+      res.json(structureMap);
+    } catch (error) {
+      sendError(res, error);
     }
+  });
 
-    // If the error is not an instance of Error, send a generic error message
-    res
-      .status(500)
-      .json(
-        createOperationOutcome(
-          'Something went wrong here. Please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
-        )
-      );
-  }
-});
+  return app;
+}
 
-app.get('/fhir/\\$convert', (_, res) => {
-  res.send(
-    'This service is healthy!\nHowever, this server only supports StructureMap/$convert.\nPerform a POST request to /fhir/StructureMap/$convert to convert a FHIR Mapping Language map to a StructureMap resource.'
-  );
-});
+function main() {
+  // Configuring environment variables
+  dotenv.config();
+  const config = loadConfig(process.env);
 
-app.get('/fhir/StructureMap/\\$convert', (_, res) => {
-  res.send(
-    'This service is healthy!\nPerform a POST request to the same path to convert a FHIR Mapping Language map to a StructureMap resource.'
-  );
-});
+  // Every outbound request in this process must go to a configured server
+  installOutboundFetchGuard(allOutboundBases(config));
 
-app.post('/fhir/StructureMap/\\$convert', async (req, res) => {
-  let ehrServerUrl = req.protocol + '://' + req.get('host') + '/fhir';
-  let ehrServerAuthToken: string | null = null;
-
-  // Set EHR server URL and auth token if provided in env variables
-  if (EHR_SERVER_URL) {
-    ehrServerUrl = EHR_SERVER_URL;
-    ehrServerAuthToken = EHR_SERVER_AUTH_TOKEN ?? null;
-  }
-
-  try {
-    // Get FHIR Mapping Language map from the request body
-    const body = req.body;
-    const fhirMappingLanguageMap = getFhirMappingLanguageMap(body);
-
-    if (!fhirMappingLanguageMap) {
-      const outcome = createInvalidFhirMappingLanguageMap();
-      res.status(400).json(outcome);
-      return;
+  const app = createApp(config);
+  app.listen(port, () => {
+    console.log(`Transform Express app listening on port ${port}`);
+    if (!config.ehrServer) {
+      console.log('EHR_SERVER_URL is not set: $extract and $convert will return an error.');
     }
+  });
+}
 
-    const transformInputParameters =
-      createTransformInputParametersForConvert(fhirMappingLanguageMap);
-
-    const outputParameters = await invokeTransform(
-      transformInputParameters,
-      ehrServerUrl,
-      ehrServerAuthToken ?? undefined,
-      true
-    );
-
-    // Get StructureMap resource from the output parameters
-    const structureMap = getStructureMapFromDebugOutputParameters(outputParameters);
-    if (!structureMap) {
-      const outcome = createFailStructureMapConversionOutcome();
-      res.status(400).json(outcome);
-      return;
-    }
-
-    res.json(structureMap);
-  } catch (error) {
-    console.error(error);
-    if (error instanceof Error) {
-      res.status(500).json(createOperationOutcome(error?.message)); // Sending the error message as an OperationOutcome
-      return;
-    }
-
-    // If the error is not an instance of Error, send a generic error message
-    res
-      .status(500)
-      .json(
-        createOperationOutcome(
-          'Something went wrong here. Please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
-        )
-      );
-  }
-});
-
-app.listen(port, () => {
-  console.log(`Transform Express app listening on port ${port}`);
-});
+if (require.main === module) {
+  main();
+}
