@@ -313,7 +313,8 @@ describe('populate-express outbound requests', () => {
       'http://ehr.test@evil.example/fhir/Questionnaire/unit-test',
       'http://ehr.test:8080/fhir/Questionnaire/unit-test',
       'https://ehr.test/fhir/Questionnaire/unit-test',
-      'http://ehr.test/fhirx/Questionnaire/unit-test'
+      'http://ehr.test/fhirx/Questionnaire/unit-test',
+      'http://ehr.test/fhir/..;/actuator/env'
     ])('refuses the absolute questionnaireRef %s', async (reference) => {
       server = await startServer(configFrom(env));
 
@@ -321,6 +322,34 @@ describe('populate-express outbound requests', () => {
 
       expect(res.status).toBe(400);
       expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it.each(['..;/actuator/env', 'Questionnaire/..;/../actuator/env'])(
+      'refuses the relative questionnaireRef %s that escapes EHR_SERVER_URL',
+      async (reference) => {
+        server = await startServer(configFrom(env));
+
+        const res = await postJson(server, parametersWithQuestionnaireRef(reference));
+
+        expect(res.status).toBe(400);
+        expect(res.body.issue[0].details.text).toContain('it resolves outside EHR_SERVER_URL');
+        expect(fetchMock).not.toHaveBeenCalled();
+      }
+    );
+
+    it('rejects JSON from the EHR server that is not a FHIR resource, without echoing it', async () => {
+      fetchMock.mockResolvedValue(
+        new Response('{"activeProfiles":["prod"],"secret":"internal value"}', { status: 200 })
+      );
+      server = await startServer(configFrom(env));
+
+      const res = await postJson(server, parametersWithQuestionnaireRef('Questionnaire/unit-test'));
+
+      expect(res.status).toBe(502);
+      expect(JSON.stringify(res.body)).not.toContain('internal value');
+      expect(res.body.issue[0].details.text).toBe(
+        'Response from http://ehr.test/fhir/Questionnaire/unit-test was not a FHIR resource. Status: 200'
+      );
     });
 
     it('returns a generic error instead of echoing a non-JSON response body', async () => {

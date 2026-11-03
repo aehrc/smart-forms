@@ -17,7 +17,7 @@
 
 import type { FetchResourceCallback, FetchTerminologyCallback } from '@aehrc/sdc-populate';
 import type { PopulateConfig, ServerConfig } from './config';
-import { fetchJson, isUnderBase, resolveQueryUrl } from './outboundUrl';
+import { fetchFhirResource, isUnderBase, resolveQueryUrl } from './outboundUrl';
 
 function createHeaders(target: URL, server: ServerConfig | null): Record<string, string> {
   const headers: Record<string, string> = {
@@ -35,7 +35,7 @@ function createHeaders(target: URL, server: ServerConfig | null): Record<string,
 /**
  * Creates the callback sdc-populate uses to fetch questionnaires and context resources.
  * Relative queries go to EHR_SERVER_URL. Absolute URLs are fetched only when they are under
- * EHR_SERVER_URL or ALLOWED_FETCH_ORIGINS.
+ * EHR_SERVER_URL or ALLOWED_FETCH_ORIGINS. Responses that are not FHIR resources are rejected.
  */
 export function createFetchResourceCallback(config: PopulateConfig): FetchResourceCallback {
   return async (query: string) => {
@@ -45,14 +45,15 @@ export function createFetchResourceCallback(config: PopulateConfig): FetchResour
       config.allowedFetchBases,
       'EHR_SERVER_URL'
     );
-    return fetchJson(requestUrl, { headers: createHeaders(requestUrl, config.ehrServer) });
+    return fetchFhirResource(requestUrl, { headers: createHeaders(requestUrl, config.ehrServer) });
   };
 }
 
 /**
  * Creates the callback sdc-populate uses for ValueSet $expand and CodeSystem $lookup.
  * Relative queries go to TERMINOLOGY_SERVER_URL (or the default terminology server). Absolute URLs
- * are fetched only when they are under that server or ALLOWED_FETCH_ORIGINS.
+ * are fetched only when they are under that server or ALLOWED_FETCH_ORIGINS. Responses that are not
+ * FHIR resources are rejected.
  */
 export function createFetchTerminologyCallback(config: PopulateConfig): FetchTerminologyCallback {
   return async (query: string) => {
@@ -62,7 +63,7 @@ export function createFetchTerminologyCallback(config: PopulateConfig): FetchTer
       config.allowedFetchBases,
       'TERMINOLOGY_SERVER_URL'
     );
-    return fetchJson(requestUrl, {
+    return fetchFhirResource(requestUrl, {
       headers: createHeaders(requestUrl, config.terminologyServer)
     });
   };
