@@ -23,7 +23,12 @@ FORMS_SERVER_AUTH_TOKEN=
 
 If you are planning to deploy this as a microservice on your EHR server, it is required for your EHR server to have a StructureMap $transform operation defined.
 
-If EHR_SERVER_URL is left empty, the service will use the request endpoint as the EHR server URL. i.e. Deploying this service on http://localhost:3003/fhir will result in a call to http://localhost:3003/fhir/StructureMap/$transform during execution of the $extract operation.
+`EHR_SERVER_URL` is required for both `$extract` and `StructureMap/$convert`: the service calls `StructureMap/$transform` on it. If it is left empty, both operations return an OperationOutcome. The service only sends requests to `EHR_SERVER_URL` and `FORMS_SERVER_URL`, and never derives a server from the incoming request (for example the `Host` or `X-Forwarded-*` headers). Each value must be an absolute http(s) URL without credentials, query or fragment; the service refuses to start otherwise. Redirects are not followed.
+
+This service never fetches absolute URLs taken from a request, so it has no `ALLOWED_FETCH_ORIGINS` setting (see populate-express).
+
+### Migrating from earlier versions
+Earlier versions used the request's own endpoint as the EHR server when `EHR_SERVER_URL` was empty (i.e. a service deployed on http://localhost:3003/fhir called http://localhost:3003/fhir/StructureMap/$transform). That default has been removed. If you relied on it, set `EHR_SERVER_URL` to that FHIR server's base URL explicitly.
 
 ## Docker Usage
 Run `docker run -p 3003:3003 -e EHR_SERVER_URL=<insert your FHIR server base URL> aehrc/smart-forms-extract`.
