@@ -1,4 +1,5 @@
 import { Cluster, Compatibility, ContainerImage, FargateService, TaskDefinition } from 'aws-cdk-lib/aws-ecs';
+import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Construct } from 'constructs';
 
 export interface SmartProxyProps {
@@ -27,9 +28,15 @@ export class SmartProxy extends Construct {
     const fhirServerBaseUrl = 'https://proxy.smartforms.io/fhir';
 
     // Create the cache container.
+    // Images are pulled from a private ECR repository in this account (scan on push,
+    // immutable tags). The tag is the source commit the image was built from; bump it
+    // to deploy a new build. fromEcrRepository also grants the execution role pull access.
     taskDefinition.addContainer('EhrProxySmartProxyContainer', {
       containerName: this.containerName,
-      image: ContainerImage.fromRegistry('aehrc/smart-launcher-v2:latest'),
+      image: ContainerImage.fromEcrRepository(
+        Repository.fromRepositoryName(this, 'SmartProxyRepository', 'smart-forms/smart-launcher-v2'),
+        '3540df24'
+      ),
       portMappings: [{ containerPort: this.containerPort }],
       environment: {
         FHIR_SERVER_R4: fhirServerBaseUrl
@@ -38,7 +45,9 @@ export class SmartProxy extends Construct {
 
     this.service = new FargateService(this, 'EhrProxySmartProxyService', {
       cluster,
-      taskDefinition
+      taskDefinition,
+      // Roll back automatically if a new deployment's tasks fail to start or stay healthy.
+      circuitBreaker: { enable: true, rollback: true }
     });
   }
 }

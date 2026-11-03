@@ -6,6 +6,7 @@ import {
   FargateService,
   TaskDefinition
 } from 'aws-cdk-lib/aws-ecs';
+import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Construct } from 'constructs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 
@@ -31,9 +32,15 @@ export class PopulateEndpoint extends Construct {
     });
 
     // Create the cache container.
+    // Images are pulled from a private ECR repository in this account (scan on push,
+    // immutable tags). The tag is the source commit the image was built from; bump it
+    // to deploy a new build. fromEcrRepository also grants the execution role pull access.
     taskDefinition.addContainer('FormsServerPopulateContainer', {
       containerName: this.containerName,
-      image: ContainerImage.fromRegistry('aehrc/smart-forms-populate:latest'),
+      image: ContainerImage.fromEcrRepository(
+        Repository.fromRepositoryName(this, 'PopulateRepository', 'smart-forms/populate'),
+        '84fb8d6b'
+      ),
       portMappings: [{ containerPort: this.containerPort }],
       logging: AwsLogDriver.awsLogs({
         streamPrefix: 'forms-server-populate',
@@ -43,7 +50,9 @@ export class PopulateEndpoint extends Construct {
 
     this.service = new FargateService(this, 'FormsServerPopulateService', {
       cluster,
-      taskDefinition
+      taskDefinition,
+      // Roll back automatically if a new deployment's tasks fail to start or stay healthy.
+      circuitBreaker: { enable: true, rollback: true }
     });
   }
 }
