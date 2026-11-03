@@ -223,13 +223,12 @@ async function discardBody(response: Response): Promise<void> {
 }
 
 /**
- * Fetches a URL that has already passed the outbound policy and parses the response as JSON.
+ * Fetches a URL that has already passed the outbound policy, without following redirects.
  *
- * Redirects are not followed, because a redirect could point outside the configured servers. Errors
- * carry the status code only: the response body is never included, so a fetched document cannot be
- * echoed back to the caller through an error message.
+ * A redirect could point outside the configured servers, so a 3xx response is turned into an
+ * OutboundRequestError instead of being followed.
  */
-export async function fetchJson(url: URL, init: RequestInit = {}): Promise<unknown> {
+export async function fetchWithoutRedirects(url: URL, init: RequestInit = {}): Promise<Response> {
   const response = await fetch(url, { ...init, redirect: 'manual' });
 
   if (isRedirectStatus(response.status) || response.type === 'opaqueredirect') {
@@ -240,14 +239,14 @@ export async function fetchJson(url: URL, init: RequestInit = {}): Promise<unkno
     );
   }
 
-  if (!response.ok) {
-    await discardBody(response);
-    throw new OutboundRequestError(
-      `HTTP error when performing ${url.href}. Status: ${response.status}`,
-      502
-    );
-  }
+  return response;
+}
 
+/**
+ * Parses a response body as JSON. When the body is not JSON, the error carries the status code
+ * only, so a fetched document cannot be echoed back to the caller through an error message.
+ */
+export async function readJson(response: Response, url: URL): Promise<unknown> {
   const text = await response.text();
   try {
     return JSON.parse(text);
@@ -261,6 +260,24 @@ export async function fetchJson(url: URL, init: RequestInit = {}): Promise<unkno
       502
     );
   }
+}
+
+/**
+ * Fetches a URL that has already passed the outbound policy and parses the response as JSON.
+ * Redirects are not followed, and errors never include the response body.
+ */
+export async function fetchJson(url: URL, init: RequestInit = {}): Promise<unknown> {
+  const response = await fetchWithoutRedirects(url, init);
+
+  if (!response.ok) {
+    await discardBody(response);
+    throw new OutboundRequestError(
+      `HTTP error when performing ${url.href}. Status: ${response.status}`,
+      502
+    );
+  }
+
+  return readJson(response, url);
 }
 
 function requestUrlOf(input: string | URL | Request): URL | null {
