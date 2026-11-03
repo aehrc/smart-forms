@@ -12,7 +12,7 @@ FORMS_SERVER_AUTH_TOKEN=
 
 `FORMS_SERVER_URL` is the FHIR server that subquestionnaires are fetched from, by canonical URL. The service only sends requests to this server and never derives a server from the incoming request (for example the `Host` or `X-Forwarded-*` headers). If it is left empty, a Questionnaire without subquestionnaires is still returned as is, and a Questionnaire with subquestionnaires is answered with an issue explaining that `FORMS_SERVER_URL` is not configured.
 
-The value must be an absolute http(s) URL without credentials, query or fragment; the service refuses to start otherwise. Redirects from the forms server are not followed.
+The value must be an absolute http(s) URL without credentials, query or fragment; the service refuses to start otherwise. Redirects from the forms server are not followed, and a request that takes longer than 30 seconds is aborted.
 
 This service never fetches absolute URLs taken from a request, so it has no `ALLOWED_FETCH_ORIGINS` setting (see populate-express).
 

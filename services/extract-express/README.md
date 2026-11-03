@@ -23,7 +23,7 @@ FORMS_SERVER_AUTH_TOKEN=
 
 If you are planning to deploy this as a microservice on your EHR server, it is required for your EHR server to have a StructureMap $transform operation defined.
 
-`EHR_SERVER_URL` is required for both `$extract` and `StructureMap/$convert`: the service calls `StructureMap/$transform` on it. If it is left empty, both operations return an OperationOutcome. The service only sends requests to `EHR_SERVER_URL` and `FORMS_SERVER_URL`, and never derives a server from the incoming request (for example the `Host` or `X-Forwarded-*` headers). Each value must be an absolute http(s) URL without credentials, query or fragment; the service refuses to start otherwise. Redirects are not followed.
+`EHR_SERVER_URL` is required for both `$extract` and `StructureMap/$convert`: the service calls `StructureMap/$transform` on it. If it is left empty, both operations return an OperationOutcome. The service only sends requests to `EHR_SERVER_URL` and `FORMS_SERVER_URL`, and never derives a server from the incoming request (for example the `Host` or `X-Forwarded-*` headers). Each value must be an absolute http(s) URL without credentials, query or fragment; the service refuses to start otherwise. Redirects are not followed, and a request that takes longer than 30 seconds is aborted.
 
 This service never fetches absolute URLs taken from a request, so it has no `ALLOWED_FETCH_ORIGINS` setting (see populate-express).
 
