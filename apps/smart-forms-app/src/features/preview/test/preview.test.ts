@@ -861,9 +861,8 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
   });
 
   it('renders repeating group with mixed group and answer siblings as card layout', () => {
-    // Mirrors the GPCCMP "Problems/Needs" structure: a repeating group whose children
-    // include both plain answer items and nested group items. A table would collapse
-    // these into columns, expanding horizontally; card layout renders each instance as a block.
+    // A repeating group whose children include both plain answer items and nested group
+    // items. A table would collapse these into columns, expanding horizontally; card layout renders each instance as a block.
     const qItem = {
       linkId: 'goals-tasks',
       type: 'group' as const,
@@ -940,8 +939,7 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
   });
 
   it('preserves every answer for a repeating field inside a complex (card) repeat group', () => {
-    // Mirrors the real GPCCMP structure: "Goals and tasks" (plan-goalstasks) is a repeating
-    // group with a group-type child (Interventions), making it "complex" → card layout.
+    // A repeating group with a group-type child (Interventions) is "complex" → card layout.
     // Its "Problems/Needs" sibling is a multi-select open-choice, so a single instance can
     // have more than one answer — losing all but the first here would be a real clinical gap.
     const qItem = {
@@ -1230,14 +1228,13 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     expect(cell?.innerHTML).toBe('Blue<br>Green<br>Red');
   });
 
-  it('renders every answer for a repeating column, mirroring GPCCMP allergy manifestations', () => {
-    // Mirrors the GPCCMP "Recorded adverse reaction risks" table: a simple (non-card) repeat
-    // group where one column (Manifestation) is itself repeats:true, e.g. an allergic reaction
-    // with multiple recorded manifestations for the same substance.
+  it('renders every answer for a repeating column, such as multiple allergy manifestations', () => {
+    // A simple (non-card) repeat group where one column (Manifestation) is itself repeats:true,
+    // e.g. an allergic reaction with multiple recorded manifestations for the same substance.
     const qItem = {
       linkId: 'recordedallergies',
       type: 'group' as const,
-      text: 'Recorded adverse reaction risks',
+      text: 'Recorded allergies',
       repeats: true,
       item: [
         {
