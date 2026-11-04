@@ -21,8 +21,12 @@ set -xe
 # Compile the Express app.
 cd services/assemble-express && npm run compile && cd -
 
+# Tag with the version from the service's own package.json, so the release tag can't drift
+# from it the way a hand-written tag can.
+VERSION=$(node -p "require('./services/assemble-express/package.json').version")
+
 # Build the Docker image for multiple architectures, then push to Docker Hub.
 docker buildx build --file ./services/assemble-express/Dockerfile \
   --tag aehrc/smart-forms-assemble:latest \
-  --tag aehrc/smart-forms-assemble:v2.0.0 \
+  --tag aehrc/smart-forms-assemble:v$VERSION \
   --platform linux/amd64,linux/arm64/v8 --push --no-cache .
