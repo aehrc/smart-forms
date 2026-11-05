@@ -99,16 +99,20 @@ module only warns. `requestDefinitions` remains the default adapter and the two 
 exclusive; a patient is required for either. Keep callback references stable across re-renders
 unless you want a rebuild.
 
-## Repeat group helpers
+## Repeat helpers
 
-`addRepeatGroup` and `removeRepeatGroup` target the renderer's stacked repeat instances (groups
-with `repeats: true` and no `gtable`/`check-box` item control). The add helper returns the new
-instance container, which can be passed directly to the scoped input helpers:
-`inputText(await addRepeatGroup(container, 'Medications'), 'Medication name', 'Ibuprofen')`.
-For a `gtable` repeat, use the table rows directly. Nested repeat groups' buttons are never
-matched by accident. A hidden Add button fails without modifying sibling or enclosing collections.
-If the same nested group appears in multiple outer instances, pass the relevant outer instance
-container; an ambiguous collection match is rejected before clicking.
+`addRepeatInstance(scope, linkIdOrLabel)` adds an instance to a repeat group, a `gtable` or a
+repeated question, and works out which of the three it is from the rendered form. It returns the
+new instance (the group instance, table row or answer), which can be passed directly to the
+scoped input helpers:
+`inputText(await addRepeatInstance(container, 'Medications'), 'Medication name', 'Ibuprofen')`.
+`removeRepeatInstance(instance)` removes one instance with its own remove button, and rejects
+any other element, including one nested inside an instance.
+
+Nested collections' buttons are never matched by accident. A hidden or disabled Add or Remove
+button fails without modifying sibling or enclosing collections. If the same nested repeat
+appears in multiple outer instances, pass the relevant outer instance as the scope; an ambiguous
+collection match is rejected before clicking.
 
 ## Notes for maintainers
 

@@ -73,16 +73,9 @@ export {
 
 export { findByLinkIdOrLabel, findAllByLinkIdOrLabel, selectTab } from './testUtils';
 
-// -- Repeating groups ----------------------------------------------------------------------
+// -- Repeats --------------------------------------------------------------------------------
 
-export {
-  addRepeatGroup,
-  removeRepeatGroup,
-  addTableRow,
-  removeTableRow,
-  addRepeatAnswer,
-  removeRepeatAnswer
-} from './testUtils';
+export { addRepeatInstance, removeRepeatInstance } from './testUtils';
 
 // -- Extraction and misc --------------------------------------------------------------------
 

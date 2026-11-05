@@ -108,7 +108,7 @@ test('Autocomplete uses a supported input for Arrow/Enter selection; text answer
 });
 
 test('a repeated open choice accepts custom text before adding its next answer', async () => {
-  const { addRepeatAnswer } = await import('@aehrc/questionnaire-test-toolkit');
+  const { addRepeatInstance } = await import('@aehrc/questionnaire-test-toolkit');
   const { container } = render(
     <BehavioralTestWrapper
       questionnaire={{
@@ -143,7 +143,7 @@ test('a repeated open choice accepts custom text before adding its next answer',
       { valueString: 'Custom role' }
     ])
   );
-  const second = await addRepeatAnswer(container, 'roles');
+  const second = await addRepeatInstance(container, 'roles');
   await inputText(second, 'roles', 'Another role');
   const secondInput = second.querySelector<HTMLInputElement>('input')!;
   await act(async () => {
@@ -158,7 +158,9 @@ test('a repeated open choice accepts custom text before adding its next answer',
 });
 
 test('a pending free-text update cannot overwrite a selected coding in a second repeated answer', async () => {
-  const { addRepeatAnswer, chooseSelectOption } = await import('@aehrc/questionnaire-test-toolkit');
+  const { addRepeatInstance, chooseSelectOption } = await import(
+    '@aehrc/questionnaire-test-toolkit'
+  );
   // Replace the external FHIR SDK request boundary only in this synthetic regression.
   const request = vi.spyOn(Client.prototype, 'request').mockResolvedValue({
     resourceType: 'ValueSet',
@@ -191,7 +193,7 @@ test('a pending free-text update cannot overwrite a selected coding in a second 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 400));
     });
-    const second = await addRepeatAnswer(container, 'concepts');
+    const second = await addRepeatInstance(container, 'concepts');
     await chooseSelectOption(second, 'concepts', 'Beta');
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 500));

@@ -14,7 +14,7 @@ import {
   inputDecimal,
   inputText,
   invokeExtract,
-  removeRepeatGroup,
+  removeRepeatInstance,
   selectTab
 } from '@aehrc/questionnaire-test-toolkit';
 import { AboriginalForm } from './aboriginalFormUtils';
@@ -362,7 +362,7 @@ describe('Health Check acceptance', () => {
     );
     expect(instanceContainers).toHaveLength(2);
 
-    await removeRepeatGroup(instanceContainers[0]!);
+    await removeRepeatInstance(instanceContainers[0]!);
 
     await waitFor(() => {
       const remaining = medicationFields();

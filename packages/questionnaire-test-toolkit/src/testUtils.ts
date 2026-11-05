@@ -206,132 +206,185 @@ export async function inputInteger(canvasElement: HTMLElement, linkId: string, t
   return await inputText(canvasElement, linkId, text);
 }
 
+// Renderer markup the repeat helpers rely on. The data-test hooks are set by the renderer for
+// tests; the MUI class name is an implementation detail, so it is named once here.
+const REPEAT_GROUP_COLLECTION = '[data-test="q-group-repeat-box"]';
+const REPEATED_QUESTION_COLLECTION = '[data-test="q-item-repeat-box"]';
+const ANY_REPEAT_COLLECTION = `${REPEAT_GROUP_COLLECTION}, ${REPEATED_QUESTION_COLLECTION}, table`;
+const ADD_REPEAT_BUTTON = '[data-test="button-add-repeat-item"]';
+// The remove button sits in a span so that its tooltip still shows while it is disabled.
+const REMOVE_REPEAT_BUTTON = 'span[role="button"] button';
+// Each answer of a repeated question is rendered in its own MUI Collapse.
+const REPEATED_ANSWER_INSTANCE = '.MuiCollapse-root';
+// A removed instance collapses (200 ms) before it leaves the DOM. Under full-suite load that has
+// taken several seconds, so wait well beyond the transition.
+const REPEAT_REMOVAL_TIMEOUT = 10000;
+
+type RepeatCollection =
+  | { kind: 'table'; element: HTMLTableElement }
+  | { kind: 'question'; element: HTMLElement }
+  | { kind: 'group'; element: HTMLElement; linkId: string };
+
+/** Returns the repeat group collection that `element` is a direct instance of, if any. */
+function getRepeatGroupCollection(element: Element): HTMLElement | null {
+  // Nothing with a linkId lies between an instance and its collection, so a question nested
+  // inside an instance resolves to that instance instead.
+  const ancestor = element.parentElement?.closest<HTMLElement>(
+    `[data-linkid], ${REPEAT_GROUP_COLLECTION}`
+  );
+  return ancestor?.matches(REPEAT_GROUP_COLLECTION) ? ancestor : null;
+}
+
+function getRepeatCollection(element: HTMLElement): RepeatCollection | null {
+  if (element.matches(REPEATED_QUESTION_COLLECTION)) {
+    return { kind: 'question', element };
+  }
+
+  const table = Array.from(element.querySelectorAll('table')).find(
+    (candidate) => candidate.closest('[data-linkid]') === element
+  );
+  if (table) {
+    return { kind: 'table', element: table };
+  }
+
+  const groupCollection = getRepeatGroupCollection(element);
+  const linkId = element.getAttribute('data-linkid');
+  return groupCollection && linkId ? { kind: 'group', element: groupCollection, linkId } : null;
+}
+
+function getRepeatInstances(collection: RepeatCollection): HTMLElement[] {
+  switch (collection.kind) {
+    case 'table':
+      return Array.from(collection.element.querySelectorAll<HTMLElement>(':scope > tbody > tr'));
+    case 'question':
+      return Array.from(
+        collection.element.querySelectorAll<HTMLElement>(REPEATED_ANSWER_INSTANCE)
+      ).filter((instance) => instance.closest(REPEATED_QUESTION_COLLECTION) === collection.element);
+    case 'group':
+      return Array.from(
+        collection.element.querySelectorAll<HTMLElement>(`[data-linkid="${collection.linkId}"]`)
+      ).filter((instance) => getRepeatGroupCollection(instance) === collection.element);
+  }
+}
+
 /**
- * Adds an instance to the unique repeat collection identified by `linkIdOrLabel` and waits for
- * the rendered instance count to increase. Returns the new instance container, which can be
- * passed directly to the scoped input helpers (e.g. `inputText(newInstance, 'name', 'value')`).
+ * Adds an instance to the unique repeat identified by `linkIdOrLabel` and waits for it to
+ * render. Works for a repeat group, a `gtable` row and a repeated question. Returns the new
+ * instance (the group instance, table row or answer), which can be passed straight to the
+ * scoped input helpers, e.g. `inputText(await addRepeatInstance(container, 'Medications'),
+ * 'Medication name', 'Ibuprofen')`.
  *
- * The collection's own add button is used; add buttons of nested repeat groups inside an
- * existing instance are never matched. Fails when the collection is ambiguous in scope, its
- * add button is hidden, or the button is disabled (e.g. the final row is empty).
+ * Only the collection's own Add button is used, never one of a nested collection. Fails when
+ * `linkIdOrLabel` is not a repeat, matches more than one collection in `scope` (pass an outer
+ * instance as the scope), or its Add button is hidden or disabled.
  */
-export async function addRepeatGroup(
-  canvasElement: HTMLElement,
+export async function addRepeatInstance(
+  scope: HTMLElement,
   linkIdOrLabel: string
 ): Promise<HTMLElement> {
-  const instances = await findAllByLinkIdOrLabel(canvasElement, linkIdOrLabel);
-  const instance = instances[0];
-  const linkId = instance.getAttribute('data-linkid') ?? linkIdOrLabel;
+  const matches = await findAllByLinkIdOrLabel(scope, linkIdOrLabel);
+  const collectionsByElement = new Map<HTMLElement, RepeatCollection>();
+  for (const match of matches) {
+    const collection = getRepeatCollection(match);
+    if (collection) {
+      collectionsByElement.set(collection.element, collection);
+    }
+  }
 
-  // RepeatGroupView renders instances in Collapse children of a TransitionGroup, followed by
-  // the collection's Add button. Resolve that boundary even when the button is absent; never
-  // keep walking upwards looking for a button in a sibling or enclosing collection.
-  const collections = new Set(
-    instances.map((element) => {
-      const collapse = element.closest('.MuiCollapse-root');
-      // A descendant question must not be mistaken for its enclosing repeat instance.
-      return collapse?.querySelector('[data-linkid]') === element
-        ? collapse.parentElement?.parentElement
-        : null;
-    })
-  );
-  if (collections.size > 1) {
+  if (collectionsByElement.size === 0) {
     throw new Error(
-      `Repeat group "${linkIdOrLabel}" matches multiple collections; provide an instance scope`
+      `"${linkIdOrLabel}" is not a repeat group, a gtable or a repeated question in scope`
     );
   }
-  const [collection] = collections;
-  const buttons =
-    collection && canvasElement.contains(collection)
-      ? Array.from(
-          collection.querySelectorAll<HTMLButtonElement>('[data-test="button-add-repeat-item"]')
-        ).filter(
-          (button) =>
-            button.closest('.MuiCollapse-root') === collection.closest('.MuiCollapse-root')
-        )
-      : [];
-  const addButton = buttons.length === 1 ? buttons[0] : null;
-
-  if (!addButton || !collection) {
-    throw new Error(`Add button for repeat group "${linkIdOrLabel}" was not found`);
+  if (collectionsByElement.size > 1) {
+    throw new Error(
+      `Repeat "${linkIdOrLabel}" matches multiple collections; provide an instance scope`
+    );
   }
+  const [collection] = collectionsByElement.values();
 
+  const addButtons = Array.from(
+    collection.element.querySelectorAll<HTMLButtonElement>(ADD_REPEAT_BUTTON)
+  ).filter((button) => button.closest(ANY_REPEAT_COLLECTION) === collection.element);
+  if (addButtons.length !== 1) {
+    throw new Error(`Add button for repeat "${linkIdOrLabel}" was not found`);
+  }
+  const [addButton] = addButtons;
   assertInteractive(addButton, linkIdOrLabel);
 
-  const repeatCollection = collection;
-  const repeatAddButton = addButton;
-  const instanceSelector = `[data-linkid="${linkId}"]`;
-  const instanceCountBefore =
-    repeatCollection.querySelectorAll<HTMLElement>(instanceSelector).length;
-
+  const countBefore = getRepeatInstances(collection).length;
   await act(async () => {
-    fireEvent.click(repeatAddButton);
+    fireEvent.click(addButton);
   });
-
   await waitFor(
     () => {
-      const countAfter = repeatCollection.querySelectorAll<HTMLElement>(instanceSelector).length;
-      if (countAfter <= instanceCountBefore) {
-        throw new Error(`Repeat group "${linkIdOrLabel}" did not add an instance`);
+      if (getRepeatInstances(collection).length !== countBefore + 1) {
+        throw new Error(`Repeat "${linkIdOrLabel}" did not add an instance`);
       }
     },
     { timeout: 5000 }
   );
 
-  const instancesAfter = Array.from(collection.querySelectorAll<HTMLElement>(instanceSelector));
-  const newInstance = instancesAfter[instancesAfter.length - 1];
-  if (!newInstance) {
-    throw new Error(`Repeat group "${linkIdOrLabel}" did not add an instance`);
-  }
-
-  return newInstance;
+  const [added] = getRepeatInstances(collection).slice(-1);
+  return added;
 }
 
 /**
- * Removes the repeat instance identified by `instanceContainer` (as returned by
- * `addRepeatGroup` or `findByLinkIdOrLabel`) using that instance's own remove button, and waits
- * for the removal to complete. Fails when the instance has no enabled remove button (e.g. the
- * remaining empty placeholder of a repeat group).
+ * Removes one repeat instance with its own remove button and waits for it to leave the DOM.
+ * `instance` is a repeat group instance, a `gtable` body row or a repeated answer, as returned
+ * by `addRepeatInstance` or found with `findByLinkIdOrLabel`. Fails when given any other
+ * element, including one nested inside an instance, and when the remove button is disabled
+ * (e.g. the empty placeholder that remains after the last instance is cleared).
  */
-export async function removeRepeatGroup(instanceContainer: HTMLElement) {
-  const linkId = instanceContainer.getAttribute('data-linkid') ?? 'repeat group';
-
-  // The instance's remove button is a sibling of the instance wrapper in the repeat collection
-  // stack. Walk up from the instance and pick the first remove button outside the instance
-  // itself; remove buttons inside the instance belong to nested repeat groups.
-  let scope: HTMLElement | null = instanceContainer;
+export async function removeRepeatInstance(instance: HTMLElement): Promise<void> {
   let removeButton: HTMLButtonElement | null = null;
-  while (scope && !removeButton) {
-    removeButton =
-      Array.from(scope.querySelectorAll<HTMLButtonElement>('span[role="button"] button')).find(
-        (button) => !instanceContainer.contains(button)
-      ) ?? null;
-    scope = scope.parentElement;
+  let label: string | null = null;
+
+  const answers = instance.closest<HTMLElement>(REPEATED_QUESTION_COLLECTION);
+  const groupCollection = getRepeatGroupCollection(instance);
+  if (instance.matches('tbody > tr')) {
+    label = instance.closest('[data-linkid]')?.getAttribute('data-linkid') ?? 'table row';
+    removeButton = instance.querySelector(`:scope > td:last-child ${REMOVE_REPEAT_BUTTON}`);
+  } else if (
+    answers &&
+    getRepeatInstances({ kind: 'question', element: answers }).includes(instance)
+  ) {
+    label = answers.getAttribute('data-linkid') ?? 'repeated answer';
+    removeButton = instance.querySelector(REMOVE_REPEAT_BUTTON);
+  } else if (groupCollection) {
+    label = instance.getAttribute('data-linkid') ?? 'repeat group';
+    // RepeatGroupItem renders the instance beside its remove button. Look only at direct
+    // children while walking up, and stop at the collection, so no other instance's button
+    // can be found.
+    for (
+      let ancestor = instance.parentElement;
+      ancestor && ancestor !== groupCollection && !removeButton;
+      ancestor = ancestor.parentElement
+    ) {
+      removeButton = ancestor.querySelector(`:scope > ${REMOVE_REPEAT_BUTTON}`);
+    }
+  } else {
+    throw new Error(
+      'Provide a repeat instance: a repeat group instance, a gtable body row or a repeated answer'
+    );
   }
 
   if (!removeButton) {
-    throw new Error(`Remove button for repeat instance "${linkId}" was not found`);
+    throw new Error(`Remove button for repeat instance "${label}" was not found`);
   }
+  assertInteractive(removeButton, label);
 
-  assertInteractive(removeButton, linkId);
-
+  const button = removeButton;
   await act(async () => {
-    fireEvent.click(removeButton);
+    fireEvent.click(button);
   });
-
-  // The instance's Collapse closes; MUI marks the collapsed section hidden once the transition
-  // completes. The generous timeout covers slow removal transitions under load.
   await waitFor(
     () => {
-      const collapse = instanceContainer.closest('.MuiCollapse-root') as HTMLElement | null;
-      const isRemoved =
-        !instanceContainer.isConnected ||
-        (collapse !== null && collapse.style.visibility.includes('hidden'));
-      if (!isRemoved) {
-        throw new Error(`Repeat instance "${linkId}" was not removed`);
+      if (instance.isConnected) {
+        throw new Error(`Repeat instance "${label}" was not removed`);
       }
     },
-    { timeout: 10000 }
+    { timeout: REPEAT_REMOVAL_TIMEOUT }
   );
 }
 
@@ -770,109 +823,4 @@ function getExtractResultBundle(extractResultOutput: InAppExtractOutput) {
   }
 
   return extractResult.extractedBundle;
-}
-
-/** Add a gtable row and return that row as the scope for subsequent interactions. */
-export async function addTableRow(scope: HTMLElement, linkIdOrLabel: string): Promise<HTMLElement> {
-  const matches = await findAllByLinkIdOrLabel(scope, linkIdOrLabel);
-  const tables = new Set(
-    matches.flatMap((element) =>
-      Array.from(element.querySelectorAll<HTMLTableElement>('table')).filter(
-        (table) => table.closest('[data-linkid]') === element
-      )
-    )
-  );
-  if (tables.size !== 1)
-    throw new Error(`Table "${linkIdOrLabel}" is missing or ambiguous; provide an instance scope`);
-  const [table] = tables;
-  if (!table) throw new Error(`Table "${linkIdOrLabel}" was not found`);
-  const button = table.querySelector<HTMLButtonElement>(
-    'caption [data-test="button-add-repeat-item"]'
-  );
-  if (!button) throw new Error(`Add button for table "${linkIdOrLabel}" was not found`);
-  assertInteractive(button, linkIdOrLabel);
-  const rows = () => Array.from(table.querySelectorAll<HTMLElement>('tbody > tr'));
-  const before = rows();
-  await act(async () => {
-    fireEvent.click(button);
-  });
-  await waitFor(() => {
-    if (rows().length !== before.length + 1)
-      throw new Error(`Table "${linkIdOrLabel}" did not add a row`);
-  });
-  const added = rows().slice(-1)[0];
-  if (!added) throw new Error(`Table "${linkIdOrLabel}" did not add a row`);
-  return added;
-}
-
-/** Remove only the supplied gtable row; never search an enclosing/sibling table. */
-export async function removeTableRow(row: HTMLElement): Promise<void> {
-  if (row.tagName !== 'TR' || row.parentElement?.tagName !== 'TBODY')
-    throw new Error('Provide a gtable body row');
-  const button = row.querySelector<HTMLButtonElement>('td:last-child span[role="button"] button');
-  if (!button) throw new Error('Remove button for table row was not found');
-  assertInteractive(button, 'table row');
-  await act(async () => {
-    fireEvent.click(button);
-  });
-  await waitFor(() => {
-    if (row.isConnected) throw new Error('Table row was not removed');
-  });
-}
-
-function repeatAnswerInstances(collection: HTMLElement): HTMLElement[] {
-  return Array.from(collection.querySelectorAll<HTMLElement>('.MuiCollapse-root')).filter(
-    (element) => element.closest('[data-test="q-item-repeat-box"]') === collection
-  );
-}
-
-/** Add one answer to a unique repeated question; return its Collapse as an input scope. */
-export async function addRepeatAnswer(
-  scope: HTMLElement,
-  linkIdOrLabel: string
-): Promise<HTMLElement> {
-  const matches = await findAllByLinkIdOrLabel(scope, linkIdOrLabel);
-  const collections = matches.filter(
-    (element) => element.getAttribute('data-test') === 'q-item-repeat-box'
-  );
-  const collection = collections[0];
-  if (collections.length !== 1 || !collection)
-    throw new Error(
-      `Repeated question "${linkIdOrLabel}" is missing or ambiguous; provide an instance scope`
-    );
-  const button = Array.from(
-    collection.querySelectorAll<HTMLButtonElement>('[data-test="button-add-repeat-item"]')
-  ).find((element) => element.closest('[data-test="q-item-repeat-box"]') === collection);
-  if (!button) throw new Error(`Add button for repeated question "${linkIdOrLabel}" was not found`);
-  assertInteractive(button, linkIdOrLabel);
-  const before = repeatAnswerInstances(collection).length;
-  await act(async () => {
-    fireEvent.click(button);
-  });
-  await waitFor(() => {
-    if (repeatAnswerInstances(collection).length !== before + 1)
-      throw new Error(`Repeated question "${linkIdOrLabel}" did not add an answer`);
-  });
-  const added = repeatAnswerInstances(collection).slice(-1)[0];
-  if (!added) throw new Error(`Repeated question "${linkIdOrLabel}" did not add an answer`);
-  return added;
-}
-
-/** Remove the supplied answer instance using only its own enabled user control. */
-export async function removeRepeatAnswer(instance: HTMLElement): Promise<void> {
-  const collection = instance.closest<HTMLElement>('[data-test="q-item-repeat-box"]');
-  if (!collection || !repeatAnswerInstances(collection).includes(instance))
-    throw new Error('Provide a repeated answer instance');
-  const button = instance.querySelector<HTMLButtonElement>('span[role="button"] button');
-  if (!button) throw new Error('Remove button for repeated answer was not found');
-  assertInteractive(button, collection.getAttribute('data-linkid') ?? 'repeated answer');
-  await act(async () => {
-    fireEvent.click(button);
-  });
-  await waitFor(
-    () => {
-      if (instance.isConnected) throw new Error('Repeated answer was not removed');
-    },
-    { timeout: 5000 }
-  );
 }
