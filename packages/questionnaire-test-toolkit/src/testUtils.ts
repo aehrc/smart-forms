@@ -23,7 +23,7 @@
 import { evaluate } from 'fhirpath';
 import { fireEvent, screen, waitFor } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { questionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import { questionnaireResponseStore, rendererConfigStore } from '@aehrc/smart-forms-renderer';
 import { act } from 'react';
 import type { ExtractResult, InAppExtractOutput } from '@aehrc/sdc-template-extract';
 import { extractResultIsOperationOutcome } from '@aehrc/sdc-template-extract';
@@ -351,6 +351,35 @@ export async function selectTab(canvasElement: HTMLElement, linkId: string) {
 
   await act(async () => {
     fireEvent.click(button);
+  });
+
+  await waitForTabHeadingFocus(button);
+}
+
+// A desktop tab click focuses the new panel's first heading after a short timer (renderer
+// FormBodySingleTab). Wait for it, so a field the caller focuses next does not lose focus and,
+// for example, close an open autocomplete list. Small-screen sections expand in place and do not
+// move focus.
+async function waitForTabHeadingFocus(button: Element) {
+  if (rendererConfigStore.getState().disableHeadingFocusOnTabSwitch) {
+    return;
+  }
+  if (!button.closest('[data-test="renderer-tab-list"]')) {
+    return;
+  }
+  const index = /^tab-(\d+)$/.exec(button.querySelector('[id^="tab-"]')?.id ?? '')?.[1];
+  const heading =
+    index === undefined
+      ? null
+      : document.getElementById(`tabpanel-${index}`)?.querySelector('h1, h2, h3, h4, h5, h6');
+  if (!heading) {
+    return;
+  }
+
+  await waitFor(() => {
+    if (document.activeElement !== heading) {
+      throw new Error(`Tab panel ${index} heading did not take focus`);
+    }
   });
 }
 

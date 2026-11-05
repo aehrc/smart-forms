@@ -55,6 +55,12 @@ Except where a PR is linked below, the entries in this section are implemented i
 - Fixed `selectTab` collapsing an already expanded accordion section. Selecting
   an expanded section now leaves it open; buttons without `aria-expanded` retain
   their existing click behavior. See [#2193](https://github.com/aehrc/smart-forms/pull/2193).
+- Fixed `selectTab` returning before the renderer's deferred desktop tab-heading
+  focus. The renderer focuses the new panel's first heading shortly after a tab
+  click, so a field focused straight after `selectTab` lost focus, closing an
+  open autocomplete list. `selectTab` now waits for that focus unless
+  `disableHeadingFocusOnTabSwitch` is set, the panel has no heading, or the tab
+  is a small-screen section (which expands in place).
 - Fixed `getBirthDateForAge` converting the intended local calendar date through
   UTC, which could shift the date or year in timezones ahead of UTC. It now
   formats the local calendar date directly. Invalid target dates (e.g.
