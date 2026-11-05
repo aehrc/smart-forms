@@ -99,6 +99,17 @@ module only warns. `requestDefinitions` remains the default adapter and the two 
 exclusive; a patient is required for either. Keep callback references stable across re-renders
 unless you want a rebuild.
 
+## Repeat group helpers
+
+`addRepeatGroup` and `removeRepeatGroup` target the renderer's stacked repeat instances (groups
+with `repeats: true` and no `gtable`/`check-box` item control). The add helper returns the new
+instance container, which can be passed directly to the scoped input helpers:
+`inputText(await addRepeatGroup(container, 'Medications'), 'Medication name', 'Ibuprofen')`.
+For a `gtable` repeat, use the table rows directly. Nested repeat groups' buttons are never
+matched by accident. A hidden Add button fails without modifying sibling or enclosing collections.
+If the same nested group appears in multiple outer instances, pass the relevant outer instance
+container; an ambiguous collection match is rejected before clicking.
+
 ## Notes for maintainers
 
 **Seven helpers are not exercised by any suite in this repository.** `inputFile`, `inputTime`,
@@ -116,11 +127,13 @@ or deleting it breaks that suite. (An earlier revision of this file called it "p
 the grounds that every suite mocks `fhirclient` to return `{}`. That is untrue of the file above,
 which is the one place the constant has an observable effect.)
 
-**The input helpers use `fireEvent`, which cannot see `readOnly`, `disabled` or `pointer-events`.**
-A test written with them can therefore assert an interaction a real user cannot perform: a click on
-a read-only control is a silent no-op, and `inputText` writes into a read-only field successfully.
-Both have been observed in practice. If a test passes but the behaviour looks impossible, check
-whether the item or an ancestor is `readOnly` before trusting the green.
+**The input helpers reject impossible interactions.** `inputText`, `checkCheckBox`, `inputFile`,
+`inputDateTime`, `checkRadioOption`, `checkCheckboxOption`, `chooseSelectOption`,
+`chooseQuantityOption` and `inputOpenChoiceOtherText` fail with the question identifier and
+reason when the target control is disabled, read-only, or inside a disabled fieldset. `fireEvent`
+cannot see these states, so a test written against a read-only control now fails loudly instead
+of silently performing an interaction a real user cannot. If a test passes but the behaviour
+looks impossible, check whether the item or an ancestor is `readOnly` before trusting the green.
 
 **A near-duplicate exists.** `packages/smart-forms-renderer/src/stories/testUtils.ts` is a longer
 copy of the same helpers, despite a comment in the original asserting the two are identical.
