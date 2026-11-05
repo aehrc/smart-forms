@@ -54,6 +54,51 @@ population effect: changing any of them repopulates the form.
 `aria-expanded="true"` leaves it open instead of collapsing it. Tabs without an
 `aria-expanded` attribute keep the ordinary click behaviour.
 
+## Saved responses and comparison extraction
+
+`questionnaireResponse` loads a saved response, e.g. to resume an in-progress form or amend a
+completed one. Without a patient the form renders the saved answers as-is. With a patient,
+population still runs to resolve patient/user/FHIR launch context, but the saved answers take
+precedence over newly generated ones; calculated expressions resolve from the populated context
+as they do in production. Generated answers are never merged into the saved response. Changing
+`questionnaireResponse` rebuilds the form from the new response.
+
+`comparisonSourceResponse` switches the Save button from full extraction to modified-only
+extraction against that baseline. It is independent of the loaded response — production prepares
+its comparison through fresh population, and the test supplies that baseline explicitly.
+Changing only `comparisonSourceResponse` updates the next extraction without rebuilding the form
+or losing unsaved edits.
+
+Both responses are cloned before use, so caller-owned fixtures are never mutated by the wrapper,
+population, or extraction.
+
+## Initialisation failures
+
+A failed initialisation renders a visible error (a `[data-testid="toolkit-init-error"]` element
+with the failure reason) and no Save button. This includes a failed population step, even when a
+saved response was supplied. Rejected population callbacks fail even if their error message is empty.
+
+## Dates and clocks
+
+`getBirthDateForAge(ageInYears)` returns the intended local calendar date for the process
+timezone. Suites should run with a fixed `TZ` (e.g. `TZ=Australia/Sydney`) and, for
+date-sensitive assertions, control the clock. Use Date-only clock control so the renderer's
+debounced store updates and Testing Library timers continue to run. Clinical age policies
+(especially leap-day handling) should use explicit DOB fixtures rather than
+`getBirthDateForAge`.
+
+## Strict population fixtures and request spies
+
+`fetchResourceCallback` is the seam for suite-owned population fixtures: the callback receives
+the exact query URL population issues (e.g.
+`QuestionnaireResponse?questionnaire=...&status=completed&_count=1&_sort=-authored&patient=...`
+or `Observation?code=8867-4&...`). Serve known queries with server-shaped searchset Bundles
+(an explicit empty Bundle for an expected empty search) and reject unexpected queries — the
+wrapper turns a rejected request into a visible initialisation failure even when the population
+module only warns. `requestDefinitions` remains the default adapter and the two are mutually
+exclusive; a patient is required for either. Keep callback references stable across re-renders
+unless you want a rebuild.
+
 ## Notes for maintainers
 
 **Seven helpers are not exercised by any suite in this repository.** `inputFile`, `inputTime`,

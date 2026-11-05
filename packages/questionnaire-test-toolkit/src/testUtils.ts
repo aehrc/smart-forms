@@ -453,7 +453,17 @@ export async function getVisibleTab(canvasElement: HTMLElement): Promise<HTMLEle
 export function getBirthDateForAge(ageInYears: number): string {
   const today = new Date();
   const birthDate = new Date(today.getFullYear() - ageInYears, today.getMonth(), today.getDate());
-  return birthDate.toISOString().slice(0, 10);
+
+  // Format the intended local calendar date directly. Converting through toISOString() shifts the
+  // date in timezones ahead of UTC (e.g. Australia/Sydney) and can even move the year when the
+  // birthday is near the New Year boundary. Invalid target dates roll over per the Date
+  // constructor: a 29 February birthday in a non-leap target year resolves to 1 March. Suites with
+  // a clinical leap-day policy should use explicit DOB fixtures instead.
+  const year = birthDate.getFullYear();
+  const month = String(birthDate.getMonth() + 1).padStart(2, '0');
+  const day = String(birthDate.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 }
 
 export async function invokeExtract(
@@ -464,20 +474,37 @@ export async function invokeExtract(
   if (!button) {
     throw new Error('Save button not found');
   }
+
+  const callsBefore = onExtractResultMock.mock.calls?.length ?? 0;
+
   await act(async () => {
     fireEvent.click(button);
   });
 
   await waitFor(
     () => {
-      if (!onExtractResultMock.mock.lastCall) {
-        throw new Error('Expected onExtractResult to be called');
+      const calls = onExtractResultMock.mock.calls;
+
+      // Spies without a call log keep the lastCall-based wait.
+      if (calls === undefined) {
+        if (!onExtractResultMock.mock.lastCall) {
+          throw new Error('Expected onExtractResult to be called');
+        }
+        return;
+      }
+
+      // Wait for the callback of the click just dispatched, rather than accepting a callback from
+      // an earlier extraction.
+      if (calls.length <= callsBefore) {
+        throw new Error('Expected onExtractResult to be called for this extraction');
       }
     },
     { timeout: 5000 }
   );
 
-  const lastCall = onExtractResultMock.mock.lastCall;
+  const calls = onExtractResultMock.mock.calls;
+  const lastCall =
+    calls !== undefined ? calls[calls.length - 1] : onExtractResultMock.mock.lastCall;
   if (!lastCall) {
     throw new Error('Expected onExtractResult to be called');
   }
