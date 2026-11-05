@@ -21,9 +21,11 @@ import {
   checkIsDateTime,
   checkIsTime,
   evaluateCalculatedExpressionsFhirPath,
-  evaluateInitialCalculatedExpressions
+  evaluateInitialCalculatedExpressions,
+  processCalculatedExpressions
 } from '../utils/calculatedExpression';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 // Import the mocked functions
 import fhirpath from 'fhirpath';
 import { createFhirPathContext, handleFhirPathResult } from '../utils/fhirpath';
@@ -1108,5 +1110,206 @@ describe('calculatedExpression utils', () => {
 
       expect(result).toBeDefined();
     });
+  });
+});
+
+describe('calculated expression collections', () => {
+  beforeEach(() => {
+    const realFhirPath = jest.requireActual<typeof import('fhirpath')>('fhirpath');
+    const realContext = jest.requireActual<typeof import('../utils/fhirpath')>('../utils/fhirpath');
+    mockFhirPath.mockImplementation(realFhirPath.evaluate);
+    mockCreateFhirPathContext.mockImplementation(realContext.createFhirPathContext);
+    mockHandleFhirPathResult.mockImplementation(realContext.handleFhirPathResult);
+  });
+
+  afterEach(() => {
+    mockFhirPath.mockReset();
+    mockCreateFhirPathContext.mockReset();
+    mockHandleFhirPathResult.mockReset();
+  });
+
+  const questionnaire: Questionnaire = {
+    resourceType: 'Questionnaire',
+    status: 'draft',
+    item: [
+      { linkId: 'values', type: 'string', repeats: true },
+      { linkId: 'single', type: 'string' }
+    ]
+  };
+  const initial: QuestionnaireResponse = {
+    resourceType: 'QuestionnaireResponse',
+    status: 'in-progress',
+    item: [{ linkId: 'values' }]
+  };
+  const itemMap = Object.fromEntries(questionnaire.item!.map((item) => [item.linkId, item]));
+  const expression = (text: string): Record<string, CalculatedExpression[]> => ({
+    values: [{ from: 'item', expression: text }],
+    single: [{ from: 'item', expression: text }],
+    label: [{ from: 'item._text', expression: text }]
+  });
+  const apply = (
+    previous: Record<string, CalculatedExpression[]>,
+    updated: Record<string, CalculatedExpression[]>
+  ) =>
+    applyCalculatedExpressionValuesToResponse(
+      questionnaire,
+      initial,
+      itemMap,
+      previous,
+      updated,
+      {},
+      'https://example.test/fhir'
+    );
+  const values = (response: QuestionnaireResponse, id: string) =>
+    response.item
+      ?.find((item) => item.linkId === id)
+      ?.answer?.map((answer) => answer.valueString) ?? [];
+
+  it('preserves all initial collection answers, with scalar labels and non-repeating fields', async () => {
+    const result = await evaluateInitialCalculatedExpressions({
+      initialResponse: initial,
+      initialResponseItemMap: { values: initial.item! },
+      calculatedExpressions: expression("'alpha' | 'beta'"),
+      variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
+      existingFhirPathContext: {},
+      fhirPathTerminologyCache: {},
+      terminologyServerUrl: 'https://example.test/fhir'
+    });
+    const response = await apply({}, result.initialCalculatedExpressions);
+    expect(values(response, 'values')).toEqual(['alpha', 'beta']);
+    expect(values(response, 'single')).toEqual(['alpha']);
+    expect(result.initialCalculatedExpressions.label[0].value).toBe('alpha');
+    const answers = response.item?.find((item) => item.linkId === 'values')?.answer ?? [];
+    expect(new Set(answers.map((answer) => answer.id)).size).toBe(2);
+  });
+
+  it('updates when only a later member changes, then handles singleton and empty results', async () => {
+    let previous: Record<string, CalculatedExpression[]> = {};
+    for (const [text, expected] of [
+      ["'alpha' | 'beta'", ['alpha', 'beta']],
+      ["'alpha' | 'gamma'", ['alpha', 'gamma']],
+      ["'alpha'", ['alpha']],
+      ['{}', []]
+    ] as const) {
+      const pending = expression(text);
+      for (const id of Object.keys(pending)) pending[id][0].value = previous[id]?.[0].value ?? null;
+      const result = await evaluateCalculatedExpressionsFhirPath(
+        {},
+        {},
+        pending,
+        'https://example.test/fhir'
+      );
+      const response = await apply(previous, result.updatedCalculatedExpressions);
+      expect(values(response, 'values')).toEqual(expected);
+      previous = structuredClone(result.updatedCalculatedExpressions);
+    }
+  });
+
+  it('keeps repeated numeric quantities and choice codings typed', async () => {
+    const typed: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'draft',
+      item: [
+        { linkId: 'quantity', type: 'quantity', repeats: true },
+        {
+          linkId: 'choice',
+          type: 'choice',
+          repeats: true,
+          answerOption: [
+            { valueCoding: { system: 'urn:test', code: 'a', display: 'Alpha' } },
+            { valueCoding: { system: 'urn:test', code: 'b', display: 'Beta' } }
+          ]
+        }
+      ]
+    };
+    const evaluated = await evaluateCalculatedExpressionsFhirPath(
+      {},
+      {},
+      {
+        quantity: [{ from: 'item', expression: '0 | 2' }],
+        choice: [{ from: 'item', expression: "'a' | 'b'" }]
+      },
+      'https://example.test/fhir'
+    );
+    const response = await applyCalculatedExpressionValuesToResponse(
+      typed,
+      initial,
+      Object.fromEntries(typed.item!.map((item) => [item.linkId, item])),
+      {},
+      evaluated.updatedCalculatedExpressions,
+      {},
+      'https://example.test/fhir'
+    );
+    expect(
+      response.item
+        ?.find((item) => item.linkId === 'quantity')
+        ?.answer?.map(({ id, ...answer }) => answer)
+    ).toEqual([{ valueQuantity: { value: 0 } }, { valueQuantity: { value: 2 } }]);
+    expect(
+      response.item
+        ?.find((item) => item.linkId === 'choice')
+        ?.answer?.map(({ id, ...answer }) => answer)
+    ).toEqual([
+      { valueCoding: { system: 'urn:test', code: 'a', display: 'Alpha' } },
+      { valueCoding: { system: 'urn:test', code: 'b', display: 'Beta' } }
+    ]);
+  });
+
+  it('preserves manual scalar answers when discarded collection members change', async () => {
+    const expressions = expression('%firstValue | %laterValues');
+    const evaluated = await evaluateCalculatedExpressionsFhirPath(
+      { firstValue: 'alpha', laterValues: ['beta'] },
+      {},
+      expressions,
+      'https://example.test/fhir'
+    );
+    let response = await apply({}, evaluated.updatedCalculatedExpressions);
+    let previous = structuredClone(evaluated.updatedCalculatedExpressions);
+    const single = response.item!.find((item) => item.linkId === 'single')!;
+    single.answer![0].valueString = 'manual correction';
+    const manualAnswer = structuredClone(single);
+
+    // A later-member edit and a collection-to-singleton transition both leave
+    // the effective scalar unchanged, so neither may replace the user's answer.
+    for (const laterValues of [['gamma'], []]) {
+      const updated = await processCalculatedExpressions(
+        questionnaire,
+        response,
+        itemMap,
+        previous,
+        { fhirPathVariables: {}, xFhirQueryVariables: {} },
+        { firstValue: 'alpha', laterValues },
+        {},
+        {},
+        'https://example.test/fhir'
+      );
+      response = updated.updatedResponse;
+      previous = updated.updatedCalculatedExpressions;
+      expect(response.item?.find((item) => item.linkId === 'single')).toEqual(manualAnswer);
+      expect(values(response, 'values')).toEqual(['alpha', ...laterValues]);
+    }
+
+    // A change to the effective scalar must still replace the answer, and
+    // an empty result must still clear it.
+    for (const [firstValue, expected] of [
+      ['omega', ['omega']],
+      [[], []]
+    ] as const) {
+      const updated = await processCalculatedExpressions(
+        questionnaire,
+        response,
+        itemMap,
+        previous,
+        { fhirPathVariables: {}, xFhirQueryVariables: {} },
+        { firstValue, laterValues: [] },
+        {},
+        {},
+        'https://example.test/fhir'
+      );
+      response = updated.updatedResponse;
+      previous = updated.updatedCalculatedExpressions;
+      expect(values(response, 'single')).toEqual(expected);
+      expect(values(response, 'values')).toEqual(expected);
+    }
   });
 });

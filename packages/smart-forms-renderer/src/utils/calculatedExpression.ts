@@ -60,6 +60,21 @@ interface EvaluateInitialCalculatedExpressionsParams {
   terminologyServerUrl: string;
 }
 
+function getCalculatedExpressionResult(
+  from: CalculatedExpression['from'],
+  result: CalculatedExpression['value'][]
+): CalculatedExpression['value'] {
+  // Answer expressions may return a collection; presentation expressions stay scalar.
+  return from === 'item' && result.length > 1 ? result : result[0];
+}
+
+function getCalculatedAnswerValue(
+  value: CalculatedExpression['value'],
+  repeats: boolean | undefined
+): CalculatedExpression['value'] {
+  return Array.isArray(value) && !repeats ? (value[0] ?? null) : value;
+}
+
 export async function evaluateInitialCalculatedExpressions(
   params: EvaluateInitialCalculatedExpressionsParams
 ): Promise<{
@@ -135,9 +150,9 @@ export async function evaluateInitialCalculatedExpressions(
           cacheTerminologyResult(calcExpression.expression, result, fhirPathTerminologyCache);
         }
 
-        // Only update calculatedExpressions if length of result array > 0
-        if (result.length > 0 && !deepEqual(calcExpression.value, result[0])) {
-          calcExpression.value = result[0];
+        const value = getCalculatedExpressionResult(calcExpression.from, result);
+        if (result.length > 0 && !deepEqual(calcExpression.value, value)) {
+          calcExpression.value = value;
         }
       } catch (e) {
         console.warn(e.message, `LinkId: ${linkId}\nExpression: ${calcExpression.expression}`);
@@ -217,10 +232,11 @@ export async function evaluateCalculatedExpressionsFhirPath(
 
         // Update calculatedExpressions if length of result array > 0
         // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733
-        if (result.length > 0 && !deepEqual(calcExpression.value, result[0])) {
+        const value = getCalculatedExpressionResult(calcExpression.from, result);
+        if (result.length > 0 && !deepEqual(calcExpression.value, value)) {
           // console.log(calcExpression.value, structuredClone(result));
           isUpdated = true;
-          calcExpression.value = result[0];
+          calcExpression.value = value;
 
           // Update computedNewAnswers if the expression is a cqf-expression for _answerValueSet - clear answers (similar to dynamic value sets)
           if (calcExpression.from === 'item._answerValueSet') {
@@ -311,8 +327,15 @@ export async function applyCalculatedExpressionValuesToResponse(
       continue;
     }
 
-    // If the calculated expression from item has changed, add it to the diff
-    if (!deepEqual(calcExpressionFromItem.value, existingCalcExpressionFromItem.value)) {
+    // Discarded members must not overwrite an edited non-repeating answer when
+    // its effective calculated value has not changed.
+    const repeats = questionnaireItemMap[linkId]?.repeats;
+    if (
+      !deepEqual(
+        getCalculatedAnswerValue(calcExpressionFromItem.value, repeats),
+        getCalculatedAnswerValue(existingCalcExpressionFromItem.value, repeats)
+      )
+    ) {
       diffCalculatedExpressions[linkId] = calculatedExpressionWithValue;
     }
   }
@@ -496,9 +519,10 @@ function constructItemFromCalculatedExpression(
     return;
   }
   const generatedAnswerKey = generateCalculatedExpressionsAnswerKey(qItem.linkId);
+  const value = getCalculatedAnswerValue(calcExpressionFromItem.value, qItem.repeats);
 
   // calcExpressionFromItem.value is null, return empty item
-  if (calcExpressionFromItem.value === null) {
+  if (value === null) {
     return createEmptyQrItem(qItem, generatedAnswerKey);
   }
 
@@ -506,19 +530,20 @@ function constructItemFromCalculatedExpression(
     console.log(calculatedExpressions, generatedAnswerKey);
   }
 
-  // At this point calcExpressionFromItem.value should have an evaluated value
-  // Parse evaluated value to QuestionnaireResponseItemAnswer
-  const parsedAnswer = parseValueToAnswer(qItem, calcExpressionFromItem.value);
-
-  // Shouldn't really happen, but if it does, do not return anything
-  if (!parsedAnswer) {
-    return;
+  const values = Array.isArray(value) ? value : [value];
+  const answers: QuestionnaireResponseItemAnswer[] = [];
+  for (const [index, value] of values.entries()) {
+    const parsedAnswer = parseValueToAnswer(qItem, value);
+    if (!parsedAnswer) return;
+    // Include the index so each answer is distinct even with deterministic ID generators.
+    answers.push({
+      id: index === 0 ? generatedAnswerKey : `${generatedAnswerKey}-${index}`,
+      ...parsedAnswer
+    });
   }
-
-  // Create a new QuestionnaireResponseItem with the parsed answer
   return {
     ...createEmptyQrItem(qItem, generatedAnswerKey),
-    answer: [{ id: generatedAnswerKey, ...parsedAnswer }]
+    ...(answers.length > 0 && { answer: answers })
   };
 }
 
