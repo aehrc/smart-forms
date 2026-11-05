@@ -1,5 +1,6 @@
 import type {
   AllergyIntolerance,
+  Bundle,
   Condition,
   FhirResource,
   Immunization,
@@ -995,7 +996,7 @@ export const obsCVDRiskResult: Observation = {
   ]
 };
 
-export function makeSearchSetBundle(resources: FhirResource[]) {
+export function makeSearchSetBundle(resources: FhirResource[]): Bundle {
   return {
     resourceType: 'Bundle',
     type: 'searchset',

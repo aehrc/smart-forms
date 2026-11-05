@@ -73,6 +73,10 @@ export {
 
 export { findByLinkIdOrLabel, findAllByLinkIdOrLabel, selectTab } from './testUtils';
 
+// -- Repeats --------------------------------------------------------------------------------
+
+export { addRepeatInstance, removeRepeatInstance } from './testUtils';
+
 // -- Extraction and misc --------------------------------------------------------------------
 
 export { invokeExtract, getBirthDateForAge } from './testUtils';

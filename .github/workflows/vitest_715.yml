@@ -1,17 +1,37 @@
 name: Vitest Questionnaire 715 Behaviour Tests
 
-on: [workflow_dispatch]
+on:
+  push:
+    paths:
+      - 'packages/questionnaire-test-toolkit/**'
+      - 'packages/smart-forms-renderer/**'
+      - 'packages/sdc-populate/**'
+      - 'packages/sdc-template-extract/**'
+      - 'packages/sdc-assemble/**'
+      - 'apps/smart-forms-app/src/test/**'
+      - 'apps/smart-forms-app/src/data/resources/Questionnaire/**'
+  pull_request:
+    paths:
+      - 'packages/questionnaire-test-toolkit/**'
+      - 'packages/smart-forms-renderer/**'
+      - 'packages/sdc-populate/**'
+      - 'packages/sdc-template-extract/**'
+      - 'packages/sdc-assemble/**'
+      - 'apps/smart-forms-app/src/test/**'
+      - 'apps/smart-forms-app/src/data/resources/Questionnaire/**'
+  workflow_dispatch:
 
 jobs:
   vitest-smart-forms-app-715-tests:
-    name: Vitest Questionnaire Behaviour Tests - Smart Forms App
+    name: Vitest Questionnaire Behaviour Tests - Smart Forms App (offline)
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
       - name: Install dependencies
         run: npm ci
@@ -24,6 +44,55 @@ jobs:
           npm run build -w packages/smart-forms-renderer
           npm run build -w packages/questionnaire-test-toolkit
 
-      - name: Run vitest tests
-        run: npm run test-715 -w apps/smart-forms-app
+      # Deterministic, offline suites: acceptance, population, calculation,
+      # conditions and completed-form scenarios use fixture-based population.
+      # The extraction suite performs live SNOMED lookups against Ontoserver and
+      # runs separately (see the live-terminology job below).
+      - name: Run offline vitest suites
+        run: |
+          npx vitest run --config ./vitest.config.ts \
+            src/test/aboriginalFormAcceptance.test.tsx \
+            src/test/aboriginalFormPopulation.test.tsx \
+            src/test/aboriginalFormCalculation.test.tsx \
+            src/test/aboriginalFormConditions.test.tsx \
+            src/test/aboriginalFormCompletedFor0To1Years.test.tsx \
+            src/test/aboriginalFormCompletedFor12To6Years.test.tsx \
+            src/test/aboriginalFormCompletedFor24To13Years.test.tsx \
+            src/test/aboriginalFormCompletedFor49To25Years.test.tsx \
+            src/test/aboriginalFormCompletedFor51Years.test.tsx \
+            src/test/aboriginalFormCompletedFor5To1Years.test.tsx
+        working-directory: apps/smart-forms-app
+        env:
+          TZ: Australia/Sydney
+      - uses: codecov/codecov-action@v4
+
+  vitest-smart-forms-app-715-live-terminology:
+    name: Vitest Questionnaire Behaviour Tests - Smart Forms App (live terminology)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-live-terminology]')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+          npm run build -w packages/questionnaire-test-toolkit
+
+      # Requires network access to the public Ontoserver for SNOMED lookups.
+      - name: Run extraction suite with live terminology
+        run: npx vitest run --config ./vitest.config.ts src/test/aboriginalFormExtraction.test.tsx
+        working-directory: apps/smart-forms-app
+        env:
+          TZ: Australia/Sydney
       - uses: codecov/codecov-action@v4
