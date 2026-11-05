@@ -85,6 +85,8 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
   return (
     <FormControl
+      data-linkid={qItem.linkId}
+      data-label={qItem.text}
       error={!!feedback && feedbackSeverity !== 'warning'}
       sx={{
         width: '100%',
@@ -133,7 +135,6 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         size="small"
         renderInput={(params) => (
           <StandardTextField
-            multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             error={!!feedback && feedbackSeverity !== 'warning'}

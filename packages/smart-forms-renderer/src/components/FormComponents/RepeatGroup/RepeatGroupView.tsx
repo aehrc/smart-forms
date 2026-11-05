@@ -89,6 +89,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
     const isDefaultOpen = groupCollapsibleValue === 'default-open';
     return (
       <GroupAccordion
+        data-test="q-group-repeat-box"
         disableGutters
         defaultExpanded={isDefaultOpen}
         elevation={groupCardElevation}
@@ -144,6 +145,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
   return (
     <QGroupContainerBox
       key={qItem.linkId}
+      data-test="q-group-repeat-box"
       cardElevation={groupCardElevation}
       isRepeated={true}
       style={parentStyles || undefined}>

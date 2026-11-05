@@ -39,6 +39,8 @@ import { useRendererConfigStore } from '../../../stores';
 import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import AutocompleteWrappedValue from '../ItemParts/AutocompleteWrappedValue';
+import { autocompleteWrappedValueSx } from '../ItemParts/AutocompleteWrappedValue.styles';
 
 interface OpenChoiceAutocompleteFieldProps
   extends PropsWithIsTabledAttribute,
@@ -121,7 +123,6 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         return (
           <StandardTextField
             {...params}
-            multiline
             value={input}
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
@@ -137,8 +138,16 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
                       <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
                     ) : null}
                     {params.InputProps.startAdornment}
+                    <AutocompleteWrappedValue
+                      text={
+                        typeof valueAutocomplete === 'string'
+                          ? valueAutocomplete
+                          : (valueAutocomplete.display ?? `${valueAutocomplete.code}`)
+                      }
+                    />
                   </>
                 ),
+                sx: autocompleteWrappedValueSx,
                 endAdornment: (
                   <>
                     {loading ? (

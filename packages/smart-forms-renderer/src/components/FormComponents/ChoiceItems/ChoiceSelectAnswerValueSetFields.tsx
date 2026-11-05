@@ -31,6 +31,8 @@ import { useRendererConfigStore } from '../../../stores';
 import { interpolate } from '../../../i18n';
 import { isCodingDisabled } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import AutocompleteWrappedValue from '../ItemParts/AutocompleteWrappedValue';
+import { autocompleteWrappedValueSx } from '../ItemParts/AutocompleteWrappedValue.styles';
 import { StyledAlert } from '../../Alert.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { StandardTextField } from '../Textfield.styles';
@@ -114,7 +116,6 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           renderInput={(params) => (
             <StandardTextField
-              multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
               error={!!feedback && feedbackSeverity !== 'warning'}
@@ -125,6 +126,12 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 input: {
                   ...params.InputProps,
                   readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                  startAdornment: (
+                    <AutocompleteWrappedValue
+                      text={valueCoding ? (valueCoding.display ?? `${valueCoding.code}`) : ''}
+                    />
+                  ),
+                  sx: autocompleteWrappedValueSx,
                   endAdornment: (
                     <>
                       {params.InputProps.endAdornment}
