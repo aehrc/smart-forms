@@ -137,18 +137,15 @@ describe('OpenChoiceAutocompleteItem free-text updates', () => {
       />
     );
 
-    await waitFor(() =>
-      expect(document.querySelector('[data-linkid="concept"] input')).not.toBeNull()
-    );
-    const first = document.querySelector<HTMLInputElement>('[data-linkid="concept"] input')!;
+    const [first] = await screen.findAllByRole<HTMLInputElement>('combobox', { name: 'Concept' });
     await typeAndSelectBeta(first);
     await wait(400);
 
     fireEvent.click(document.querySelector('[data-test="button-add-repeat-item"]')!);
     await waitFor(() =>
-      expect(document.querySelectorAll('[data-linkid="concept"] input')).toHaveLength(2)
+      expect(screen.getAllByRole('combobox', { name: 'Concept' })).toHaveLength(2)
     );
-    const second = document.querySelectorAll<HTMLInputElement>('[data-linkid="concept"] input')[1];
+    const second = screen.getAllByRole<HTMLInputElement>('combobox', { name: 'Concept' })[1];
     await typeAndSelectBeta(second);
     await wait(500);
 

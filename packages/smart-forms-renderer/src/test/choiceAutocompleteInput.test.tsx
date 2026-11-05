@@ -16,8 +16,8 @@
  */
 
 import { describe, expect, jest, test } from '@jest/globals';
-import { act, configure, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import type { Questionnaire } from 'fhir/r4';
+import { act, configure, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import type { Coding, Questionnaire, QuestionnaireResponse, ValueSet } from 'fhir/r4';
 import React from 'react';
 
 // react-markdown, react-dnd and react-dnd-html5-backend are ESM-only and cannot be transformed by ts-jest
@@ -34,8 +34,11 @@ jest.mock('react-dnd-html5-backend', () => ({
   NativeTypes: { FILE: '__NATIVE_FILE__' }
 }));
 
+import { client } from 'fhirclient';
 import SmartFormsRenderer from '../components/Renderer/SmartFormsRenderer';
 import { questionnaireResponseStore } from '../stores';
+
+const mockClient = client as jest.MockedFunction<typeof client>;
 
 // The whole form renders for each test, which is slow when the full suite runs in parallel.
 configure({ asyncUtilTimeout: 5000 });
@@ -62,7 +65,24 @@ const autocompleteExtension = {
     coding: [{ system: 'http://hl7.org/fhir/questionnaire-item-control', code: 'autocomplete' }]
   }
 };
+const LONG_DISPLAY =
+  'Chronic obstructive pulmonary disease with acute lower respiratory infection and acute exacerbation, requiring review';
+const alphaCoding = { system: 'urn:test', code: 'alpha', display: 'Alpha' };
 const betaCoding = { system: 'urn:test', code: 'beta', display: 'Beta' };
+const longCoding = { system: 'urn:test', code: 'long', display: LONG_DISPLAY };
+const codings = [alphaCoding, betaCoding, longCoding];
+
+// The search fields query the terminology server, which returns every coding
+function mockExpansion(contains: Coding[]) {
+  const expansion: ValueSet = {
+    resourceType: 'ValueSet',
+    status: 'active',
+    expansion: { timestamp: '2026-01-01', total: contains.length, contains }
+  };
+  mockClient.mockReturnValue({
+    request: (jest.fn() as any).mockResolvedValue(expansion)
+  } as any);
+}
 
 const questionnaire: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -72,10 +92,7 @@ const questionnaire: Questionnaire = {
       resourceType: 'ValueSet',
       id: 'options',
       status: 'active',
-      expansion: {
-        timestamp: '2026-01-01',
-        contains: [{ system: 'urn:test', code: 'alpha', display: 'Alpha' }, betaCoding]
-      }
+      expansion: { timestamp: '2026-01-01', contains: codings }
     }
   ],
   item: [
@@ -86,7 +103,7 @@ const questionnaire: Questionnaire = {
       linkId: 'open',
       type: 'open-choice',
       text: 'Open',
-      answerOption: [{ valueCoding: betaCoding }]
+      answerOption: codings.map((valueCoding) => ({ valueCoding }))
     },
     // OpenChoiceSelectAnswerValueSetField
     { linkId: 'open-values', type: 'open-choice', text: 'Open values', answerValueSet: '#options' },
@@ -95,7 +112,7 @@ const questionnaire: Questionnaire = {
       linkId: 'closed-search',
       type: 'choice',
       text: 'Closed search',
-      answerValueSet: '#options',
+      answerValueSet: 'https://example.test/ValueSet/options',
       extension: [autocompleteExtension]
     },
     // OpenChoiceAutocompleteField
@@ -103,47 +120,58 @@ const questionnaire: Questionnaire = {
       linkId: 'open-search',
       type: 'open-choice',
       text: 'Open search',
-      answerValueSet: '#options',
+      answerValueSet: 'https://example.test/ValueSet/options',
       extension: [autocompleteExtension]
     }
   ]
 };
+const fields = (questionnaire.item ?? []).map((item) => ({
+  linkId: item.linkId,
+  text: item.text ?? ''
+}));
 
-describe('choice autocomplete inputs', () => {
-  test('every autocomplete uses a single-line input, so Arrow/Enter selects an option', async () => {
+// The field shows `text` either as the combobox's own value or as text drawn next to it. jsdom has no
+// layout, so whether that text wraps is checked by the "Testing/Long choice values" story instead.
+function fieldShows(combobox: HTMLInputElement, text: string): boolean {
+  const field = combobox.closest('.MuiAutocomplete-root') as HTMLElement;
+  return combobox.value === text || within(field).queryAllByText(text).length > 0;
+}
+
+function getAnswers(linkId: string) {
+  return questionnaireResponseStore
+    .getState()
+    .updatableResponse.item?.find((item) => item.linkId === linkId)?.answer;
+}
+
+describe('choice and open-choice autocompletes', () => {
+  test.each(fields)('Arrow/Enter selects an option in "$text"', async ({ linkId, text }) => {
+    // The terminology server returns only the match; the other fields filter their own options
+    mockExpansion([betaCoding]);
     const warn = jest.spyOn(console, 'warn');
     const error = jest.spyOn(console, 'error');
     try {
-      render(<SmartFormsRenderer questionnaire={questionnaire} />);
-
-      await waitFor(() =>
-        expect(document.querySelector('[data-linkid="closed"] [role="combobox"]')).not.toBeNull()
+      render(
+        <SmartFormsRenderer
+          questionnaire={questionnaire}
+          terminologyServerUrl="http://fake-terminology-server"
+        />
       );
-      for (const linkId of ['closed', 'open', 'open-values', 'closed-search', 'open-search']) {
-        const combobox = document.querySelector(`[data-linkid="${linkId}"] [role="combobox"]`);
-        expect([linkId, combobox?.tagName]).toEqual([linkId, 'INPUT']);
-      }
 
-      const input = document.querySelector<HTMLInputElement>(
-        '[data-linkid="closed"] [role="combobox"]'
-      )!;
+      const combobox = await screen.findByRole<HTMLInputElement>('combobox', { name: text });
       await act(async () => {
-        input.focus();
-        fireEvent.change(input, { target: { value: 'Beta' } });
+        combobox.focus();
+        fireEvent.change(combobox, { target: { value: 'Be' } });
       });
       await screen.findByRole('option', { name: 'Beta' });
       await act(async () => {
-        fireEvent.keyDown(input, { key: 'ArrowDown' });
-        fireEvent.keyDown(input, { key: 'Enter' });
+        fireEvent.keyDown(combobox, { key: 'ArrowDown' });
+        fireEvent.keyDown(combobox, { key: 'Enter' });
       });
 
       await waitFor(() =>
-        expect(
-          questionnaireResponseStore
-            .getState()
-            .updatableResponse.item?.find((item) => item.linkId === 'closed')?.answer
-        ).toEqual([expect.objectContaining({ valueCoding: betaCoding })])
+        expect(getAnswers(linkId)).toEqual([expect.objectContaining({ valueCoding: betaCoding })])
       );
+      expect(fieldShows(combobox, 'Beta')).toBe(true);
       const textareaWarnings = [...warn.mock.calls, ...error.mock.calls]
         .flat()
         .map(String)
@@ -154,4 +182,33 @@ describe('choice autocomplete inputs', () => {
       error.mockRestore();
     }
   });
+
+  test.each(fields)(
+    'a long selected value in "$text" is drawn as text the field can wrap',
+    async ({ linkId, text }) => {
+      mockExpansion(codings);
+      const questionnaireResponse: QuestionnaireResponse = {
+        resourceType: 'QuestionnaireResponse',
+        status: 'in-progress',
+        item: [{ linkId, text, answer: [{ valueCoding: longCoding }] }]
+      };
+      render(
+        <SmartFormsRenderer
+          questionnaire={questionnaire}
+          questionnaireResponse={questionnaireResponse}
+          terminologyServerUrl="http://fake-terminology-server"
+        />
+      );
+
+      const combobox = await screen.findByRole<HTMLInputElement>('combobox', { name: text });
+      const field = combobox.closest('.MuiAutocomplete-root') as HTMLElement;
+      // A single-line input cannot wrap, so the full value must also be drawn as text
+      await waitFor(() => expect(within(field).getAllByText(LONG_DISPLAY)).toHaveLength(1));
+      // Screen readers get the value from the combobox, or from the drawn text if it is not hidden
+      const drawnText = within(field).getByText(LONG_DISPLAY);
+      const readableValue =
+        combobox.value === LONG_DISPLAY || drawnText.getAttribute('aria-hidden') !== 'true';
+      expect(readableValue).toBe(true);
+    }
+  );
 });

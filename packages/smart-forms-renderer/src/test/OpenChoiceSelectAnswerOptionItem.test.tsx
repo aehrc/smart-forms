@@ -16,7 +16,7 @@
  */
 
 import { describe, expect, jest, test } from '@jest/globals';
-import { act, configure, fireEvent, render, waitFor } from '@testing-library/react';
+import { act, configure, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { Questionnaire } from 'fhir/r4';
 import React from 'react';
 
@@ -87,10 +87,7 @@ describe('OpenChoiceSelectAnswerOptionItem', () => {
     // A repeated item starts with an ID-only answer, which must not be treated as a selection.
     render(<SmartFormsRenderer questionnaire={questionnaire} />);
 
-    await waitFor(() =>
-      expect(document.querySelector('[data-linkid="roles"] input')).not.toBeNull()
-    );
-    const input = document.querySelector<HTMLInputElement>('[data-linkid="roles"] input')!;
+    const input = await screen.findByRole<HTMLInputElement>('combobox', { name: 'Roles' });
     await act(async () => {
       input.focus();
       fireEvent.change(input, { target: { value: 'Custom role' } });
