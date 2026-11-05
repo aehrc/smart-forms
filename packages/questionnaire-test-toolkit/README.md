@@ -50,9 +50,16 @@ population and in the renderer's launch context, so expressions and initial valu
 `%user`, `%context` or related variables work in tests. All three props are dependencies of the
 population effect: changing any of them repopulates the form.
 
+## Tab selection
+
 `selectTab` is idempotent for accordion-style tabs: selecting a tab whose button already reports
 `aria-expanded="true"` leaves it open instead of collapsing it. Tabs without an
 `aria-expanded` attribute keep the ordinary click behaviour.
+
+On desktop, `selectTab` waits for the renderer to focus the new panel's first heading before
+returning, so that focus does not interrupt the next interaction. It skips this wait when
+`disableHeadingFocusOnTabSwitch` is set, the panel has no heading, or the tab is a small-screen
+section that expands in place.
 
 ## Saved responses and comparison extraction
 
@@ -85,7 +92,8 @@ timezone. Suites should run with a fixed `TZ` (e.g. `TZ=Australia/Sydney`) and, 
 date-sensitive assertions, control the clock. Use Date-only clock control so the renderer's
 debounced store updates and Testing Library timers continue to run. Clinical age policies
 (especially leap-day handling) should use explicit DOB fixtures rather than
-`getBirthDateForAge`.
+`getBirthDateForAge`. Invalid target dates, such as 29 February in a non-leap year,
+roll over according to the JavaScript `Date` constructor.
 
 ## Strict population fixtures and request spies
 
