@@ -114,7 +114,6 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           renderInput={(params) => (
             <StandardTextField
-              multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
               error={!!feedback && feedbackSeverity !== 'warning'}
