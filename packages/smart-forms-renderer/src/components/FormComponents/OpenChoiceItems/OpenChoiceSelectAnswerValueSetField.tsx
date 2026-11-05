@@ -102,7 +102,6 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         size="small"
         renderInput={(params) => (
           <StandardTextField
-            multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             error={!!feedback && feedbackSeverity !== 'warning'}

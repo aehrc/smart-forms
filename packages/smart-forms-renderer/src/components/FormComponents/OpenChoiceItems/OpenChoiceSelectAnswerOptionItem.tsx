@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { answerHasValue } from '../../../utils/manageForm';
 import type { AutocompleteChangeReason } from '@mui/material';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useReadOnly from '../../../hooks/useReadOnly';
@@ -66,7 +67,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   // A free-text answer (no valueCoding) is passed through unchanged; it has no terminology
   // concept and matching it against the coded answerOption list would incorrectly blank it out.
   let valueSelect: QuestionnaireItemAnswerOption | string | null = null;
-  if (qrAnswer) {
+  if (qrAnswer && answerHasValue(qrAnswer)) {
     if (qrAnswer.valueCoding) {
       const liveValue =
         answerOptions.find((option) => compareAnswerOptionValue(option, qrAnswer)) ?? null;

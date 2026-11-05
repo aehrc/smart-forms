@@ -121,7 +121,6 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         return (
           <StandardTextField
             {...params}
-            multiline
             value={input}
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
