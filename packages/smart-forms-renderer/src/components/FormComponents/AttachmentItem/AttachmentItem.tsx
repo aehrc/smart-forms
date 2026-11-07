@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
+import type { Attachment } from 'fhir/r4';
+import { useEventCallback } from 'usehooks-ts';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
@@ -25,14 +27,18 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import AttachmentFieldWrapper from './AttachmentFieldWrapper';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
-import { createAttachmentAnswer } from '../../../utils/fileUtils';
+import { getAttachmentAnswer, readAttachmentFile } from '../../../utils/fileUtils';
+import type { AttachmentFileError } from '../../../utils/fileUtils';
 import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 
+export type AttachmentFileDetails = Partial<Pick<File, 'name' | 'size' | 'type'>>;
+
 export interface AttachmentValues {
-  uploadedFile: File | null;
+  uploadedFile: AttachmentFileDetails | null;
   url: string;
   fileName: string;
+  fileError?: AttachmentFileError;
 }
 
 function AttachmentItem(props: BaseItemProps) {
@@ -46,16 +52,24 @@ function AttachmentItem(props: BaseItemProps) {
     onQrItemChange
   } = props;
 
-  // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
-  let valueString = '';
-  if (qrItem?.answer && qrItem?.answer[0].valueString) {
-    valueString = qrItem.answer[0].valueString;
-  }
-
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [url, setUrl] = useState(valueString);
-  const [fileName, setFileName] = useState(valueString);
+  const initialAttachment = qrItem?.answer?.[0]?.valueAttachment;
+  const [uploadedFile, setUploadedFile] = useState<AttachmentFileDetails | null>(() =>
+    initialAttachment?.data
+      ? {
+          size: initialAttachment.size,
+          type: initialAttachment.contentType
+        }
+      : null
+  );
+  const [fileError, setFileError] = useState<AttachmentFileError>();
+  const [url, setUrl] = useState(initialAttachment?.url ?? '');
+  const [fileName, setFileName] = useState(initialAttachment?.title ?? '');
+  const acceptedFile = useRef<{ file: AttachmentFileDetails | null; attachment?: Attachment }>({
+    file: uploadedFile,
+    attachment: initialAttachment
+  });
+  const latestRead = useRef(0);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -66,53 +80,69 @@ function AttachmentItem(props: BaseItemProps) {
   const { displayInstructions } = useRenderingExtensions(qItem);
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
-  // Event handlers
-  async function handleUploadFile(newUploadedFile: File | null) {
-    setUploadedFile(newUploadedFile);
-
-    const attachment = await createAttachmentAnswer(newUploadedFile, url, fileName);
+  const writeAnswer = useEventCallback(() => {
+    const saved = acceptedFile.current.attachment;
+    // A different URL identifies a different file unless the answer still contains its bytes.
+    const keepFileMetadata = saved?.data || saved?.url?.trim() === url.trim();
+    const attachment = getAttachmentAnswer({
+      ...(keepFileMetadata ? saved : undefined),
+      url,
+      title: fileName
+    });
+    acceptedFile.current.attachment = attachment ?? undefined;
+    const newQrItem = createEmptyQrItem(qItem, answerKey);
     if (attachment) {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueAttachment: attachment }]
-      });
-    } else {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      newQrItem.answer = [{ id: answerKey, valueAttachment: attachment }];
     }
+    onQrItemChange(newQrItem);
+  });
+
+  const saveText = useMemo(() => debounce(writeAnswer, DEBOUNCE_DURATION), [writeAnswer]);
+
+  async function handleUploadFile(file: File | null) {
+    const read = ++latestRead.current;
+    setUploadedFile(file);
+    setFileError(undefined);
+
+    const result = file ? await readAttachmentFile(file) : undefined;
+    if (read !== latestRead.current) return;
+
+    if (result && 'error' in result) {
+      setUploadedFile(acceptedFile.current.file);
+      setFileError(result.error);
+      saveText.flush();
+      return;
+    }
+
+    acceptedFile.current = { file, attachment: result };
+    saveText.cancel();
+    writeAnswer();
   }
 
-  async function handleUrlChange(newUrl: string) {
+  function handleUrlChange(newUrl: string) {
     setUrl(newUrl);
-    await updateQrItemWithDebounce(uploadedFile, newUrl, fileName);
+    saveText();
   }
 
-  async function handleFileNameChange(newFileName: string) {
+  function handleFileNameChange(newFileName: string) {
     setFileName(newFileName);
-    await updateQrItemWithDebounce(uploadedFile, url, newFileName);
+    saveText();
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const updateQrItemWithDebounce = useCallback(
-    debounce(async (file: File | null, url: string, fileName: string) => {
-      const attachment = await createAttachmentAnswer(file, url, fileName);
-
-      if (attachment) {
-        onQrItemChange({
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueAttachment: attachment }]
-        });
-      } else {
-        onQrItemChange(createEmptyQrItem(qItem, answerKey));
-      }
-    }, DEBOUNCE_DURATION),
-    [onQrItemChange, qItem]
-  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
+  // A reopened answer has no File to name it, so label it with the current title.
+  const displayedFile = useMemo(
+    () =>
+      uploadedFile && !(uploadedFile instanceof File)
+        ? { ...uploadedFile, name: fileName.trim() }
+        : uploadedFile,
+    [uploadedFile, fileName]
+  );
 
   return (
     <DndProvider backend={HTML5Backend} context={window}>
       <AttachmentFieldWrapper
         qItem={qItem}
-        attachmentValues={{ uploadedFile: uploadedFile, url: url, fileName: fileName }}
+        attachmentValues={{ uploadedFile: displayedFile, url, fileName, fileError }}
         feedback={feedback}
         feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
