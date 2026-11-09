@@ -267,6 +267,82 @@ describe('openChoice utils', () => {
         expect(result).not.toBe(mockOldQrItem);
       });
     });
+
+    describe('empty open label value', () => {
+      const blankOptions: QuestionnaireItemAnswerOption[] = [
+        { valueString: '' },
+        { valueString: 'A' }
+      ];
+
+      it('should not add an empty answer when checked in multi-selection', () => {
+        const oldQrItem: QuestionnaireResponseItem = { linkId: 'test-item', answer: [] };
+        const result = updateOpenLabelAnswer(true, '', [], blankOptions, oldQrItem, true, 'key');
+
+        expect(result.answer).toEqual([]);
+      });
+
+      it('should keep a selected valueString "" option when checked in multi-selection', () => {
+        const answers = [{ valueString: '' }];
+        const oldQrItem: QuestionnaireResponseItem = { linkId: 'test-item', answer: answers };
+        const result = updateOpenLabelAnswer(
+          true,
+          '',
+          answers,
+          blankOptions,
+          oldQrItem,
+          true,
+          'key'
+        );
+
+        expect(result.answer).toEqual([{ valueString: '' }]);
+      });
+
+      it('should keep a selected valueString "" option when unchecked in multi-selection', () => {
+        const answers = [{ valueString: '' }];
+        const oldQrItem: QuestionnaireResponseItem = { linkId: 'test-item', answer: answers };
+        const result = updateOpenLabelAnswer(
+          false,
+          '',
+          answers,
+          blankOptions,
+          oldQrItem,
+          true,
+          'key'
+        );
+
+        expect(result.answer).toEqual([{ valueString: '' }]);
+      });
+
+      it('should remove the old open label answer when its input is cleared in multi-selection', () => {
+        const answers = [{ valueString: 'A' }, { valueString: 'typed' }];
+        const oldQrItem: QuestionnaireResponseItem = { linkId: 'test-item', answer: answers };
+        const result = updateOpenLabelAnswer(
+          true,
+          '',
+          answers,
+          blankOptions,
+          oldQrItem,
+          true,
+          'key'
+        );
+
+        expect(result.answer).toEqual([{ valueString: 'A', id: 'key' }]);
+      });
+
+      it('should return an empty answer in single-selection', () => {
+        const result = updateOpenLabelAnswer(
+          true,
+          '',
+          [{ valueString: 'typed' }],
+          blankOptions,
+          mockOldQrItem,
+          false,
+          undefined
+        );
+
+        expect(result.answer).toEqual([]);
+      });
+    });
   });
 
   describe('getOldOpenLabelAnswer', () => {
@@ -505,6 +581,14 @@ describe('openChoice utils', () => {
       const result = getAnswerOptionLabel(option);
 
       expect(result).toBe('42');
+    });
+
+    it('should return "0" for valueInteger 0', () => {
+      expect(getAnswerOptionLabel({ valueInteger: 0 })).toBe('0');
+    });
+
+    it('should return empty string for valueString empty string without falling through', () => {
+      expect(getAnswerOptionLabel({ valueString: '', valueInteger: 7 })).toBe('');
     });
 
     it('should return empty string for unrecognized option type', () => {

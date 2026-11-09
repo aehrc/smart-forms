@@ -99,7 +99,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
-        <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
+        <ClearInputButton buttonShown={valueRadio !== null} readOnly={readOnly} onClear={onClear} />
       </Box>
 
       {feedback ? (

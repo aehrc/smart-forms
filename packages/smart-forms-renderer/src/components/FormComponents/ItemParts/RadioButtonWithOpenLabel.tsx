@@ -19,6 +19,7 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import OpenLabelField from './OpenLabelField';
+import { EMPTY_OPEN_LABEL_RADIO_VALUE } from '../../../utils/openChoice';
 
 interface RadioButtonWithOpenLabelProps {
   value: string | null;
@@ -34,7 +35,7 @@ function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
   return (
     <Box data-test="q-item-radio-open-label-box">
       <ChoiceRadioSingle
-        value={value ?? ''}
+        value={value || EMPTY_OPEN_LABEL_RADIO_VALUE}
         label={label}
         styledLabel={label + ':'}
         readOnly={readOnly}

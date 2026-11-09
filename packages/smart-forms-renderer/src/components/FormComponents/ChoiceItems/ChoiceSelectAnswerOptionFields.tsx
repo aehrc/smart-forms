@@ -183,7 +183,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
           return (
             <li key={key} {...rest}>
               <span>
-                {option.valueString ? (
+                {option.valueString !== undefined ? (
                   <StyledText
                     textToDisplay={getAnswerOptionLabel(option)}
                     element={option._valueString}
@@ -201,7 +201,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
           const { onDelete, ...rest } = getItemProps();
           return (
             <span {...rest} style={{ paddingLeft: '8.5px' }}>
-              {value.valueString && selectedOption ? (
+              {value.valueString !== undefined && selectedOption ? (
                 <StyledText
                   textToDisplay={getAnswerOptionLabel(value)}
                   element={selectedOption._valueString}

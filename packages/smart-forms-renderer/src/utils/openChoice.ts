@@ -29,6 +29,12 @@ import { deepEqual } from 'fast-equals';
 import differenceWith from 'lodash.differencewith';
 
 /**
+ * Radio value for the open label option while its input is empty.
+ * Keeps it distinct from an answerOption with valueString ''.
+ */
+export const EMPTY_OPEN_LABEL_RADIO_VALUE = '__open-label-empty__';
+
+/**
  * Update open choice answer based on open label value
  *
  * @author Sean Fong
@@ -42,6 +48,34 @@ export function updateOpenLabelAnswer(
   isMultiSelection: boolean,
   answerKey: string | undefined
 ) {
+  // An empty open label is not an answer - storing it as valueString '' would also collide with a valueString '' answerOption
+  // Remove any existing open label answer instead, regardless of checked state
+  if (changedOpenLabelValue === '') {
+    if (!isMultiSelection) {
+      return {
+        ...oldQrItem,
+        answer: []
+      };
+    }
+
+    const oldOpenLabelAnswer = getOldOpenLabelAnswer(answers, options);
+    if (!oldOpenLabelAnswer) {
+      return oldQrItem;
+    }
+
+    const newAnswersWithKey = answers
+      .filter((answer) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id, ...rest } = answer;
+        return !deepEqual(rest, oldOpenLabelAnswer);
+      })
+      .map((answer) => ({ ...answer, id: answerKey }));
+    return {
+      ...oldQrItem,
+      answer: newAnswersWithKey
+    };
+  }
+
   // Open label is unchecked, search for open label value and remove it
   if (!openLabelChecked) {
     // In single-selection, return empty array because there can only be one answer
@@ -165,9 +199,9 @@ export function getAnswerOptionLabel(option: QuestionnaireItemAnswerOption | str
 
   if (option['valueCoding']) {
     return option.valueCoding.display ?? `${option.valueCoding.code}`;
-  } else if (option['valueString']) {
+  } else if (option['valueString'] !== undefined) {
     return option.valueString;
-  } else if (option['valueInteger']) {
+  } else if (option['valueInteger'] !== undefined) {
     return option.valueInteger.toString();
   } else {
     return '';
