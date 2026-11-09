@@ -48,8 +48,13 @@ export function createOperationOutcome(errorMessage: string): OperationOutcome {
 
 export function addEndpointToNotFoundIssues(
   issues: OperationOutcomeIssue[],
-  ehrServerUrl: string
+  ehrServerUrl: string | null
 ): void {
+  // Without a forms server, the issue text already explains that FORMS_SERVER_URL is not configured
+  if (!ehrServerUrl) {
+    return;
+  }
+
   issues.forEach((issue) => {
     if (issue.code === 'not-found' && issue.details?.text) {
       issue.details.text += ` at ${ehrServerUrl}.`;

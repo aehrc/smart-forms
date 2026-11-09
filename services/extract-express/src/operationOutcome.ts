@@ -30,6 +30,21 @@ export function createNoFormsServerUrlSetOutcome(): OperationOutcome {
   };
 }
 
+export function createNoEhrServerUrlSetOutcome(): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: {
+          text: 'EHR_SERVER_URL environment variable must be set to a FHIR server that supports StructureMap/$transform.'
+        }
+      }
+    ]
+  };
+}
+
 export function createInvalidParametersOutcome(): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',

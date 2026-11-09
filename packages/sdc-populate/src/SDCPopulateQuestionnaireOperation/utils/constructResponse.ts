@@ -40,7 +40,7 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4/index.js';
 import { getInitialExpression, getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
-import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
+import { getItemInitialAnswers, parseValueToAnswer } from './parse';
 import { getValueSetPromise } from '../api/expandValueSet';
 import type {
   FetchTerminologyCallback,
@@ -344,13 +344,9 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
 
   // This only applies to question (non-group) items! 'group' items should not have item.answer
   if (qItem.type !== 'group') {
-    // Populate answers from item.initial if present
-    // Process item.initial first, then can potentially overwrite with initialExpressions
-    if (qItem.initial) {
-      populatedAnswers = qItem.initial
-        .map((initial) => parseItemInitialToAnswer(initial))
-        .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null);
-    }
+    // Populate answers from item.initial or answerOption.initialSelected if present
+    // Process them first, then can potentially overwrite with initialExpressions
+    populatedAnswers = getItemInitialAnswers(qItem) ?? undefined;
 
     // Populate answers from initialExpressions if present
     const initialExpression = initialExpressions[qItem.linkId];
@@ -453,13 +449,12 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
     }
   }
 
-  // Populate answers from item.initial if present
-  if (qItem.initial) {
+  // Populate answers from item.initial or answerOption.initialSelected if present
+  const initialAnswers = getItemInitialAnswers(qItem);
+  if (initialAnswers) {
     return {
       linkId: qItem.linkId,
-      answer: qItem.initial
-        .map((initial) => parseItemInitialToAnswer(initial))
-        .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null),
+      answer: initialAnswers,
       ...(qItem.text ? { text: qItem.text } : {})
     };
   }

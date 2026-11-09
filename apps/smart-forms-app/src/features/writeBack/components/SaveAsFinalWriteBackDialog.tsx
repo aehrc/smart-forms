@@ -26,7 +26,7 @@ import {
   saveErrorMessage
 } from '../../../interfaces/snackbar.interface.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
-import type { Bundle } from 'fhir/r4';
+import type { Bundle, OperationOutcomeIssue } from 'fhir/r4';
 import { HEADERS } from '../../../api/headers.ts';
 import WriteBackBundleSelectorDialog from './WriteBackBundleSelectorDialog.tsx';
 import type { SavingWriteBackMode } from '../../renderer/utils/extract.ts';
@@ -36,7 +36,7 @@ export interface SaveAsFinalWriteBackDialogProps {
   dialogOpen: boolean;
   isAmendment: boolean;
   extractedBundle: Bundle;
-  invalidBundleEntryIndices?: Set<number>;
+  invalidBundleEntryIssues?: Map<number, OperationOutcomeIssue[]>;
   onCloseDialog: () => unknown;
   onDialogExited: () => unknown;
 }
@@ -46,7 +46,7 @@ function SaveAsFinalWriteBackDialog(props: SaveAsFinalWriteBackDialogProps) {
     dialogOpen,
     isAmendment,
     extractedBundle,
-    invalidBundleEntryIndices,
+    invalidBundleEntryIssues,
     onCloseDialog,
     onDialogExited
   } = props;
@@ -182,7 +182,7 @@ function SaveAsFinalWriteBackDialog(props: SaveAsFinalWriteBackDialogProps) {
       isSaving={isSaving}
       isAmendment={isAmendment}
       extractedBundle={extractedBundle}
-      invalidBundleEntryIndices={invalidBundleEntryIndices}
+      invalidBundleEntryIssues={invalidBundleEntryIssues}
       disableWriteBackSelection={extraLaunchContext.disableWriteBackSelection}
       onCloseDialog={handleClose}
       onWriteBackBundle={async (bundleToWriteBack, savingWriteBackMode) => {

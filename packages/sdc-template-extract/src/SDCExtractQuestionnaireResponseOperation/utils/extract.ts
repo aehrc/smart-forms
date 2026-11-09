@@ -107,10 +107,17 @@ export async function extract(
   const comparisonSourceResponse = getComparisonSourceResponse(inputParameters);
   let comparisonResourceMap: Map<string, FhirResource[]> | null = null;
   if (comparisonSourceResponse) {
+    // %resource and %rootResource must point at the comparison response, otherwise expressions using them
+    // evaluate against the current response and every resource compares as unchanged
+    // Keep the same allocated IDs so they don't register as changes
+    const comparisonFhirPathContext = createFhirPathContext(
+      comparisonSourceResponse,
+      extractAllocateIds
+    );
     comparisonResourceMap = populateIntoTemplates(
       comparisonSourceResponse,
       containedTemplateMap,
-      fhirPathContext
+      comparisonFhirPathContext
     ).extractedResourceMap;
   }
 

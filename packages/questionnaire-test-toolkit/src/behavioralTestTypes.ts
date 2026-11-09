@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import type { Patient, Questionnaire } from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import type { InAppExtractOutput } from '@aehrc/sdc-template-extract';
+import type { FhirContext } from '@aehrc/sdc-populate';
 
 export type RequestDefinition = {
   urlPrefix: string;
@@ -26,6 +27,8 @@ export type RequestDefinition = {
 
 export interface BehavioralTestWrapperProps {
   patient?: Patient;
+  user?: Practitioner;
+  fhirContext?: FhirContext[];
   requestDefinitions?: RequestDefinition[];
   onExtractResult?: (extractResult: InAppExtractOutput) => void;
   questionnaire: Questionnaire;

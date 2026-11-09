@@ -46,6 +46,7 @@ jest.mock('dayjs', () =>
 );
 
 import { fetchQuestionnaireById } from '../../../api/client';
+import { qrToHTML } from '../../../features/preview/utils/preview.ts';
 
 describe('postQuestionnaireToSMARTHealthIT', () => {
   let mockClient: jest.Mocked<Client>;
@@ -278,6 +279,37 @@ describe('saveQuestionnaireResponse', () => {
       }
     });
     expect(result).toEqual(mockSavedResponse);
+  });
+
+  it('generates the narrative from the updated subject, author and authored values', async () => {
+    const staleResponse: QuestionnaireResponse = {
+      ...mockQuestionnaireResponse,
+      subject: { reference: 'Patient/stale-patient', display: 'Stale Patient' },
+      author: { reference: 'Practitioner/stale-practitioner', display: 'Stale Author' },
+      authored: '2020-01-01T00:00:00+10:00'
+    };
+    mockClient.request.mockResolvedValue(staleResponse);
+
+    await saveQuestionnaireResponse(
+      mockClient,
+      mockPatient,
+      mockUser,
+      mockQuestionnaire,
+      staleResponse
+    );
+
+    const [, responseRenderedIntoNarrative] = (qrToHTML as jest.Mock).mock.calls[0];
+    expect(responseRenderedIntoNarrative.authored).toBe('2025-08-20T14:32:27+10:00');
+    expect(responseRenderedIntoNarrative.subject).toEqual({
+      reference: 'Patient/test-patient',
+      type: 'Patient',
+      display: 'Mock Name'
+    });
+    expect(responseRenderedIntoNarrative.author).toEqual({
+      reference: 'Practitioner/test-practitioner',
+      type: 'Practitioner',
+      display: 'Mock Name'
+    });
   });
 
   it('handles save failure', async () => {

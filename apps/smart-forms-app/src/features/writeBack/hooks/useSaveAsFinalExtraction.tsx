@@ -17,7 +17,7 @@
 
 import { useMemo, useState } from 'react';
 import { useSnackbar } from 'notistack';
-import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
+import type { Bundle, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import {
   buildBundleFromObservationArray,
   extractObservationBased,
@@ -44,7 +44,8 @@ export interface UseSaveAsFinalExtractionResult {
   writeBackEnabled: boolean;
   isExtracting: boolean;
   extractedBundle: Bundle | null;
-  invalidBundleEntryIndices: Set<number> | null;
+  // Error/fatal $validate issues by bundle entry index, null if no entry has any
+  invalidBundleEntryIssues: Map<number, OperationOutcomeIssue[]> | null;
   // Runs the extraction mechanism appropriate for the current questionnaire (if any) and
   // calls onExtracted() when a bundle is ready. No-op if the questionnaire can't be extracted.
   runExtraction: () => Promise<void>;
@@ -67,9 +68,10 @@ function useSaveAsFinalExtraction(
 
   const [isExtracting, setExtracting] = useState(false);
   const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
-  const [invalidBundleEntryIndices, setInvalidBundleEntryIndices] = useState<Set<number> | null>(
-    null
-  );
+  const [invalidBundleEntryIssues, setInvalidBundleEntryIssues] = useState<Map<
+    number,
+    OperationOutcomeIssue[]
+  > | null>(null);
 
   const extractMechanism = useMemo(
     () => getExtractMechanism(sourceQuestionnaire),
@@ -132,14 +134,14 @@ function useSaveAsFinalExtraction(
     }
 
     // Validate before updating state — ensures WriteBackBundleSelectorDialog mounts with
-    // invalidBundleEntryIndices already set, so its selectedKeys initializer excludes invalid entries
+    // invalidBundleEntryIssues already set, so its selectedKeys initializer excludes invalid entries
     const validationResults = extraLaunchContext.enableBundleValidation
       ? await validateExtractedBundle(extractResult.extractedBundle, smartClient)
-      : new Set<number>();
+      : new Map<number, OperationOutcomeIssue[]>();
 
     // All four updates land in the same React 18 batch → single render → component mounts correctly
     setExtractedBundle(extractResult.extractedBundle);
-    setInvalidBundleEntryIndices(validationResults.size > 0 ? validationResults : null);
+    setInvalidBundleEntryIssues(validationResults.size > 0 ? validationResults : null);
     setExtracting(false);
 
     onExtracted();
@@ -167,7 +169,7 @@ function useSaveAsFinalExtraction(
   function resetExtractionState() {
     setExtracting(false);
     setExtractedBundle(null);
-    setInvalidBundleEntryIndices(null);
+    setInvalidBundleEntryIssues(null);
   }
 
   return {
@@ -175,7 +177,7 @@ function useSaveAsFinalExtraction(
     writeBackEnabled,
     isExtracting,
     extractedBundle,
-    invalidBundleEntryIndices,
+    invalidBundleEntryIssues,
     runExtraction,
     resetExtractionState
   };

@@ -23,6 +23,9 @@ import type {
   StructureMap
 } from 'fhir/r4b';
 import { HEADERS } from './globals';
+import type { ServerConfig } from './config';
+import { displayBaseUrl, headersFor } from './config';
+import { fetchWithoutRedirects, readJson, resolveQueryUrl } from './outboundUrl';
 
 export function createTransformInputParametersForExtract(
   targetStructureMap: StructureMap,
@@ -67,23 +70,18 @@ export function createTransformInputParametersForConvert(
 
 export async function invokeTransform(
   transformInputParameters: TransformInputParameters,
-  ehrServerUrl: string,
-  ehrServerAuthToken?: string,
+  ehrServer: ServerConfig,
   debugMode?: boolean
-): Promise<any> {
-  let requestUrl = `${ehrServerUrl}/StructureMap/$transform`;
-
+): Promise<unknown> {
   // Brian's demo-map-server by default return xml when debug=true, explicitly set it to json
-  if (debugMode) {
-    requestUrl += '?debug=true&_format=json';
-  }
+  const query = debugMode
+    ? 'StructureMap/$transform?debug=true&_format=json'
+    : 'StructureMap/$transform';
+  const requestUrl = resolveQueryUrl(query, ehrServer.url, [], 'EHR_SERVER_URL');
 
-  const headers = ehrServerAuthToken
-    ? { ...HEADERS, Authorization: `Bearer ${ehrServerAuthToken}` }
-    : HEADERS;
-  const response = await fetch(requestUrl, {
+  const response = await fetchWithoutRedirects(requestUrl, {
     method: 'POST',
-    headers: headers,
+    headers: headersFor(ehrServer, HEADERS),
     body: JSON.stringify(transformInputParameters)
   });
 
@@ -92,11 +90,11 @@ export async function invokeTransform(
       ? '\nNote: The input FML map might not be valid. If it is valid but you are still getting this error, please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
       : '';
     throw new Error(
-      `HTTP error when performing ${ehrServerUrl}/StructureMap/$transform. Status: ${response.status}${debugModeMessage}`
+      `HTTP error when performing ${displayBaseUrl(ehrServer)}/StructureMap/$transform. Status: ${response.status}${debugModeMessage}`
     );
   }
 
-  return response.json();
+  return readJson(response, requestUrl);
 }
 
 export interface TransformInputParameters extends Parameters {

@@ -25,6 +25,7 @@ import { getRelevantCodingProperties } from './codingProperties';
 /**
  * Find and return corresponding answerOption based on a populated or selected answer value.
  * String values match by code, display, string, or integer value.
+ * Number values (e.g. from a FHIRPath result) match integer options.
  * Coding values (e.g. from an initialExpression FHIRPath result) match coding options by code,
  * with system agreement when both sides specify one; codeless Codings match display-only
  * options by display.
@@ -33,7 +34,7 @@ import { getRelevantCodingProperties } from './codingProperties';
  */
 export function findInAnswerOptions(
   options: QuestionnaireItemAnswerOption[],
-  value: string | Coding
+  value: string | number | Coding
 ): QuestionnaireResponseItemAnswer | undefined {
   for (const option of options) {
     if (option.valueCoding) {
@@ -66,7 +67,8 @@ export function findInAnswerOptions(
     }
 
     if (typeof option.valueInteger === 'number') {
-      if (value === option.valueInteger.toString()) {
+      // value may be a JS number from a FHIRPath result, not just a string
+      if (String(value) === option.valueInteger.toString()) {
         return {
           valueInteger: option.valueInteger
         };

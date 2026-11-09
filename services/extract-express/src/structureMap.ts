@@ -17,6 +17,9 @@
 
 import type { Bundle, BundleEntry, Questionnaire, StructureMap } from 'fhir/r4b';
 import { HEADERS } from './globals';
+import type { ServerConfig } from './config';
+import { headersFor } from './config';
+import { fetchWithoutRedirects, readJson, resolveQueryUrl } from './outboundUrl';
 
 export function getTargetStructureMapCanonical(questionnaire: Questionnaire): string | null {
   return (
@@ -31,22 +34,25 @@ export function getTargetStructureMapCanonical(questionnaire: Questionnaire): st
 
 export async function getTargetStructureMap(
   structureMapCanonical: string,
-  formsServerUrl: string,
-  formsServerAuthToken?: string
+  formsServer: ServerConfig
 ): Promise<StructureMap | null> {
   structureMapCanonical = structureMapCanonical.replace('|', '&version=');
 
-  const requestUrl = `${formsServerUrl}/StructureMap?url=${structureMapCanonical}&_sort=_lastUpdated`;
-  const headers = formsServerAuthToken
-    ? { ...HEADERS, Authorization: `Bearer ${formsServerAuthToken}` }
-    : HEADERS;
-  const response = await fetch(requestUrl, { headers });
+  const requestUrl = resolveQueryUrl(
+    `StructureMap?url=${structureMapCanonical}&_sort=_lastUpdated`,
+    formsServer.url,
+    [],
+    'FORMS_SERVER_URL'
+  );
+  const response = await fetchWithoutRedirects(requestUrl, {
+    headers: headersFor(formsServer, HEADERS)
+  });
 
   if (!response.ok) {
     return null;
   }
 
-  const result = await response.json();
+  const result = await readJson(response, requestUrl);
   if (resultIsStructureMapOrBundle(result)) {
     if (result.resourceType === 'StructureMap') {
       return result;
