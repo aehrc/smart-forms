@@ -33,6 +33,8 @@ import { useRendererConfigStore } from '../../../stores';
 import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import AutocompleteWrappedValue from '../ItemParts/AutocompleteWrappedValue';
+import { autocompleteWrappedValueSx } from '../ItemParts/AutocompleteWrappedValue.styles';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
@@ -102,7 +104,6 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         size="small"
         renderInput={(params) => (
           <StandardTextField
-            multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             error={!!feedback && feedbackSeverity !== 'warning'}
@@ -112,6 +113,18 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
               input: {
                 ...params.InputProps,
                 readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                startAdornment: (
+                  <AutocompleteWrappedValue
+                    text={
+                      typeof valueSelect === 'string'
+                        ? valueSelect
+                        : valueSelect
+                          ? (valueSelect.display ?? `${valueSelect.code}`)
+                          : ''
+                    }
+                  />
+                ),
+                sx: autocompleteWrappedValueSx,
                 endAdornment: (
                   <>
                     <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />

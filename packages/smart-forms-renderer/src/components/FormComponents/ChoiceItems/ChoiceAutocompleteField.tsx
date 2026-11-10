@@ -38,6 +38,8 @@ import { useRendererConfigStore } from '../../../stores';
 import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import AutocompleteWrappedValue from '../ItemParts/AutocompleteWrappedValue';
+import { autocompleteWrappedValueSx } from '../ItemParts/AutocompleteWrappedValue.styles';
 
 interface ChoiceAutocompleteFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -105,7 +107,6 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       renderInput={(params) => (
         <StandardTextField
           {...params}
-          multiline
           onChange={(e) => onInputChange(e.target.value)}
           textFieldWidth={textFieldWidth}
           isTabled={isTabled}
@@ -119,8 +120,12 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
                 <>
                   {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
                   {params.InputProps.startAdornment}
+                  <AutocompleteWrappedValue
+                    text={valueCoding ? (valueCoding.display ?? `${valueCoding.code}`) : ''}
+                  />
                 </>
               ),
+              sx: autocompleteWrappedValueSx,
               endAdornment: (
                 <>
                   {loading ? (
