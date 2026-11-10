@@ -518,6 +518,13 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
     // Make sure this is not the AM/PM select within a time field
     const isAmPmSelect = selectButton.closest('[data-test="ampm"]');
     if (!isAmPmSelect) {
+      // MUI Autocomplete puts role="combobox" on the <input> itself
+      if (selectButton instanceof HTMLInputElement || selectButton instanceof HTMLTextAreaElement) {
+        if (selectButton.value) {
+          return selectButton.value;
+        }
+      }
+
       const innerInput = selectButton.querySelector<HTMLInputElement>('input');
       if (innerInput?.value) {
         return innerInput.value;
