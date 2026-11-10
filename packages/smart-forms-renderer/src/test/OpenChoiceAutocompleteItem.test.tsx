@@ -194,4 +194,25 @@ describe('OpenChoiceAutocompleteItem free-text updates', () => {
       expect(getAnswers('concept')).toEqual([expect.objectContaining({ valueString: 'Typed' })])
     );
   });
+
+  test('pending free text is saved when the field unmounts before the debounce fires', async () => {
+    // e.g. switching tabs or pages unmounts the field
+    mockExpansion([]);
+    const { unmount } = render(
+      <SmartFormsRenderer
+        questionnaire={buildQuestionnaire(false)}
+        terminologyServerUrl="http://fake-terminology-server"
+      />
+    );
+
+    const input = await screen.findByRole<HTMLInputElement>('combobox', { name: 'Concept' });
+    // Type and unmount in one act, so the field unmounts before the debounce timer can fire
+    act(() => {
+      input.focus();
+      fireEvent.change(input, { target: { value: 'Typed' } });
+      unmount();
+    });
+
+    expect(getAnswers('concept')).toEqual([expect.objectContaining({ valueString: 'Typed' })]);
+  });
 });

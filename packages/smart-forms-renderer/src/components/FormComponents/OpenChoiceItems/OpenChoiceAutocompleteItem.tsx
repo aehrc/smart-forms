@@ -114,7 +114,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
       }, DEBOUNCE_DURATION),
     [qItem]
   );
-  useEffect(() => () => updateQrItemWithDebounce.cancel(), [updateQrItemWithDebounce]);
+  useEffect(() => () => updateQrItemWithDebounce.flush(), [updateQrItemWithDebounce]);
 
   if (!qItem.answerValueSet) {
     return null;
