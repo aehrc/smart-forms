@@ -23,9 +23,11 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
+import type { AttachmentFileDetails } from './AttachmentItem';
 
 interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
-  uploadedFile: File | null;
+  uploadedFile: AttachmentFileDetails | null;
+  errorMessage: string;
   readOnly: boolean;
   instructionsId: string | undefined;
   onUploadFile: (file: File | null) => void;
@@ -34,7 +36,7 @@ interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
 const AttachmentFileCollector = memo(function AttachmentFileCollector(
   props: AttachmentFileCollectorProps
 ) {
-  const { uploadedFile, readOnly, isTabled, instructionsId, onUploadFile } = props;
+  const { uploadedFile, errorMessage, readOnly, isTabled, instructionsId, onUploadFile } = props;
 
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
@@ -59,6 +61,8 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
 
   function handleAttachFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
+    // Selecting the same file again should retry a failed read.
+    event.target.value = '';
 
     if (file instanceof File) {
       onUploadFile(file);
@@ -70,7 +74,7 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
       <AttachmentFileDropBox
         onDrop={handleFileDrop}
         file={uploadedFile}
-        errorMessage={''}
+        errorMessage={errorMessage}
         readOnly={readOnly}
         isTabled={isTabled}
       />

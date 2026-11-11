@@ -25,45 +25,51 @@ export function getFileSize(fileSizeString: string) {
   return `${Math.round(+fileSizeString / 1024) / 1000}MB`;
 }
 
-const fileToBase64 = (file: File) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
+export type AttachmentFileError = 'attachmentTypeUnknown' | 'attachmentReadError';
+
+export async function readAttachmentFile(
+  file: File
+): Promise<Attachment | { error: AttachmentFileError }> {
+  const contentType = file.type.trim();
+  if (!contentType) {
+    return { error: 'attachmentTypeUnknown' };
+  }
+
+  try {
+    const data = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    return { contentType, data, size: file.size };
+  } catch {
+    return { error: 'attachmentReadError' };
+  }
+}
+
+export function getAttachmentAnswer({ url, title, ...fields }: Attachment): Attachment | null {
+  const trimmedUrl = url?.trim();
+  if (!fields.data && !trimmedUrl) {
+    return null;
+  }
+
+  const answer: Attachment = fields;
+  if (trimmedUrl) {
+    answer.url = trimmedUrl;
+  }
+  if (title) {
+    answer.title = title;
+  }
+  return answer;
+}
 
 export async function createAttachmentAnswer(
   file: File | null,
   url: string,
   fileName: string
 ): Promise<Attachment | null> {
-  const trimmedUrl = url.trim();
-
-  if (!file && trimmedUrl === '') {
-    return null;
-  }
-
-  const attachment: Attachment = {};
-
-  if (file) {
-    try {
-      attachment.contentType = file.type;
-      attachment.data = (await fileToBase64(file)) as string;
-      attachment.size = file.size;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-
-  if (trimmedUrl) {
-    attachment.url = trimmedUrl;
-  }
-
-  if (fileName) {
-    attachment.title = fileName;
-  }
-
-  return attachment;
+  const fileResult = file ? await readAttachmentFile(file) : {};
+  const fileData = 'error' in fileResult ? {} : fileResult;
+  return getAttachmentAnswer({ ...fileData, url, title: fileName });
 }

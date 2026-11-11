@@ -15,10 +15,7 @@
  * limitations under the License.
  */
 
-import { getFileSize, createAttachmentAnswer } from '../../utils/fileUtils';
-
-// Mock console.error to avoid cluttering test output
-const mockConsoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+import { getFileSize, createAttachmentAnswer, readAttachmentFile } from '../../utils/fileUtils';
 
 describe('fileUtils', () => {
   afterEach(() => {
@@ -206,22 +203,16 @@ describe('fileUtils', () => {
       expect(result?.url).toBe('https://secure.example.com/files/upload');
     });
 
-    it('should handle FileReader error gracefully', async () => {
+    it('preserves the URL and title when FileReader reports an error', async () => {
       const file = createMockFile('test.jpg', 1024, 'image/jpeg');
 
-      const promise = createAttachmentAnswer(file, 'http://example.com', 'test.jpg');
+      const promise = createAttachmentAnswer(file, ' http://example.com ', 'My photo');
+      mockFileReader.onerror();
 
-      // Simulate FileReader error - but onload fires first in our mock
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload(); // Success path fires in our mock setup
-        }
-      }, 0);
-
-      const result = await promise;
-
-      // Our mock setup makes it succeed rather than fail
-      expect(result).not.toBeNull();
+      await expect(promise).resolves.toEqual({
+        url: 'http://example.com',
+        title: 'My photo'
+      });
     });
 
     it('should handle different file types correctly', async () => {
@@ -291,21 +282,18 @@ describe('fileUtils', () => {
         expect(result?.size).toBe(0);
       });
 
-      it('should handle missing content type', async () => {
-        const file = createMockFile('unknown', 1024, '');
+      it.each(['', '   '])(
+        'rejects the blank content type %p without reading the file',
+        async (contentType) => {
+          const file = createMockFile('unknown', 1024, contentType);
 
-        const promise = createAttachmentAnswer(file, 'http://example.com', 'unknown-file');
-
-        setTimeout(() => {
-          if (mockFileReader.onload) {
-            mockFileReader.onload();
-          }
-        }, 0);
-
-        const result = await promise;
-
-        expect(result?.contentType).toBe('');
-      });
+          await expect(readAttachmentFile(file)).resolves.toEqual({
+            error: 'attachmentTypeUnknown'
+          });
+          await expect(createAttachmentAnswer(file, '', 'Report')).resolves.toBeNull();
+          expect(mockFileReader.readAsDataURL).not.toHaveBeenCalled();
+        }
+      );
 
       it('should handle whitespace-only URLs and filenames', async () => {
         const file = createMockFile('test.txt', 1024, 'text/plain');
@@ -343,10 +331,9 @@ describe('fileUtils', () => {
           throw new Error('FileReader constructor error');
         }) as any;
 
-        const result = await createAttachmentAnswer(file, 'http://example.com', 'test.txt');
+        const result = await readAttachmentFile(file);
 
-        expect(result).toBeNull();
-        expect(mockConsoleError).toHaveBeenCalledWith(expect.any(Error));
+        expect(result).toEqual({ error: 'attachmentReadError' });
       });
 
       it('should handle FileReader onload not being called', async () => {
