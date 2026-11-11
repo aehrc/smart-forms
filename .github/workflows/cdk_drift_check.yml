@@ -1,0 +1,130 @@
+name: CDK Infrastructure Drift Check
+
+# Nothing deploys these stacks automatically, so main and the deployed stacks can drift apart
+# silently. This reports that gap. See deployment/README.md.
+on:
+  schedule:
+    # 09:00 Monday, Australian eastern time.
+    - cron: '0 23 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+
+env:
+  AWS_REGION: ap-southeast-2
+
+jobs:
+  drift:
+    name: Compare main against the deployed stacks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node, build the deployment packages, configure AWS
+        uses: ./.github/actions/cdk-setup
+        with:
+          role-arn: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # --method=template here, unlike the deploy workflow. This job only asks whether main and the
+      # deployed stack differ, which a template comparison answers without needing permission to
+      # create change sets. Validating a change you are about to apply is a different question, and
+      # that job uses the accurate change set method.
+      - name: cdk diff
+        id: drift
+        run: |
+          set -o pipefail
+          drifted=''
+          for stack in $(.github/scripts/cdk-stacks.sh both); do
+            dir=$(.github/scripts/cdk-stacks.sh --dir "$stack")
+            echo "::group::cdk diff $stack"
+            ( cd "$dir" && npx cdk diff "$stack" --method=template 2>&1 ) | tee "/tmp/$stack.txt"
+            echo "::endgroup::"
+            if grep -qE "Number of stacks with differences: [1-9]" "/tmp/$stack.txt"; then
+              drifted="$drifted $stack"
+            fi
+          done
+          drifted="${drifted# }"
+          echo "stacks=$drifted" >> "$GITHUB_OUTPUT"
+          {
+            if [ -n "$drifted" ]; then
+              echo "## Drift detected in:$drifted"
+            else
+              echo "## No drift. Deployed stacks match main."
+            fi
+            for stack in $(.github/scripts/cdk-stacks.sh both); do
+              echo "<details><summary>$stack</summary>"
+              echo
+              echo '```'
+              grep -E "^\[[+~-]\]|Number of stacks" "/tmp/$stack.txt" | head -50 \
+                || echo 'no differences'
+              echo '```'
+              echo '</details>'
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or update the drift issue
+        if: steps.drift.outputs.stacks != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const stacks = '${{ steps.drift.outputs.stacks }}'.trim().split(/\s+/);
+            const title = 'CDK drift: deployed stacks differ from main';
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}` +
+                        `/actions/runs/${context.runId}`;
+            const body = [
+              `The deployed CloudFormation stacks no longer match \`main\`.`,
+              '',
+              `Drifted: ${stacks.map((s) => `\`${s}\``).join(', ')}`,
+              '',
+              `Nothing deploys these stacks automatically, so this is expected after a merge that`,
+              `touches \`deployment/\` and has not been rolled out yet. Deploy with the`,
+              `**CDK Infrastructure Deployment** workflow.`,
+              '',
+              `See the [drift check run](${run}) for the full diff.`,
+              '',
+              `_Updated ${new Date().toISOString()}_`,
+            ].join('\n');
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'cdk-drift',
+            });
+
+            if (existing.data.length > 0) {
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.data[0].number, body,
+              });
+              core.info(`Updated issue #${existing.data[0].number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: ['cdk-drift'],
+              });
+              core.info(`Opened issue #${created.data.number}`);
+            }
+
+      - name: Close the drift issue once the stacks match
+        if: steps.drift.outputs.stacks == ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'cdk-drift',
+            });
+            for (const issue of existing.data) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                body: 'Deployed stacks now match `main`. Closing.',
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number, state: 'closed',
+              });
+            }
