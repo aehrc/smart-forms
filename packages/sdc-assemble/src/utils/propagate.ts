@@ -23,6 +23,7 @@ import type {
   QuestionnaireItem
 } from 'fhir/r4';
 import { createErrorOutcome } from './operationOutcome';
+import { itemIsSubQuestionnaire } from './canonical';
 
 /**
  * Propagate (assemble) collected properties from subquestionnaires to the parent questionnaire.
@@ -55,21 +56,16 @@ export function propagateProperties(
     return parentQuestionnaire;
   }
 
-  // Propagate items
-  const questionnaireItems: QuestionnaireItem[] = [];
-  for (let i = 0; i < parentQuestionnaireForm.item.length; i++) {
-    const itemFromParent = parentQuestionnaireForm.item[i];
-    if (!itemFromParent) continue;
-
-    const itemsFromSubquestionnaire = itemsFromSubquestionnaires[i];
-    if (itemsFromSubquestionnaire) {
-      questionnaireItems.push(...itemsFromSubquestionnaire);
-    } else {
-      questionnaireItems.push(itemFromParent);
-    }
-  }
-
-  parentQuestionnaireForm.item = questionnaireItems;
+  // Propagate items. Walk the form item tree in depth-first document order — the same order
+  // getCanonicalUrls collected the subquestionnaires in — replacing each subQuestionnaire
+  // placeholder (at any depth) with its subquestionnaire's items, while preserving regular items
+  // and wrapper groups in place.
+  const cursor = { index: 0 };
+  parentQuestionnaireForm.item = propagateSubquestionnaireItems(
+    parentQuestionnaireForm.item,
+    itemsFromSubquestionnaires,
+    cursor
+  );
 
   // Propagate item-level extensions into top-level item
   // Also check for duplicate variables
@@ -192,6 +188,50 @@ export function propagateProperties(
   }
 
   return parentQuestionnaire;
+}
+
+/**
+ * Recursively rebuilds a form item tree, replacing each subQuestionnaire placeholder with the
+ * items collected from its subquestionnaire. Placeholders are consumed from
+ * `itemsFromSubquestionnaires` in depth-first document order — the same order
+ * {@link getCanonicalUrls} collected them — while regular items and wrapper groups are kept in
+ * place, with groups recursed into so nested placeholders are resolved too.
+ *
+ * @param items - The questionnaire items to rebuild (a form group's children or a wrapper group's children)
+ * @param itemsFromSubquestionnaires - The items collected from subquestionnaires, one entry per subquestionnaire in document order
+ * @param cursor - A mutable cursor into itemsFromSubquestionnaires, advanced once per placeholder encountered
+ * @returns The rebuilt items with subQuestionnaire placeholders replaced by their subquestionnaire's items
+ *
+ * @author Sean Fong
+ */
+function propagateSubquestionnaireItems(
+  items: QuestionnaireItem[],
+  itemsFromSubquestionnaires: (QuestionnaireItem[] | null)[],
+  cursor: { index: number }
+): QuestionnaireItem[] {
+  const propagatedItems: QuestionnaireItem[] = [];
+  for (const item of items) {
+    if (itemIsSubQuestionnaire(item)) {
+      const itemsFromSubquestionnaire = itemsFromSubquestionnaires[cursor.index];
+      cursor.index++;
+
+      if (itemsFromSubquestionnaire) {
+        propagatedItems.push(...itemsFromSubquestionnaire);
+      } else {
+        // No items resolved for this placeholder (e.g. an empty subquestionnaire) — keep it as-is
+        propagatedItems.push(item);
+      }
+      continue;
+    }
+
+    // Recurse into wrapper groups so nested placeholders are resolved in place
+    if (item.item && item.item.length > 0) {
+      item.item = propagateSubquestionnaireItems(item.item, itemsFromSubquestionnaires, cursor);
+    }
+    propagatedItems.push(item);
+  }
+
+  return propagatedItems;
 }
 
 /**
