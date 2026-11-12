@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals';
-import type { Bundle, Patient, QuestionnaireResponse } from 'fhir/r4';
+import type { Bundle, OperationOutcome, Patient, QuestionnaireResponse } from 'fhir/r4';
 import { patRepop } from '../../test-data-shared/patRepop';
 import { bundleObsBodyHeight } from '../../test-data-shared/CalculatedExpressionBMICalculatorPrepop/bundleObsBodyHeight';
 import { bundleObsBodyWeight } from '../../test-data-shared/CalculatedExpressionBMICalculatorPrepop/bundleObsBodyWeight';
@@ -599,5 +599,115 @@ describe('populate - answerOption.initialSelected', () => {
     ]);
     expect(answersOf('recorded-status')).toEqual([{ valueString: 'active' }]);
     expect(response.item?.find((i) => i.linkId === 'no-default')).toBeUndefined();
+  });
+});
+
+describe('populate - expressions not in text/fhirpath', () => {
+  it('evaluates only text/fhirpath expressions and reports the others as not-supported', async () => {
+    const mockContext = {
+      resource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      rootResource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      patient: { resourceType: 'Patient', id: 'test-patient', birthDate: '1980-05-01' }
+    };
+
+    (createFhirPathContext as jest.Mock).mockImplementation(async () => mockContext);
+    (resolveLookupPromises as jest.Mock).mockImplementation(async () => ({}));
+    mockFetchResourceCallback.mockClear();
+
+    const questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'expression-language-test',
+      status: 'active',
+      item: [
+        {
+          linkId: 'dob-fhirpath',
+          type: 'date',
+          extension: [
+            {
+              url: SDC_INITIAL_EXPR,
+              valueExpression: { language: 'text/fhirpath', expression: '%patient.birthDate' }
+            }
+          ]
+        },
+        {
+          linkId: 'dob-cql',
+          type: 'date',
+          extension: [
+            {
+              url: SDC_INITIAL_EXPR,
+              valueExpression: { language: 'text/cql', expression: 'AgeInYears()' }
+            }
+          ]
+        },
+        {
+          linkId: 'relative',
+          type: 'group',
+          repeats: true,
+          extension: [
+            {
+              url: SDC_ITEM_POP_CTX,
+              valueExpression: {
+                name: 'relative',
+                language: 'application/x-fhir-query',
+                expression: 'RelatedPerson?patient={{%patient.id}}'
+              }
+            }
+          ],
+          item: [
+            {
+              linkId: 'relative-given',
+              type: 'string',
+              extension: [
+                {
+                  url: SDC_INITIAL_EXPR,
+                  valueExpression: {
+                    language: 'text/fhirpath',
+                    expression: '%relative.name.first().given.first()'
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const inputParameters: InputParameters = {
+      resourceType: 'Parameters',
+      parameter: [
+        { name: 'questionnaire', resource: questionnaire as any },
+        { name: 'subject', valueReference: { type: 'Patient', reference: 'Patient/test-patient' } }
+      ]
+    };
+
+    const result = (await populate(
+      inputParameters,
+      mockFetchResourceCallback,
+      mockFetchResourceCallbackConfig,
+      mockTerminologyCallback,
+      mockTerminologyCallbackConfig
+    )) as OutputParameters;
+
+    const response = result.parameter.find((p) => p.name === 'response')
+      ?.resource as QuestionnaireResponse;
+    const outcome = result.parameter.find((p) => p.name === 'issues')?.resource as OperationOutcome;
+
+    expect(response.item?.find((i) => i.linkId === 'dob-fhirpath')?.answer).toEqual([
+      { valueDate: '1980-05-01' }
+    ]);
+    expect(response.item?.find((i) => i.linkId === 'dob-cql')).toBeUndefined();
+    expect(response.item?.find((i) => i.linkId === 'relative')?.item ?? []).toEqual([]);
+    expect(mockFetchResourceCallback).not.toHaveBeenCalled();
+
+    expect(outcome.issue.map((i) => [i.code, i.details?.text])).toEqual([
+      [
+        'not-supported',
+        'The initialExpression of item dob-cql is in text/cql, which is not supported, so it was not evaluated.'
+      ],
+      [
+        'not-supported',
+        'The itemPopulationContext of item relative is in application/x-fhir-query, which is not supported, so it was not evaluated.'
+      ]
+    ]);
   });
 });

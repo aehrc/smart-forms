@@ -89,7 +89,7 @@ export async function populate(
 
   // Read expressions to be populated from questionnaire recursively
   // i.e. itemPopulationContext, initialExpression
-  const populationExpressions = readPopulationExpressions(questionnaire);
+  const populationExpressions = readPopulationExpressions(questionnaire, issues);
 
   // Evaluate itemPopulationContexts and add them to contextMap
   fhirPathContext = await evaluateItemPopulationContexts(
