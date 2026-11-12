@@ -10,7 +10,10 @@ export type { QuestionnaireResponseStoreType } from './questionnaireResponseStor
 
 export type { SmartConfigStoreType } from './smartConfigStore';
 
-export type { TerminologyServerStoreType } from './terminologyServerStore';
+export type {
+  TerminologyRequestOptions,
+  TerminologyServerStoreType
+} from './terminologyServerStore';
 
 export type { RendererConfig, RendererConfigStoreType } from './rendererConfigStore';
 

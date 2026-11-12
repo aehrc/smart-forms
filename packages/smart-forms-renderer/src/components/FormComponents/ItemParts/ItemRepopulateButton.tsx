@@ -52,6 +52,7 @@ function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
   const fhirContext = useSmartConfigStore.use.fhirContext();
 
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
+  const injectedFetchTerminologyCallback = useTerminologyServerStore.use.fetchTerminologyCallback();
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
@@ -91,7 +92,7 @@ function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
       user: user,
       encounter: encounter ?? undefined,
       fhirContext: fhirContext ?? undefined,
-      fetchTerminologyCallback: fetchTerminologyCallback,
+      fetchTerminologyCallback: injectedFetchTerminologyCallback ?? fetchTerminologyCallback,
       fetchTerminologyRequestConfig: {
         terminologyServerUrl: defaultTerminologyServerUrl
       }
