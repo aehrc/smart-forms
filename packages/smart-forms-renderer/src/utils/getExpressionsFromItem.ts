@@ -215,6 +215,15 @@ export function getAnswerOptionsToggleExpressions(
       const expressionExtension = answerOptionsToggleExpressionExtension.extension?.find(
         (ext) => ext.url === 'expression' && ext.valueExpression
       );
+      if (
+        expressionExtension &&
+        expressionExtension.valueExpression?.language !== 'text/fhirpath'
+      ) {
+        console.warn(
+          `answerOptionsToggleExpression of item ${qItem.linkId} is in ${expressionExtension.valueExpression?.language ?? 'no language'}, which is not supported, so it was not evaluated.`
+        );
+        continue;
+      }
 
       if (
         optionExtensions &&

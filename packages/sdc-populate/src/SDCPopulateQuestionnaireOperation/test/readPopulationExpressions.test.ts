@@ -16,8 +16,12 @@
  */
 
 import { describe, expect, it } from '@jest/globals';
-import type { Questionnaire } from 'fhir/r4';
-import { readPopulationExpressions } from '../utils/readPopulationExpressions';
+import type { OperationOutcomeIssue, Questionnaire } from 'fhir/r4';
+import {
+  getInitialExpression,
+  getItemPopulationContext,
+  readPopulationExpressions
+} from '../utils/readPopulationExpressions';
 import { QTestFhirContext } from './resources/QTestFhirContext';
 
 const SDC_INITIAL_EXPR =
@@ -170,5 +174,161 @@ describe('readPopulationExpressions - non-repeating itemPopulationContext', () =
     expect(itemPopulationContexts['AllergyCtx'].expression).toEqual(
       '%AllergyBundle.entry.resource'
     );
+  });
+});
+
+describe('readPopulationExpressions - expression language', () => {
+  const questionnaire: Questionnaire = {
+    resourceType: 'Questionnaire',
+    status: 'active',
+    item: [
+      {
+        linkId: 'dob-fhirpath',
+        type: 'date',
+        extension: [
+          {
+            url: SDC_INITIAL_EXPR,
+            valueExpression: { language: 'text/fhirpath', expression: '%patient.birthDate' }
+          }
+        ]
+      },
+      {
+        linkId: 'dob-cql',
+        type: 'date',
+        extension: [
+          {
+            url: SDC_INITIAL_EXPR,
+            valueExpression: { language: 'text/cql', expression: 'Patient.birthDate' }
+          }
+        ]
+      },
+      {
+        linkId: 'height-query',
+        type: 'decimal',
+        extension: [
+          {
+            url: SDC_INITIAL_EXPR,
+            valueExpression: {
+              language: 'application/x-fhir-query',
+              expression: 'Observation?code=8302-2&patient={{%patient.id}}'
+            }
+          }
+        ]
+      },
+      {
+        linkId: 'relatives',
+        type: 'group',
+        repeats: true,
+        extension: [
+          {
+            url: SDC_ITEM_POP_CTX,
+            valueExpression: {
+              name: 'relative',
+              language: 'application/x-fhir-query',
+              expression: 'RelatedPerson?patient={{%patient.id}}'
+            }
+          }
+        ],
+        item: [
+          {
+            linkId: 'relative-name',
+            type: 'string',
+            extension: [
+              {
+                url: SDC_INITIAL_EXPR,
+                valueExpression: { language: 'text/cql', expression: 'relative.name' }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  const issues: OperationOutcomeIssue[] = [];
+  const { initialExpressions, itemPopulationContexts } = readPopulationExpressions(
+    questionnaire,
+    issues
+  );
+
+  it('keeps a text/fhirpath initialExpression', () => {
+    expect(initialExpressions['dob-fhirpath'].expression).toEqual('%patient.birthDate');
+  });
+
+  it('skips initialExpressions in text/cql and application/x-fhir-query', () => {
+    expect(initialExpressions['dob-cql']).toBeUndefined();
+    expect(initialExpressions['height-query']).toBeUndefined();
+  });
+
+  it('skips an itemPopulationContext in application/x-fhir-query', () => {
+    expect(itemPopulationContexts).toEqual({});
+  });
+
+  it('reports one not-supported warning per skipped expression, naming the item and language', () => {
+    expect(issues).toHaveLength(4);
+    expect(issues.every((i) => i.severity === 'warning' && i.code === 'not-supported')).toBe(true);
+    expect(issues.map((i) => i.details?.text)).toEqual([
+      'The initialExpression of item dob-cql is in text/cql, which is not supported, so it was not evaluated.',
+      'The initialExpression of item height-query is in application/x-fhir-query, which is not supported, so it was not evaluated.',
+      'The itemPopulationContext of item relatives is in application/x-fhir-query, which is not supported, so it was not evaluated.',
+      'The initialExpression of item relative-name is in text/cql, which is not supported, so it was not evaluated.'
+    ]);
+  });
+
+  it('getInitialExpression returns only text/fhirpath expressions', () => {
+    const [fhirpathItem, cqlItem] = questionnaire.item!;
+    expect(getInitialExpression(fhirpathItem)?.expression).toEqual('%patient.birthDate');
+    expect(getInitialExpression(cqlItem)).toBeNull();
+  });
+
+  it('getItemPopulationContext returns only text/fhirpath expressions', () => {
+    expect(getItemPopulationContext(questionnaire.item![3])).toBeNull();
+  });
+});
+
+describe('readPopulationExpressions - children of a skipped itemPopulationContext', () => {
+  const questionnaire: Questionnaire = {
+    resourceType: 'Questionnaire',
+    status: 'active',
+    item: [
+      {
+        linkId: 'relative',
+        type: 'group',
+        repeats: false,
+        extension: [
+          {
+            url: SDC_ITEM_POP_CTX,
+            valueExpression: {
+              name: 'relative',
+              language: 'application/x-fhir-query',
+              expression: 'RelatedPerson?patient={{%patient.id}}'
+            }
+          }
+        ],
+        item: [
+          {
+            linkId: 'relative-given',
+            type: 'string',
+            extension: [
+              {
+                url: SDC_INITIAL_EXPR,
+                valueExpression: {
+                  language: 'text/fhirpath',
+                  expression: '%relative.name.first().given.first()'
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  it('does not read initialExpressions of children that use the skipped context', () => {
+    const issues: OperationOutcomeIssue[] = [];
+    const { initialExpressions } = readPopulationExpressions(questionnaire, issues);
+
+    expect(initialExpressions['relative-given']).toBeUndefined();
+    expect(issues).toHaveLength(1);
   });
 });

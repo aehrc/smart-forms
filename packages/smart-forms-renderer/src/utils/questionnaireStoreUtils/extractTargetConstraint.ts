@@ -21,9 +21,18 @@ export function constructTargetConstraint(extension: Extension): TargetConstrain
       (ext.valueCode === 'error' || ext.valueCode === 'warning')
   ) as TargetConstraintSeverity | undefined;
 
-  const targetConstraintExpression = extension.extension?.find(
+  const expressionExtension = extension.extension?.find(
     (ext) => ext.url === 'expression' && ext.valueExpression
-  ) as TargetConstraintExpression | undefined;
+  );
+  if (expressionExtension && expressionExtension.valueExpression?.language !== 'text/fhirpath') {
+    console.warn(
+      `targetConstraint ${targetConstraintKey?.valueId ?? ''} has an expression in ${expressionExtension.valueExpression?.language ?? 'no language'}, which is not supported, so it was not evaluated.`
+    );
+  }
+  const targetConstraintExpression =
+    expressionExtension?.valueExpression?.language === 'text/fhirpath'
+      ? (expressionExtension as TargetConstraintExpression)
+      : undefined;
 
   const targetConstraintHuman = extension.extension?.find(
     (ext) => ext.url === 'human' && ext.valueString
