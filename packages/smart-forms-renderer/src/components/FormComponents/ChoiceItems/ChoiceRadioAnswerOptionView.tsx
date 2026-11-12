@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -25,8 +29,9 @@ import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
-  valueChoice: string | null;
+  qrAnswer: QuestionnaireResponseItemAnswer | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -41,8 +46,9 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
   const {
     qItem,
     options,
-    valueChoice,
+    qrAnswer,
     feedback,
+    feedbackSeverity,
     isRepeated,
     readOnly,
     expressionUpdated,
@@ -59,8 +65,9 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
       <ChoiceRadioAnswerOptionFields
         qItem={qItem}
         options={options}
-        valueRadio={valueChoice}
+        qrAnswer={qrAnswer}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -86,8 +93,9 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
           <ChoiceRadioAnswerOptionFields
             qItem={qItem}
             options={options}
-            valueRadio={valueChoice}
+            qrAnswer={qrAnswer}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             expressionUpdated={expressionUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

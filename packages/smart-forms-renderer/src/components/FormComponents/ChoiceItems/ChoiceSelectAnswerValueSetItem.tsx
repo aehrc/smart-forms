@@ -20,7 +20,7 @@ import { useEffect, useMemo } from 'react';
 import type { Coding } from 'fhir/r4';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -57,7 +57,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const { displayInstructions } = renderingExtensions;
   const instructionsId =
     displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
@@ -110,6 +110,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
         valueCoding={valueCoding}
         terminologyError={terminologyError}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         isTabled={isTabled}
@@ -136,6 +137,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
             valueCoding={valueCoding}
             terminologyError={terminologyError}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
             isTabled={isTabled}

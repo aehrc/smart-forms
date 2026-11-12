@@ -9,8 +9,9 @@ import {
   ListenerAction,
   ListenerCondition
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import { InstanceSize } from 'aws-cdk-lib/aws-ec2';
 import { AssembleEndpoint } from 'forms-server-assemble-endpoint';
-import { HapiEndpoint } from 'forms-server-hapi-endpoint';
+import { HapiEndpoint } from 'shared-hapi-endpoint';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { PopulateEndpoint } from 'forms-server-populate-endpoint';
 
@@ -41,7 +42,16 @@ export class FormsServerAppStack extends cdk.Stack {
     });
     const populate = new PopulateEndpoint(this, 'FormsServerPopulate', { cluster });
     const assemble = new AssembleEndpoint(this, 'FormsServerAssemble', { cluster });
-    const hapi = new HapiEndpoint(this, 'FormsServerHapi', { cluster });
+    const hapi = new HapiEndpoint(this, 'FormsServerHapi', {
+      cluster,
+      // Must keep matching the deployed resources. See `HapiEndpointProps.constructIdPrefix`.
+      constructIdPrefix: 'FormsServerHapi',
+      serviceName: 'forms-server-hapi',
+      cpu: '2048',
+      memoryMiB: '4096',
+      databaseInstanceSize: InstanceSize.SMALL
+      // hapiSettings: { 'hapi.fhir.cr.enabled': 'true' } // To use the Clinical Reasoning module
+    });
 
     // Create a target for the populate service, routed from the "api/fhir/$populate" path.
     const populateTarget = populate.service.loadBalancerTarget({

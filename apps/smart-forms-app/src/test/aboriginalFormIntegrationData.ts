@@ -8,7 +8,7 @@ import type {
   Patient,
   QuestionnaireResponse
 } from 'fhir/r4';
-import { getBirthDateForAge } from './testUtils';
+import { getBirthDateForAge } from '@aehrc/questionnaire-test-toolkit';
 
 export const patient: Patient = {
   resourceType: 'Patient',

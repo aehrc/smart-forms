@@ -31,6 +31,7 @@ interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
   periodInput: string;
   is24HourNotation: boolean;
   dateFeedback: string;
+  dateFeedbackSeverity?: 'error' | 'warning';
   timeFeedback: string;
   dateFocused: boolean;
   displayPrompt: string;
@@ -55,6 +56,7 @@ function DateTimeField(props: DateTimeFieldProps) {
     periodInput,
     is24HourNotation,
     dateFeedback,
+    dateFeedbackSeverity,
     timeFeedback,
     dateFocused,
     displayPrompt,
@@ -78,6 +80,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         valueDate={displayDate}
         input={dateInput}
         feedback={dateFeedback ?? ''}
+        feedbackSeverity={dateFeedbackSeverity}
         isFocused={dateFocused}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}

@@ -16,7 +16,11 @@
  */
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import { getGroupTableItemsToUpdate, reorderRows } from '../../utils/groupTable';
+import {
+  getGroupTableItemsToUpdate,
+  getQrGroupTableRowIndexes,
+  reorderRows
+} from '../../utils/groupTable';
 import type { GroupTableRowModel } from '../../interfaces/groupTable.interface';
 
 describe('groupTable utilities', () => {
@@ -299,6 +303,76 @@ describe('groupTable utilities', () => {
         expect(result[0].linkId).toBe('row1'); // Table order is preserved
         expect(result[1].linkId).toBe('row3');
       });
+    });
+  });
+
+  describe('getQrGroupTableRowIndexes', () => {
+    const filledRow = (id: string): GroupTableRowModel => ({
+      id,
+      qrItem: { linkId: id, item: [] } as QuestionnaireResponseItem
+    });
+
+    const emptyRow = (id: string): GroupTableRowModel => ({ id, qrItem: null });
+
+    it('matches the row position in getGroupTableItemsToUpdate for every row', () => {
+      const tableRows = [
+        emptyRow('row1'), // dropped: no qrItem
+        filledRow('row2'),
+        filledRow('row3'), // dropped: not selected
+        filledRow('row4')
+      ];
+      const selectedIds = ['row1', 'row2', 'row4'];
+
+      const qrItems = getGroupTableItemsToUpdate(tableRows, selectedIds);
+      const qrRowIndexes = getQrGroupTableRowIndexes(tableRows, selectedIds);
+
+      expect(qrRowIndexes).toHaveLength(tableRows.length);
+
+      // Every row that made it into the QR must resolve to its own position in that array
+      tableRows.forEach((row, index) => {
+        const qrRowIndex = qrRowIndexes[index];
+
+        if (qrRowIndex === null) {
+          expect(qrItems.some((qrItem) => qrItem.linkId === row.id)).toBe(false);
+          return;
+        }
+
+        expect(qrItems[qrRowIndex].linkId).toBe(row.id);
+      });
+
+      expect(qrRowIndexes).toEqual([null, 0, null, 1]);
+    });
+
+    it('shifts the QR index of later rows when an earlier row is deselected', () => {
+      const tableRows = [filledRow('row1'), filledRow('row2'), filledRow('row3')];
+
+      // The gtable skew from #1985: deselecting row1 moves row3 from QR index 2 to QR index 1, so a
+      // rendered-index key would look up the wrong instance's error.
+      expect(getQrGroupTableRowIndexes(tableRows, ['row1', 'row2', 'row3'])).toEqual([0, 1, 2]);
+      expect(getQrGroupTableRowIndexes(tableRows, ['row2', 'row3'])).toEqual([null, 0, 1]);
+    });
+
+    it('returns null for a row with no qrItem', () => {
+      const tableRows = [emptyRow('row1'), filledRow('row2')];
+
+      expect(getQrGroupTableRowIndexes(tableRows, ['row1', 'row2'])).toEqual([null, 0]);
+    });
+
+    it('returns null for an unselected row', () => {
+      const tableRows = [filledRow('row1'), filledRow('row2')];
+
+      expect(getQrGroupTableRowIndexes(tableRows, ['row2'])).toEqual([null, 0]);
+    });
+
+    it('returns an empty array when there are no rows', () => {
+      expect(getQrGroupTableRowIndexes([], [])).toEqual([]);
+    });
+
+    it('is the rendered index when no earlier row is dropped', () => {
+      const tableRows = [filledRow('row1'), filledRow('row2'), filledRow('row3')];
+      const selectedIds = ['row1', 'row2', 'row3'];
+
+      expect(getQrGroupTableRowIndexes(tableRows, selectedIds)).toEqual([0, 1, 2]);
     });
   });
 });

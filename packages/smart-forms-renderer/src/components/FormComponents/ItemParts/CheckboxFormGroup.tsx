@@ -19,6 +19,7 @@ interface ChoiceCheckboxFormGroupProps {
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -35,6 +36,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
     options,
     answers,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -47,6 +49,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -69,7 +72,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
             id={qItem.type + '-' + qItem.linkId}
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
-              : { 'aria-label': qItem.text ?? 'Unnamed checkbox list' })}
+              : { 'aria-label': qItem.text ?? rendererStrings.unnamedCheckboxList })}
             {...(instructionsId && { 'aria-describedby': instructionsId })}
             role="group"
             row={orientation === ChoiceItemOrientation.Horizontal}
@@ -94,7 +97,12 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
         <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 }

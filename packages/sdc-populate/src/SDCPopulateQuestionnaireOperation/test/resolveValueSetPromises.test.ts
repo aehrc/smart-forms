@@ -108,7 +108,8 @@ describe('filterValueSetAnswersRecursive', () => {
       input,
       mockResolvedValueSetPromises,
       mockAnswerOptions,
-      mockContainedResources
+      mockContainedResources,
+      new Set<string>()
     );
 
     expect(result).toBeDefined();
@@ -142,7 +143,13 @@ describe('filterValueSetAnswersRecursive', () => {
       ]
     };
 
-    const result = filterValueSetAnswersRecursive(input, {}, {}, mockContainedResources);
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      {},
+      mockContainedResources,
+      new Set<string>()
+    );
 
     expect(result).toBeNull();
   });
@@ -153,8 +160,138 @@ describe('filterValueSetAnswersRecursive', () => {
       text: 'No answers'
     };
 
-    const result = filterValueSetAnswersRecursive(input, {}, {}, {});
+    const result = filterValueSetAnswersRecursive(input, {}, {}, {}, new Set<string>());
 
     expect(result).toEqual(input);
+  });
+
+  it('preserves coding answers outside answerOptions for open-choice items', () => {
+    const input = {
+      linkId: 'q1',
+      answer: [
+        { valueCoding: { system: 'sys', code: 'a' } },
+        { valueCoding: { system: 'http://hl7.org/fhir/sid/icd-10-cm', code: 'J44.9' } }
+      ]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      mockAnswerOptions,
+      {},
+      new Set(['q1'])
+    );
+
+    // Matching coding is normalised to the option's coding, non-matching coding is kept as is
+    expect(result?.answer).toEqual([
+      { valueCoding: { system: 'sys', code: 'a', display: 'A' } },
+      { valueCoding: { system: 'http://hl7.org/fhir/sid/icd-10-cm', code: 'J44.9' } }
+    ]);
+  });
+
+  it('still filters out non-matching coding answers for choice items', () => {
+    const input = {
+      linkId: 'q1',
+      answer: [
+        { valueCoding: { system: 'sys', code: 'a' } },
+        { valueCoding: { system: 'http://hl7.org/fhir/sid/icd-10-cm', code: 'J44.9' } }
+      ]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      mockAnswerOptions,
+      {},
+      new Set<string>()
+    );
+
+    expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: 'a', display: 'A' } }]);
+  });
+
+  it('does not rewrite a same-code coding from a different system to the option coding', () => {
+    const input = {
+      linkId: 'q1',
+      answer: [
+        { valueCoding: { system: 'http://snomed.info/sct', code: 'a', display: 'SNOMED A' } }
+      ]
+    };
+
+    const choiceResult = filterValueSetAnswersRecursive(
+      input,
+      {},
+      mockAnswerOptions,
+      {},
+      new Set<string>()
+    );
+    // dropped, not substituted with { system: 'sys', code: 'a' }
+    expect(choiceResult?.answer).toEqual([]);
+
+    const openChoiceResult = filterValueSetAnswersRecursive(
+      input,
+      {},
+      mockAnswerOptions,
+      {},
+      new Set(['q1'])
+    );
+    // kept exactly as populated, still SNOMED
+    expect(openChoiceResult?.answer).toEqual([
+      { valueCoding: { system: 'http://snomed.info/sct', code: 'a', display: 'SNOMED A' } }
+    ]);
+  });
+
+  it('matches display-only codings by display instead of undefined === undefined', () => {
+    const displayOnlyOptions = {
+      q1: [{ valueCoding: { display: 'A' } }, { valueCoding: { display: 'B' } }]
+    };
+    const input = {
+      linkId: 'q1',
+      answer: [{ valueCoding: { display: 'B' } }]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      displayOnlyOptions,
+      {},
+      new Set<string>()
+    );
+
+    // stays B; a code-only comparison would find option A first
+    expect(result?.answer).toEqual([{ valueCoding: { display: 'B' } }]);
+  });
+
+  it('preserves coding answers outside a contained valueSet for open-choice items', () => {
+    const input = {
+      linkId: 'q3',
+      answer: [{ valueCoding: { system: 'sys', code: 'z', display: 'Z' } }]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      {},
+      mockContainedResources,
+      new Set(['q3'])
+    );
+
+    expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: 'z', display: 'Z' } }]);
+  });
+
+  it('preserves coding answers outside an expanded valueSet for open-choice items', () => {
+    const input = {
+      linkId: 'q2',
+      answer: [{ valueCoding: { system: 'sys', code: '9' } }]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      mockResolvedValueSetPromises,
+      {},
+      {},
+      new Set(['q2'])
+    );
+
+    expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: '9' } }]);
   });
 });

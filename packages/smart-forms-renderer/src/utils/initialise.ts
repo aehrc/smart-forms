@@ -196,7 +196,7 @@ function getInitialValueAnswersFromRepeatGroup(
 
 function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] {
   // For answerOption.initialSelected
-  if (qItem.type === 'choice' && qItem.answerOption) {
+  if ((qItem.type === 'choice' || qItem.type === 'open-choice') && qItem.answerOption) {
     return qItem.answerOption
       .filter((option) => option.initialSelected)
       .map((option): QuestionnaireResponseItemAnswer | null => {
@@ -206,13 +206,13 @@ function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponse
           };
         }
 
-        if (option.valueString) {
+        if (option.valueString !== undefined) {
           return {
             valueString: option.valueString
           };
         }
 
-        if (option.valueInteger) {
+        if (option.valueInteger !== undefined) {
           return {
             valueInteger: option.valueInteger
           };

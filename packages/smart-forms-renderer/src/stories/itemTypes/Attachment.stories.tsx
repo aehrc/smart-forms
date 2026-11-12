@@ -18,7 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, inputFile, questionnaireFactory } from '../testUtils';
+import { findByLinkIdOrLabel, getAnswers, inputFile, questionnaireFactory } from '../testUtils';
 import { expect, fireEvent, screen } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
@@ -71,16 +71,34 @@ export const AttachmentBasic: Story = createStory({
       expect.objectContaining({ contentType: type, title: name, url: url })
     );
 
-    // Clear value
+    // Clear file only - the url and file name are untouched, so the answer should remain
+    // as a url-only attachment, not disappear (file OR url is enough to answer)
     const clearButton = canvasElement.querySelector('span[aria-label="Remove file"] button');
     fireEvent.click(clearButton as HTMLElement);
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetLinkId);
-    expect(resultAfterClear).toHaveLength(0);
+    const resultAfterFileClear = await getAnswers(targetLinkId);
+    expect(resultAfterFileClear).toHaveLength(1);
+    expect(resultAfterFileClear[0].valueAttachment).toEqual({ url: url, title: name });
 
-    const elementAfterClear = await screen.findByText('No file selected');
-    expect(elementAfterClear).toBeDefined();
+    const elementAfterFileClear = await screen.findByText('No file selected');
+    expect(elementAfterFileClear).toBeDefined();
+
+    // Clear the remaining url and file name - only now should the answer disappear entirely
+    const questionElement = await findByLinkIdOrLabel(canvasElement, targetLinkId);
+    const textareaUrl = questionElement?.querySelector(
+      `textarea[data-test="q-item-attachment-url"]`
+    );
+    const textareaName = questionElement?.querySelector(
+      `textarea[data-test="q-item-attachment-file-name"]`
+    );
+    fireEvent.change(textareaUrl as HTMLElement, { target: { value: '' } });
+    fireEvent.change(textareaName as HTMLElement, { target: { value: '' } });
+
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterFullClear = await getAnswers(targetLinkId);
+    expect(resultAfterFullClear).toHaveLength(0);
   }
 }) as Story;

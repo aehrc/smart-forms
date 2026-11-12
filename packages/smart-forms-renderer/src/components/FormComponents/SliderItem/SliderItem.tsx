@@ -25,7 +25,7 @@ import SliderField from './SliderField';
 import useSliderExtensions from '../../../hooks/useSliderExtensions';
 import Box from '@mui/material/Box';
 import { useQuestionnaireStore } from '../../../stores';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import ItemLabel from '../ItemParts/ItemLabel';
 
@@ -60,7 +60,7 @@ function SliderItem(props: BaseItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const { displayInstructions } = useRenderingExtensions(qItem);
   const instructionsId =
     displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
@@ -71,6 +71,12 @@ function SliderItem(props: BaseItemProps) {
       ...createEmptyQrItem(qItem, answerKey),
       answer: [{ id: answerKey, valueInteger: newValue }]
     });
+  }
+
+  // Clearing removes the answer entirely rather than writing a value, because an unanswered
+  // slider is distinct from one deliberately set to 0
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   if (isRepeated) {
@@ -88,10 +94,12 @@ function SliderItem(props: BaseItemProps) {
           maxLabel={maxLabel}
           isInteracted={isInteracted}
           feedback={feedback}
+          feedbackSeverity={feedbackSeverity}
           readOnly={readOnly}
           isTabled={isTabled}
           instructionsId={instructionsId}
           onValueChange={handleValueChange}
+          onClear={handleClear}
         />
       </Box>
     );
@@ -122,10 +130,12 @@ function SliderItem(props: BaseItemProps) {
               maxLabel={maxLabel}
               isInteracted={isInteracted}
               feedback={feedback}
+              feedbackSeverity={feedbackSeverity}
               readOnly={readOnly}
               isTabled={isTabled}
               instructionsId={instructionsId}
               onValueChange={handleValueChange}
+              onClear={handleClear}
             />
           </Box>
         }

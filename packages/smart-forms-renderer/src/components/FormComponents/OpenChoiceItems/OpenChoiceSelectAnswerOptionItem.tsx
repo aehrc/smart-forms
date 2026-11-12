@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
+import { answerHasValue } from '../../../utils/manageForm';
 import type { AutocompleteChangeReason } from '@mui/material';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
+import { compareAnswerOptionValue } from '../../../utils/choice';
+import { withFallbackDisplay } from '../../../utils/openChoice';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
@@ -47,7 +50,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const { displayInstructions } = useRenderingExtensions(qItem);
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
@@ -57,9 +60,21 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   if (!answerOptions) return null;
 
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
+  const qrAnswer = qrOpenChoice.answer?.[0] ?? null;
+
+  // A coded answer prefers a freshly-resolved display over its own recorded one, falling back
+  // to the recorded display only if live resolution can't supply one - same as Choice Select.
+  // A free-text answer (no valueCoding) is passed through unchanged; it has no terminology
+  // concept and matching it against the coded answerOption list would incorrectly blank it out.
   let valueSelect: QuestionnaireItemAnswerOption | string | null = null;
-  if (qrOpenChoice.answer) {
-    valueSelect = qrOpenChoice.answer[0] ?? null;
+  if (qrAnswer && answerHasValue(qrAnswer)) {
+    if (qrAnswer.valueCoding) {
+      const liveValue =
+        answerOptions.find((option) => compareAnswerOptionValue(option, qrAnswer)) ?? null;
+      valueSelect = liveValue ? withFallbackDisplay(liveValue, qrAnswer.valueCoding) : null;
+    } else {
+      valueSelect = qrAnswer;
+    }
   }
 
   // Event handlers
@@ -89,12 +104,12 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
           ...qrOpenChoice,
           answer: [{ id: answerKey, valueCoding: option.valueCoding }]
         });
-      } else if (option['valueString']) {
+      } else if (option['valueString'] !== undefined) {
         onQrItemChange({
           ...qrOpenChoice,
           answer: [{ id: answerKey, valueString: sanitizeInput(option.valueString) }]
         });
-      } else if (option['valueInteger']) {
+      } else if (option['valueInteger'] !== undefined) {
         onQrItemChange({
           ...qrOpenChoice,
           answer: [{ id: answerKey, valueInteger: option.valueInteger }]
@@ -112,6 +127,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
         options={answerOptions}
         valueSelect={valueSelect}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
@@ -138,6 +154,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
             options={answerOptions}
             valueSelect={valueSelect}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}

@@ -17,25 +17,31 @@
 
 import type { Bundle, BundleEntry, Questionnaire } from 'fhir/r4b';
 import { HEADERS } from './globals';
+import type { ServerConfig } from './config';
+import { headersFor } from './config';
+import { fetchWithoutRedirects, readJson, resolveQueryUrl } from './outboundUrl';
 
 export async function getQuestionnaire(
   questionnaireCanonical: string,
-  formsServerUrl: string,
-  formsServerAuthToken?: string
+  formsServer: ServerConfig
 ): Promise<Questionnaire | null> {
   questionnaireCanonical = questionnaireCanonical.replace('|', '&version=');
 
-  const requestUrl = `${formsServerUrl}/Questionnaire?url=${questionnaireCanonical}&_sort=_lastUpdated`;
-  const headers = formsServerAuthToken
-    ? { ...HEADERS, Authorization: `Bearer ${formsServerAuthToken}` }
-    : HEADERS;
-  const response = await fetch(requestUrl, { headers });
+  const requestUrl = resolveQueryUrl(
+    `Questionnaire?url=${questionnaireCanonical}&_sort=_lastUpdated`,
+    formsServer.url,
+    [],
+    'FORMS_SERVER_URL'
+  );
+  const response = await fetchWithoutRedirects(requestUrl, {
+    headers: headersFor(formsServer, HEADERS)
+  });
 
   if (!response.ok) {
     return null;
   }
 
-  const result = await response.json();
+  const result = await readJson(response, requestUrl);
   if (resultIsQuestionnaireOrBundle(result)) {
     if (result.resourceType === 'Questionnaire') {
       return result;

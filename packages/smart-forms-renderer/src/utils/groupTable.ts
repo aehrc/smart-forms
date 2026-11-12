@@ -39,3 +39,28 @@ export function getGroupTableItemsToUpdate(tableRows: GroupTableRowModel[], sele
     .filter((row) => selectedIds.includes(row.id))
     .flatMap((singleRow) => (singleRow.qrItem ? [structuredClone(singleRow.qrItem)] : []));
 }
+
+/**
+ * Get the QuestionnaireResponse index of every rendered gtable row, in rendered order. A row with no
+ * QuestionnaireResponse counterpart gets `null`.
+ *
+ * Rows that are unselected or still empty are dropped by {@link getGroupTableItemsToUpdate}, so a
+ * row's rendered index is not its index in the QuestionnaireResponse. Validation walks the
+ * QuestionnaireResponse, so instance-scoped error keys must use these indices instead.
+ *
+ * Computed for the whole table in a single pass over a Set of selected ids, so callers rendering n
+ * rows stay linear rather than re-scanning the preceding rows once per row.
+ *
+ * Keep the selection/emptiness test here in sync with {@link getGroupTableItemsToUpdate}.
+ *
+ * @author Clinton Gillespie
+ */
+export function getQrGroupTableRowIndexes(
+  tableRows: GroupTableRowModel[],
+  selectedIds: string[]
+): (number | null)[] {
+  const selectedIdSet = new Set(selectedIds);
+  let qrIndex = 0;
+
+  return tableRows.map((row) => (selectedIdSet.has(row.id) && row.qrItem ? qrIndex++ : null));
+}

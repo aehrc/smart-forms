@@ -20,7 +20,7 @@ import type {
   QuestionnaireItemInitial,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { findInAnswerOptions } from './answerOption';
+import { findInAnswerOptions, valueIsCoding } from './answerOption';
 import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './constructResponse';
 import { getRelevantCodingProperties } from './codingProperties';
 
@@ -85,6 +85,24 @@ export function parseItemInitialToAnswer(
 }
 
 /**
+ * Reads the default answers of a QuestionnaireItem: item.initial, or the answerOptions marked
+ * initialSelected (an item with answerOption cannot have item.initial, see que-11).
+ * Returns null when the item has no default.
+ */
+export function getItemInitialAnswers(
+  qItem: QuestionnaireItem
+): QuestionnaireResponseItemAnswer[] | null {
+  const initials = qItem.initial ?? qItem.answerOption?.filter((option) => option.initialSelected);
+  if (!initials || initials.length === 0) {
+    return null;
+  }
+
+  return initials
+    .map((initial) => parseItemInitialToAnswer(initial))
+    .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null);
+}
+
+/**
  * Parses a value and QuestionnaireItem into a QuestionnaireResponseItemAnswer.
  * Handles answerOption matching, type conversion, and FHIR-specific logic.
  */
@@ -117,9 +135,18 @@ export function parseValueToAnswer(
     return { valueQuantity: value };
   }
 
-  if (typeof value === 'object' && value.system && value.code) {
+  // A Coding may legally omit its system or code
+  if (valueIsCoding(value)) {
     return {
       valueCoding: getRelevantCodingProperties(value)
+    };
+  }
+
+  // No branch below can represent an object; fall back to its display text so an
+  // object never ends up inside valueString
+  if (typeof value === 'object') {
+    return {
+      valueString: typeof value.display === 'string' ? value.display : JSON.stringify(value)
     };
   }
 

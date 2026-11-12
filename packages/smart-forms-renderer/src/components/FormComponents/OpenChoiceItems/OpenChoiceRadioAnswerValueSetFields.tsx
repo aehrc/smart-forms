@@ -20,6 +20,8 @@ import Typography from '@mui/material/Typography';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { StyledAlert } from '../../Alert.styles';
+import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
@@ -31,6 +33,7 @@ interface OpenChoiceRadioAnswerValueSetFieldsProps {
   openLabelValue: string | null;
   openLabelSelected: boolean;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -50,6 +53,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
     openLabelValue,
     openLabelSelected,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -60,6 +64,8 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
     onClear
   } = props;
 
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
   if (options.length > 0) {
     return (
       <RadioFormGroup
@@ -67,6 +73,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
         options={options}
         valueRadio={valueRadio}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -90,8 +97,9 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography>
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
+          {interpolate(rendererStrings.terminologyServerFetchError, {
+            valueSet: `${terminologyError.answerValueSet}`
+          })}
         </Typography>
       </StyledAlert>
     );
@@ -100,7 +108,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
   if (options.length === 0) {
     return (
       <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
-        No options available.
+        {rendererStrings.optionsUnavailable}
       </Typography>
     );
   }
@@ -108,7 +116,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography>Unable to fetch options from the questionnaire or launch context</Typography>
+      <Typography>{rendererStrings.optionsFetchError}</Typography>
     </StyledAlert>
   );
 }

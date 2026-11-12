@@ -24,6 +24,8 @@ import type {
 } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { StyledAlert } from '../../Alert.styles';
+import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 
@@ -35,6 +37,7 @@ interface OpenChoiceCheckboxFieldsProps {
   openLabelValue: string;
   openLabelChecked: boolean;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -56,6 +59,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     openLabelValue,
     openLabelChecked,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -68,6 +72,8 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     onClear
   } = props;
 
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
   if (options.length > 0) {
     return (
       <CheckboxFormGroup
@@ -75,6 +81,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
         options={options}
         answers={answers}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -99,8 +106,9 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography component="div">
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
+          {interpolate(rendererStrings.terminologyServerFetchError, {
+            valueSet: `${terminologyError.answerValueSet}`
+          })}
         </Typography>
       </StyledAlert>
     );
@@ -109,7 +117,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
   if (options.length === 0) {
     return (
       <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
-        No options available.
+        {rendererStrings.optionsUnavailable}
       </Typography>
     );
   }
@@ -117,7 +125,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography>Unable to fetch options from the questionnaire or launch context</Typography>
+      <Typography>{rendererStrings.optionsFetchError}</Typography>
     </StyledAlert>
   );
 }

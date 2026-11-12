@@ -30,6 +30,7 @@ interface TextFieldProps {
   qItem: QuestionnaireItem;
   input: string;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
@@ -43,6 +44,7 @@ function TextField(props: TextFieldProps) {
     qItem,
     input,
     feedback,
+    feedbackSeverity,
     renderingExtensions,
     readOnly,
     calcExpUpdated,
@@ -60,7 +62,7 @@ function TextField(props: TextFieldProps) {
       <MuiTextField
         id={qItem.type + '-' + qItem.linkId}
         value={input}
-        error={!!feedback}
+        error={!!feedback && feedbackSeverity !== 'warning'}
         onChange={(event) => onInputChange(event.target.value)}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         placeholder={entryFormat || displayPrompt}
@@ -85,6 +87,9 @@ function TextField(props: TextFieldProps) {
           },
           htmlInput: {
             ...(instructionsId && { 'aria-describedby': instructionsId })
+          },
+          formHelperText: {
+            sx: feedbackSeverity === 'warning' && !!feedback ? { color: 'warning.main' } : undefined
           }
         }}
         helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}

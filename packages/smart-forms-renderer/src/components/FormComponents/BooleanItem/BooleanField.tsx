@@ -37,6 +37,7 @@ interface BooleanFieldProps {
   readOnly: boolean;
   valueBoolean: boolean | undefined;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   calcExpUpdated: boolean;
   instructionsId: string | undefined;
   onCheckedChange: (newValue: string) => void;
@@ -49,6 +50,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
     readOnly,
     valueBoolean,
     feedback,
+    feedbackSeverity,
     calcExpUpdated,
     instructionsId,
     onCheckedChange,
@@ -58,6 +60,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
   const reverseBooleanYesNo = useRendererConfigStore.use.reverseBooleanYesNo();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
 
@@ -136,14 +139,14 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 <>
                   <ChoiceRadioSingle
                     value="false"
-                    label="No"
+                    label={rendererStrings.booleanNoLabel}
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
                   />
                   <ChoiceRadioSingle
                     value="true"
-                    label="Yes"
+                    label={rendererStrings.booleanYesLabel}
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
@@ -153,14 +156,14 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 <>
                   <ChoiceRadioSingle
                     value="true"
-                    label="Yes"
+                    label={rendererStrings.booleanYesLabel}
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
                   />
                   <ChoiceRadioSingle
                     value="false"
-                    label="No"
+                    label={rendererStrings.booleanNoLabel}
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
@@ -182,7 +185,12 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
         />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 });

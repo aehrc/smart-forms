@@ -20,6 +20,8 @@ import type {
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 
@@ -31,6 +33,7 @@ interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   openLabelValue: string;
   openLabelChecked: boolean;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -51,6 +54,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
     openLabelValue,
     openLabelChecked,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -62,28 +66,37 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
     onClear
   } = props;
 
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    answers
+  );
+
   return (
-    <CheckboxFormGroup
-      qItem={qItem}
-      options={options}
-      answers={answers}
-      feedback={feedback}
-      readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
-      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-      isTabled={isTabled}
-      instructionsId={instructionsId}
-      onCheckedChange={onOptionChange}
-      onClear={onClear}>
-      <CheckboxSingleWithOpenLabel
-        value={openLabelValue}
-        label={openLabelText}
+    <>
+      <CheckboxFormGroup
+        qItem={qItem}
+        options={visibleOptions}
+        answers={answers}
+        feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
-        isChecked={openLabelChecked}
-        onCheckedChange={onOpenLabelCheckedChange}
-        onInputChange={onOpenLabelInputChange}
-      />
-    </CheckboxFormGroup>
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        instructionsId={instructionsId}
+        onCheckedChange={onOptionChange}
+        onClear={onClear}>
+        <CheckboxSingleWithOpenLabel
+          value={openLabelValue}
+          label={openLabelText}
+          readOnly={readOnly}
+          isChecked={openLabelChecked}
+          onCheckedChange={onOpenLabelCheckedChange}
+          onInputChange={onOpenLabelInputChange}
+        />
+      </CheckboxFormGroup>
+      {hasUnavailableDisplayOptions ? <AnswerOptionUnavailableWarning /> : null}
+    </>
   );
 }
 

@@ -23,6 +23,8 @@ import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderPr
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
 import { useRendererConfigStore } from '../../../../stores';
+import useDateFormat from '../../../../hooks/useDateFormat';
+import { interpolate } from '../../../../i18n';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
 
 interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
@@ -32,6 +34,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   valueDate: string;
   input: string;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   isFocused: boolean;
   displayPrompt: string;
   entryFormat: string;
@@ -52,6 +55,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     valueDate,
     input,
     feedback,
+    feedbackSeverity,
     isFocused,
     displayPrompt,
     entryFormat,
@@ -67,13 +71,15 @@ function CustomDateField(props: CustomDateFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const dateFormat = useDateFormat();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const anchorRef = useRef<HTMLDivElement | null>(null);
 
   // If this reusable date field is part of a DateTime component, the id should be appended with '-date'
   const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;
 
-  let placeholderText = 'DD/MM/YYYY';
+  let placeholderText = dateFormat;
   if (displayPrompt !== '') {
     placeholderText = displayPrompt;
   }
@@ -93,7 +99,7 @@ function CustomDateField(props: CustomDateFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       value={input}
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
       placeholder={placeholderText}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -112,7 +118,7 @@ function CustomDateField(props: CustomDateFieldProps) {
                 readOnly={readOnly}
                 anchorEl={anchorRef.current}
                 onSelectDate={(valueDayjs: Dayjs) => {
-                  onSelectDate(valueDayjs.format('DD/MM/YYYY'));
+                  onSelectDate(valueDayjs.format(dateFormat));
                 }}
                 onFocus={(focus) => setFocused(focus)}
               />
@@ -120,8 +126,16 @@ function CustomDateField(props: CustomDateFieldProps) {
           )
         },
         htmlInput: {
-          ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` }),
+          ...(isTabled
+            ? {}
+            : {
+                'aria-label':
+                  itemText ?? interpolate(rendererStrings.unnamedItem, { type: itemType })
+              }),
           ...(instructionsId && { 'aria-describedby': instructionsId })
+        },
+        formHelperText: {
+          sx: feedbackSeverity === 'warning' && !!feedback ? { color: 'warning.main' } : undefined
         }
       }}
       helperText={feedback}

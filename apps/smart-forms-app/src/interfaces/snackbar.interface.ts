@@ -17,6 +17,9 @@
 
 export const saveErrorMessage = 'An error occurred while saving.';
 
+export const extractionErrorMessage =
+  'An error occurred while preparing data to write back. The response was not saved.';
+
 export const formHasErrorsMessage =
   'The form has errors that must be fixed before saving as final.';
 

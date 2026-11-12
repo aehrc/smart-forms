@@ -31,6 +31,7 @@ interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   input: string;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
@@ -44,6 +45,7 @@ function IntegerField(props: IntegerFieldProps) {
     qItem,
     input,
     feedback,
+    feedbackSeverity,
     renderingExtensions,
     readOnly,
     calcExpUpdated,
@@ -76,7 +78,7 @@ function IntegerField(props: IntegerFieldProps) {
     <StandardTextField
       id={inputId}
       value={input}
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -92,6 +94,9 @@ function IntegerField(props: IntegerFieldProps) {
           pattern: '[0-9]*',
           ...(ariaLabel && { 'aria-label': ariaLabel }),
           ...(instructionsId && { 'aria-describedby': instructionsId })
+        },
+        formHelperText: {
+          sx: feedbackSeverity === 'warning' && !!feedback ? { color: 'warning.main' } : undefined
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

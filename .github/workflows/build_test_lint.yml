@@ -3,6 +3,29 @@ name: Smart Forms Build-Test-Lint Workflow
 on: [workflow_dispatch, push, workflow_call]
 
 jobs:
+  questionnaire-test-toolkit-tests:
+    name: Tests - Questionnaire Test Toolkit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build workspace dependencies
+        run: |
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+      - name: Run toolkit regression tests
+        run: npm test -w packages/questionnaire-test-toolkit
+      - name: Typecheck toolkit and regression tests
+        run: npm run typecheck -w packages/questionnaire-test-toolkit
+
   build-smart-forms-app:
     name: Build Smart Forms App
     runs-on: ubuntu-latest
@@ -23,6 +46,7 @@ jobs:
           npm run build -w packages/sdc-populate
           npm run build -w packages/sdc-template-extract
           npm run build -w packages/smart-forms-renderer
+          npm run build -w packages/questionnaire-test-toolkit
 
       - name: Build application
         run: npm run build -w apps/smart-forms-app
@@ -42,6 +66,31 @@ jobs:
         run: cd apps/demo-renderer-app && npm ci
       - name: Build application
         run: cd apps/demo-renderer-app && npm run build
+
+  build-documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    # Mirrors the Docusaurus build in deploy_docs.yml so webpack-only resolution errors are caught
+    # before merge. Vite (apps, Storybook) is more lenient than webpack, so those jobs miss them.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.18
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
+      - name: Build documentation website
+        run: npm run build -w documentation
 
   jest-smart-forms-app-tests:
     name: Jest Tests - Smart Forms App
@@ -222,6 +271,33 @@ jobs:
           path: packages/sdc-template-extract/coverage
           retention-days: 30
 
+  jest-express-services-tests:
+    name: Jest Tests - Express Services
+    runs-on: ubuntu-latest
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages (service dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+
+      - name: Run jest tests
+        run: |
+          npm run test -w services/populate-express
+          npm run test -w services/assemble-express
+          npm run test -w services/extract-express
+
   playwright-test:
     name: Playwright Tests
     timeout-minutes: 60
@@ -245,6 +321,7 @@ jobs:
           npm run build -w packages/sdc-populate
           npm run build -w packages/sdc-template-extract
           npm run build -w packages/smart-forms-renderer
+          npm run build -w packages/questionnaire-test-toolkit
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps

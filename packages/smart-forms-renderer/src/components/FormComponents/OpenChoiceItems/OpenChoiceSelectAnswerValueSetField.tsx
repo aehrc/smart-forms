@@ -30,8 +30,11 @@ import type {
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import AutocompleteWrappedValue from '../ItemParts/AutocompleteWrappedValue';
+import { autocompleteWrappedValueSx } from '../ItemParts/AutocompleteWrappedValue.styles';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
@@ -43,6 +46,7 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
   valueSelect: Coding | string | null;
   terminologyError: TerminologyError;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   calcExpUpdated: boolean;
   instructionsId?: string;
@@ -59,6 +63,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
     valueSelect,
     terminologyError,
     feedback,
+    feedbackSeverity,
     readOnly,
     calcExpUpdated,
     instructionsId,
@@ -69,12 +74,13 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
     <FormControl
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       sx={{
         width: '100%',
         maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -98,16 +104,27 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         size="small"
         renderInput={(params) => (
           <StandardTextField
-            multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
-            error={!!feedback}
+            error={!!feedback && feedbackSeverity !== 'warning'}
             placeholder={entryFormat || displayPrompt}
             {...params}
             slotProps={{
               input: {
                 ...params.InputProps,
                 readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                startAdornment: (
+                  <AutocompleteWrappedValue
+                    text={
+                      typeof valueSelect === 'string'
+                        ? valueSelect
+                        : valueSelect
+                          ? (valueSelect.display ?? `${valueSelect.code}`)
+                          : ''
+                    }
+                  />
+                ),
+                sx: autocompleteWrappedValueSx,
                 endAdornment: (
                   <>
                     <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
@@ -119,7 +136,10 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
               htmlInput: {
                 ...params.inputProps,
                 ...(isTabled
-                  ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                  ? {
+                      'aria-label':
+                        qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+                    }
                   : { 'aria-labelledby': `label-${qItem.linkId}` }),
                 ...(instructionsId && { 'aria-describedby': instructionsId })
               }
@@ -129,13 +149,14 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
       />
       {terminologyError.error ? (
         <Typography>
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
+          {interpolate(rendererStrings.terminologyServerFetchError, {
+            valueSet: `${terminologyError.answerValueSet}`
+          })}
         </Typography>
       ) : null}
 
       {feedback ? (
-        <FormHelperText>
+        <FormHelperText sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
         </FormHelperText>
       ) : null}

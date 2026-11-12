@@ -18,6 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
+  qChoiceAutocomplete,
   qChoiceCheckboxAnswerOption,
   qChoiceCheckboxAnswerValueSet,
   qChoiceDropDownAnswerOption,
@@ -32,6 +33,8 @@ import {
   qSliderStepValue
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
+import { getAutocompleteNoOptionsText } from '../testUtils';
+import { expect } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -49,6 +52,18 @@ type Story = StoryObj<typeof meta>;
 export const AutocompleteOpenChoice: Story = createStory({
   args: {
     questionnaire: qOpenChoiceAutocomplete
+  }
+}) as Story;
+
+export const AutocompleteChoice: Story = createStory({
+  args: {
+    questionnaire: qChoiceAutocomplete
+  },
+  play: async ({ canvasElement }) => {
+    // No terminology query runs below 2 characters, so the popup prompts the user to type
+    const noOptionsText = await getAutocompleteNoOptionsText(canvasElement, 'gender');
+
+    expect(noOptionsText).toBe('Type to search...');
   }
 }) as Story;
 

@@ -28,7 +28,10 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import StyledText from '../ItemParts/StyledText';
@@ -42,6 +45,7 @@ interface OpenChoiceSelectAnswerOptionFieldProps
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   calcExpUpdated: boolean;
   instructionsId?: string;
@@ -57,6 +61,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
     options,
     valueSelect,
     feedback,
+    feedbackSeverity,
     readOnly,
     calcExpUpdated,
     instructionsId,
@@ -67,6 +72,12 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    valueSelect && typeof valueSelect !== 'string' ? [valueSelect] : []
+  );
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -74,7 +85,9 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
   return (
     <FormControl
-      error={!!feedback}
+      data-linkid={qItem.linkId}
+      data-label={qItem.text}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       sx={{
         width: '100%',
         maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -84,7 +97,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
       <Autocomplete
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
-        options={options}
+        options={visibleOptions}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
         inputValue={inputValue}
@@ -122,10 +135,9 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         size="small"
         renderInput={(params) => (
           <StandardTextField
-            multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
-            error={!!feedback}
+            error={!!feedback && feedbackSeverity !== 'warning'}
             placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
             {...params}
             slotProps={{
@@ -148,7 +160,10 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
               htmlInput: {
                 ...params.inputProps,
                 ...(isTabled
-                  ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                  ? {
+                      'aria-label':
+                        qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+                    }
                   : { 'aria-labelledby': `label-${qItem.linkId}` }),
                 ...(instructionsId && { 'aria-describedby': instructionsId })
               }
@@ -160,7 +175,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
           return (
             <li key={key} {...rest}>
               <span>
-                {option.valueString ? (
+                {option.valueString !== undefined ? (
                   <StyledText
                     textToDisplay={getAnswerOptionLabel(option)}
                     element={option._valueString}
@@ -182,8 +197,8 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { onDelete, ...rest } = getItemProps();
           return (
-            <span {...rest}>
-              {typeof value !== 'string' && value.valueString && selectedOption ? (
+            <span {...rest} style={{ paddingLeft: '8.5px' }}>
+              {typeof value !== 'string' && value.valueString !== undefined && selectedOption ? (
                 <StyledText
                   textToDisplay={getAnswerOptionLabel(value)}
                   element={selectedOption._valueString}
@@ -196,8 +211,11 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         }}
       />
 
+      {hasUnavailableDisplayOptions ? (
+        <AnswerOptionUnavailableWarning variant="helperText" />
+      ) : null}
       {feedback ? (
-        <FormHelperText>
+        <FormHelperText sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
         </FormHelperText>
       ) : null}

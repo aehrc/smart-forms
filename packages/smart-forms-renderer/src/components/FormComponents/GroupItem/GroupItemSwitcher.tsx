@@ -32,7 +32,7 @@ import SingleItem from '../SingleItem/SingleItem';
 import useHidden from '../../../hooks/useHidden';
 import GroupItem from './GroupItem';
 import GridGroup from '../GridGroup/GridGroup';
-import { useQuestionnaireStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 
 interface GroupItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -60,6 +60,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
   if (itemIsHidden) {
@@ -97,7 +98,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
     // qItem should always be either a repeatGroup or a groupTable item
     // groupTables item have qItem.repeats = true and qItem.type = 'group' as well
     if (!qItem.repeats || qItem.type !== 'group') {
-      return <>Something went wrong here</>;
+      return <>{rendererStrings.somethingWentWrong}</>;
     }
 
     if (isSpecificItemControl(qItem, 'gtable')) {

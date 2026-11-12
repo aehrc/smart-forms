@@ -518,6 +518,13 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
     // Make sure this is not the AM/PM select within a time field
     const isAmPmSelect = selectButton.closest('[data-test="ampm"]');
     if (!isAmPmSelect) {
+      // MUI Autocomplete puts role="combobox" on the <input> itself
+      if (selectButton instanceof HTMLInputElement || selectButton instanceof HTMLTextAreaElement) {
+        if (selectButton.value) {
+          return selectButton.value;
+        }
+      }
+
       const innerInput = selectButton.querySelector<HTMLInputElement>('input');
       if (innerInput?.value) {
         return innerInput.value;
@@ -551,6 +558,29 @@ export async function getAutocompleteTagText(canvasElement: HTMLElement, linkId:
   }
 
   return tag.textContent || '';
+}
+
+export async function getAutocompleteNoOptionsText(canvasElement: HTMLElement, linkId: string) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const input = questionElement?.querySelector<HTMLElement>('textarea, input');
+
+  if (!input) {
+    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+
+  // Clicking the input opens the MUI Autocomplete popup
+  await userEvent.click(input);
+
+  // MUI renders the popup in a portal, so it lives outside canvasElement
+  return await waitFor(() => {
+    const noOptions = document.querySelector('.MuiAutocomplete-noOptions');
+
+    if (!noOptions) {
+      throw new Error(`MUI Autocomplete no-options element was not found for ${linkId}`);
+    }
+
+    return noOptions.textContent?.trim() ?? '';
+  });
 }
 
 export async function chooseSelectOption(

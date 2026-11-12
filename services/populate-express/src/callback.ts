@@ -15,73 +15,56 @@
  * limitations under the License.
  */
 
-import type {
-  FetchResourceCallback,
-  FetchResourceRequestConfig,
-  FetchTerminologyCallback,
-  FetchTerminologyRequestConfig
-} from '@aehrc/sdc-populate';
+import type { FetchResourceCallback, FetchTerminologyCallback } from '@aehrc/sdc-populate';
+import type { PopulateConfig, ServerConfig } from './config';
+import { fetchFhirResource, isUnderBase, resolveQueryUrl } from './outboundUrl';
 
-const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
-
-export const fetchResourceCallback: FetchResourceCallback = async (
-  query: string,
-  requestConfig: FetchResourceRequestConfig
-) => {
-  let { sourceServerUrl } = requestConfig;
-  const { authToken } = requestConfig;
-
+function createHeaders(target: URL, server: ServerConfig | null): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/json;charset=utf-8'
   };
 
-  if (authToken) {
-    headers['Authorization'] = `Bearer ${authToken}`;
+  // Only send a server's auth token to that server, never to another allowed origin
+  if (server?.authToken && isUnderBase(target, server.url)) {
+    headers['Authorization'] = `Bearer ${server.authToken}`;
   }
 
-  if (!sourceServerUrl.endsWith('/')) {
-    sourceServerUrl += '/';
-  }
+  return headers;
+}
 
-  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
-
-  const response = await fetch(requestUrl, {
-    headers: headers
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
-  }
-
-  return response.json();
-};
-
-export const fetchTerminologyCallback: FetchTerminologyCallback = async (
-  query: string,
-  terminologyRequestConfig: FetchTerminologyRequestConfig
-) => {
-  let { url } = terminologyRequestConfig;
-  const { authToken } = terminologyRequestConfig;
-
-  const headers: Record<string, string> = {
-    Accept: 'application/json;charset=utf-8'
+/**
+ * Creates the callback sdc-populate uses to fetch questionnaires and context resources.
+ * Relative queries go to EHR_SERVER_URL. Absolute URLs are fetched only when they are under
+ * EHR_SERVER_URL or ALLOWED_FETCH_ORIGINS. Responses that are not FHIR resources are rejected.
+ */
+export function createFetchResourceCallback(config: PopulateConfig): FetchResourceCallback {
+  return async (query: string) => {
+    const requestUrl = resolveQueryUrl(
+      query,
+      config.ehrServer?.url ?? null,
+      config.allowedFetchBases,
+      'EHR_SERVER_URL'
+    );
+    return fetchFhirResource(requestUrl, { headers: createHeaders(requestUrl, config.ehrServer) });
   };
+}
 
-  if (authToken) {
-    headers['Authorization'] = `Bearer ${authToken}`;
-  }
-
-  if (!url.endsWith('/')) {
-    url += '/';
-  }
-
-  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${url}${query}`;
-
-  const response = await fetch(requestUrl, { headers });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
-  }
-
-  return response.json();
-};
+/**
+ * Creates the callback sdc-populate uses for ValueSet $expand and CodeSystem $lookup.
+ * Relative queries go to TERMINOLOGY_SERVER_URL (or the default terminology server). Absolute URLs
+ * are fetched only when they are under that server or ALLOWED_FETCH_ORIGINS. Responses that are not
+ * FHIR resources are rejected.
+ */
+export function createFetchTerminologyCallback(config: PopulateConfig): FetchTerminologyCallback {
+  return async (query: string) => {
+    const requestUrl = resolveQueryUrl(
+      query,
+      config.terminologyServer.url,
+      config.allowedFetchBases,
+      'TERMINOLOGY_SERVER_URL'
+    );
+    return fetchFhirResource(requestUrl, {
+      headers: createHeaders(requestUrl, config.terminologyServer)
+    });
+  };
+}

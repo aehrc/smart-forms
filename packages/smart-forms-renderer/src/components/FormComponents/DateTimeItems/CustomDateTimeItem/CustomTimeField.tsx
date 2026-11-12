@@ -23,6 +23,7 @@ import Typography from '@mui/material/Typography';
 import type { ChangeEvent } from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../../stores';
+import { interpolate } from '../../../../i18n';
 import FormControl from '@mui/material/FormControl';
 import MuiTextField from '../../TextItem/MuiTextField';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
@@ -66,6 +67,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   // If this reusable time field is part of a DateTime component, do not assign an id to the wrapping <Box/>
   // If this reusable time field is from a Time component, the wrapping <Box/> should have an id
@@ -99,7 +101,12 @@ function CustomTimeField(props: CustomTimeFieldProps) {
                 readOnly: readOnly && readOnlyVisualStyle === 'readonly'
               },
               htmlInput: {
-                ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` }),
+                ...(isTabled
+                  ? {}
+                  : {
+                      'aria-label':
+                        itemText ?? interpolate(rendererStrings.unnamedItem, { type: itemType })
+                    }),
                 ...(instructionsId && { 'aria-describedby': instructionsId })
               }
             }}

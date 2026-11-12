@@ -67,6 +67,15 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
           sx={{
             mt: 0.5,
             flexGrow: 1,
+            // A question label is a single run of text, so the outer paragraph margins that xhtml/markdown
+            // rendering adds would only push it out of line with its field. Display items are standalone
+            // blocks of prose, so they keep their paragraph spacing.
+            ...(isDisplayItem
+              ? {}
+              : {
+                  '& p:first-of-type': { marginBlockStart: 0 },
+                  '& p:last-of-type': { marginBlockEnd: 0 }
+                }),
             ...(parentStyles || {})
           }}>
           {/* Required asterisk position is in front of text */}
@@ -79,12 +88,17 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
             </RequiredAsterisk>
           ) : null}
 
+          {/* verticalAlign: top is required because an inline-flex box takes its baseline from its first
+              flex item. Once the label text wraps onto multiple lines, that baseline sits well below the
+              surrounding line box's baseline, which pushes the whole label down and away from its field.
+              Aligning the box to the top of the line box keeps multi-line labels in line with their fields. */}
           <Box
             component="span"
             display="inline-flex"
             alignItems="baseline"
             gap={0.5}
-            flexWrap="wrap">
+            flexWrap="wrap"
+            sx={{ verticalAlign: 'top' }}>
             <ItemPrefixSwitcher qItem={qItem} />
             <ItemTextSwitcher qItem={qItem} />
           </Box>

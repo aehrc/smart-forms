@@ -35,8 +35,11 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import AutocompleteWrappedValue from '../ItemParts/AutocompleteWrappedValue';
+import { autocompleteWrappedValueSx } from '../ItemParts/AutocompleteWrappedValue.styles';
 
 interface ChoiceAutocompleteFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -45,6 +48,8 @@ interface ChoiceAutocompleteFieldsProps
   qItem: QuestionnaireItem;
   options: Coding[];
   valueCoding: Coding | null;
+  /** Debounced search term sent to the terminology server. Fewer than 2 characters means no query has run. */
+  searchTerm: string;
   loading: boolean;
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
@@ -60,6 +65,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
     qItem,
     options,
     valueCoding,
+    searchTerm,
     loading,
     feedback,
     readOnly,
@@ -73,6 +79,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -86,7 +93,12 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       loading={loading}
-      loadingText={'Fetching results...'}
+      loadingText={rendererStrings.fetchingResults}
+      noOptionsText={
+        searchTerm.length < 2
+          ? rendererStrings.autocompleteTypeToSearch
+          : rendererStrings.terminologyNoResults
+      }
       clearOnEscape
       autoHighlight
       onChange={(_, newValue) => onValueChange(newValue)}
@@ -95,7 +107,6 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       renderInput={(params) => (
         <StandardTextField
           {...params}
-          multiline
           onChange={(e) => onInputChange(e.target.value)}
           textFieldWidth={textFieldWidth}
           isTabled={isTabled}
@@ -109,8 +120,12 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
                 <>
                   {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
                   {params.InputProps.startAdornment}
+                  <AutocompleteWrappedValue
+                    text={valueCoding ? (valueCoding.display ?? `${valueCoding.code}`) : ''}
+                  />
                 </>
               ),
+              sx: autocompleteWrappedValueSx,
               endAdornment: (
                 <>
                   {loading ? (
@@ -138,7 +153,10 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
             htmlInput: {
               ...params.inputProps,
               ...(isTabled
-                ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                ? {
+                    'aria-label':
+                      qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+                  }
                 : { 'aria-labelledby': `label-${qItem.linkId}` }),
               ...(instructionsId && { 'aria-describedby': instructionsId })
             }

@@ -82,13 +82,19 @@ export function hasMapChanged(map1: Map<string, boolean>, map2: Map<string, bool
   return false;
 }
 
+// Keyed by system+code when a code is present - display is a label, not identity, and can
+// legitimately change (a fresh $lookup resolving it, a terminology rename) without the coding
+// itself changing. Falls back to display only when there's no code to key on instead - tagged
+// "code:"/"display:" so a coding's code can never collide with a different coding's display.
 export function generateOptionKey(option: QuestionnaireItemAnswerOption): string {
   if (option.valueCoding) {
     const systemKey = option.valueCoding.system ?? ' ';
-    const codeKey = option.valueCoding.code ?? ' ';
-    const displayKey = option.valueCoding.display ?? ' ';
 
-    return `coding:${systemKey}-${codeKey}-${displayKey}`;
+    if (option.valueCoding.code) {
+      return `coding:${systemKey}-code:${option.valueCoding.code}`;
+    }
+
+    return `coding:${systemKey}-display:${option.valueCoding.display ?? ' '}`;
   }
 
   if (option.valueString !== undefined) {
@@ -106,10 +112,12 @@ export function generateOptionKey(option: QuestionnaireItemAnswerOption): string
 // It makes sense to align these two functions when we refactor choice/open-choice items https://github.com/aehrc/smart-forms/issues/1205
 export function generateCodingKey(coding: Coding): string {
   const systemKey = coding.system ?? ' ';
-  const codeKey = coding.code ?? ' ';
-  const displayKey = coding.display ?? ' ';
 
-  return `coding:${systemKey}-${codeKey}-${displayKey}`;
+  if (coding.code) {
+    return `coding:${systemKey}-code:${coding.code}`;
+  }
+
+  return `coding:${systemKey}-display:${coding.display ?? ' '}`;
 }
 
 export default useAnswerOptionsToggleExpressions;

@@ -19,11 +19,11 @@ import Typography from '@mui/material/Typography';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import { ChoiceItemControl } from '../../../interfaces/choice.enum';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
-import { findInAnswerOptions, getChoiceControlType, getQrChoiceValue } from '../../../utils/choice';
+import { findInAnswerOptions, getChoiceControlType } from '../../../utils/choice';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import ChoiceRadioAnswerOptionView from './ChoiceRadioAnswerOptionView';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
@@ -46,12 +46,12 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
-  const valueChoice = getQrChoiceValue(qrChoice);
+  const qrAnswer = qrChoice.answer?.[0] ?? null;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   const { displayInstructions } = renderingExtensions;
 
@@ -75,10 +75,13 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
 
     // newValue is type string
     if (typeof newValue === 'string') {
-      const qrAnswer = findInAnswerOptions(options, newValue);
+      const matchedAnswer = findInAnswerOptions(options, newValue);
       onQrItemChange(
-        qrAnswer
-          ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
+        matchedAnswer
+          ? {
+              ...createEmptyQrItem(qItem, answerKey),
+              answer: [{ ...matchedAnswer, id: answerKey }]
+            }
           : createEmptyQrItem(qItem, answerKey)
       );
       return;
@@ -106,8 +109,9 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
         <ChoiceRadioAnswerOptionView
           qItem={qItem}
           options={options}
-          valueChoice={valueChoice}
+          qrAnswer={qrAnswer}
           feedback={feedback}
+          feedbackSeverity={feedbackSeverity}
           isRepeated={isRepeated}
           readOnly={readOnly}
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
@@ -126,8 +130,9 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
         <ChoiceSelectAnswerOptionView
           qItem={qItem}
           options={options}
-          valueChoice={valueChoice}
+          qrAnswer={qrAnswer}
           feedback={feedback}
+          feedbackSeverity={feedbackSeverity}
           isRepeated={isRepeated}
           isTabled={isTabled}
           readOnly={readOnly}

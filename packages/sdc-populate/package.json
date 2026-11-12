@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/sdc-populate",
-  "version": "4.7.1",
+  "version": "4.7.2",
   "description": "Performs the $populate operation from the HL7 FHIR SDC (Structured Data Capture) specification: http://hl7.org/fhir/uv/sdc",
   "scripts": {
     "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",
@@ -22,8 +22,7 @@
     "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.6.3",
     "fhirpath": "^4.10.1",
-    "js-base64": "^3.7.8",
-    "moment": "^2.30.1"
+    "js-base64": "^3.7.8"
   },
   "devDependencies": {
     "@jest/globals": "^30.3.0",

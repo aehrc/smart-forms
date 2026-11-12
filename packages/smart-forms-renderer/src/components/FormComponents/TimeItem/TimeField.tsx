@@ -49,6 +49,7 @@ function TimeField(props: TimeFieldProps) {
   } = props;
 
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
   const groupRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -63,7 +64,7 @@ function TimeField(props: TimeFieldProps) {
             : `label-${linkId}`
         })}
         {...(isTabled && instructionsId && { 'aria-describedby': instructionsId })}
-        {...(isTabled && { 'aria-label': itemText ?? 'Unnamed time field' })}
+        {...(isTabled && { 'aria-label': itemText ?? rendererStrings.unnamedTimeField })}
         style={{
           display: 'inline-block',
           maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -93,7 +94,7 @@ function TimeField(props: TimeFieldProps) {
             field: {
               ...(instructionsId && { 'aria-describedby': instructionsId }),
               ...(isTabled
-                ? { 'aria-label': itemText ?? 'Unnamed time field' }
+                ? { 'aria-label': itemText ?? rendererStrings.unnamedTimeField }
                 : { 'aria-labelledby': `label-${linkId}` })
             } as any,
             textField: {
@@ -102,7 +103,7 @@ function TimeField(props: TimeFieldProps) {
                 htmlInput: {
                   ...(instructionsId && { 'aria-describedby': instructionsId }),
                   ...(isTabled
-                    ? { 'aria-label': itemText ?? 'Unnamed time field' }
+                    ? { 'aria-label': itemText ?? rendererStrings.unnamedTimeField }
                     : { 'aria-labelledby': `label-${linkId}` })
                 }
               }

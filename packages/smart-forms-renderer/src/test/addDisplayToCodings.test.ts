@@ -226,6 +226,32 @@ describe('addDisplayToCodings - Phase 5', () => {
       expect(result.item1[2]).toEqual({ valueString: 'text option' });
     });
 
+    it('should leave display undefined when terminology server is unavailable (issue #1931)', async () => {
+      const answerOptions = {
+        'carer-type': [
+          { valueCoding: { system: 'http://snomed.info/sct', code: '133932002' } }, // no display
+          { valueCoding: { system: 'http://snomed.info/sct', code: '394738000' } } // no display
+        ],
+        'relationship-type': [
+          { valueCoding: { system: 'http://snomed.info/sct', code: '72705000', display: 'Mother' } } // already has display
+        ]
+      };
+
+      const mockRequest = jest.fn().mockRejectedValue(new Error('Network Error'));
+      mockClient.mockReturnValue({ request: mockRequest } as any);
+
+      const result = await addDisplayToAnswerOptions(
+        answerOptions,
+        'http://terminology.hl7.org/fhir'
+      );
+
+      // Displays remain undefined because lookups failed
+      expect(result['carer-type'][0].valueCoding?.display).toBeUndefined();
+      expect(result['carer-type'][1].valueCoding?.display).toBeUndefined();
+      // Item with existing display is unaffected
+      expect(result['relationship-type'][0].valueCoding?.display).toBe('Mother');
+    });
+
     it('should handle empty answer options', async () => {
       const answerOptions = {};
 

@@ -22,6 +22,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import MuiDatePicker from './MuiDatePicker';
 import DatePickerButton from './DatePickerButton';
+import { useRendererConfigStore } from '../../../../stores';
+import useDateFormat from '../../../../hooks/useDateFormat';
 
 interface DatePickerProps {
   valueString: string;
@@ -34,12 +36,15 @@ interface DatePickerProps {
 function DatePicker(props: DatePickerProps) {
   const { valueString, readOnly, anchorEl, onSelectDate, onFocus } = props;
 
+  const dateFormat = useDateFormat();
+  const locale = useRendererConfigStore.use.locale();
+
   const [open, setOpen] = useState(false);
 
-  const valueDayJs = valueString ? dayjs(valueString, 'DD/MM/YYYY') : null;
+  const valueDayJs = valueString ? dayjs(valueString, dateFormat) : null;
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale?.toLowerCase()}>
       <MuiDatePicker
         value={valueDayJs ?? null}
         slots={{ field: DatePickerButton }}

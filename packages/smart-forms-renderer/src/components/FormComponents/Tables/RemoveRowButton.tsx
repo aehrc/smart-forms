@@ -22,6 +22,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
+import { useRendererConfigStore } from '../../../stores';
 
 interface RemoveRowButtonProps {
   nullableQrItem: QuestionnaireResponseItem | null;
@@ -33,18 +34,20 @@ interface RemoveRowButtonProps {
 function RemoveRowButton(props: RemoveRowButtonProps) {
   const { nullableQrItem, onRemoveItem } = props;
 
+  const removeItemLabel = useRendererConfigStore.use.rendererStrings().removeItem;
+
   const isDisabled = nullableQrItem === null;
 
   return (
     <RemoveButtonTableCell>
-      <Tooltip title="Remove item">
+      <Tooltip title={removeItemLabel}>
         <span role="button">
           <IconButton
             size="small"
             color="error"
             disabled={isDisabled}
             onClick={onRemoveItem}
-            aria-label="Remove item">
+            aria-label={removeItemLabel}>
             <RemoveCircleOutlineIcon fontSize="small" />
           </IconButton>
         </span>

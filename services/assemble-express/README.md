@@ -10,8 +10,14 @@ FORMS_SERVER_URL=
 FORMS_SERVER_AUTH_TOKEN=
 ```
 
-If ```FORMS_SERVER_URL``` is left empty, the service will use the request endpoint as the forms server URL.
-i.e. Deploying this service on http://localhost:3001/fhir will result in calls to fetch subquestionnaires on the http://localhost:3001/fhir FHIR API during execution of the $assemble operation.
+`FORMS_SERVER_URL` is the FHIR server that subquestionnaires are fetched from, by canonical URL. The service only sends requests to this server and never derives a server from the incoming request (for example the `Host` or `X-Forwarded-*` headers). If it is left empty, a Questionnaire without subquestionnaires is still returned as is, and a Questionnaire with subquestionnaires is answered with an issue explaining that `FORMS_SERVER_URL` is not configured.
+
+The value must be an absolute http(s) URL without credentials, query or fragment; the service refuses to start otherwise. Redirects from the forms server are not followed, and a request that takes longer than 30 seconds is aborted.
+
+This service never fetches absolute URLs taken from a request, so it has no `ALLOWED_FETCH_ORIGINS` setting (see populate-express).
+
+### Migrating from earlier versions
+Earlier versions used the request's own endpoint as the forms server when `FORMS_SERVER_URL` was empty (i.e. a service deployed on http://localhost:3002 fetched from http://localhost:3002/fhir). That default has been removed. If you relied on it, set `FORMS_SERVER_URL` to that FHIR server's base URL explicitly.
 
 ## Docker Usage
 

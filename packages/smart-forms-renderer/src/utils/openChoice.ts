@@ -16,15 +16,23 @@
  */
 
 import type {
+  Coding,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { OpenChoiceItemControl } from '../interfaces/choice.enum';
+import { generateCodingKey } from '../hooks/useAnswerOptionsToggleExpressions';
 import { isSpecificItemControl } from './extensions';
 import { deepEqual } from 'fast-equals';
 import differenceWith from 'lodash.differencewith';
+
+/**
+ * Radio value for the open label option while its input is empty.
+ * Keeps it distinct from an answerOption with valueString ''.
+ */
+export const EMPTY_OPEN_LABEL_RADIO_VALUE = '__open-label-empty__';
 
 /**
  * Update open choice answer based on open label value
@@ -40,6 +48,34 @@ export function updateOpenLabelAnswer(
   isMultiSelection: boolean,
   answerKey: string | undefined
 ) {
+  // An empty open label is not an answer - storing it as valueString '' would also collide with a valueString '' answerOption
+  // Remove any existing open label answer instead, regardless of checked state
+  if (changedOpenLabelValue === '') {
+    if (!isMultiSelection) {
+      return {
+        ...oldQrItem,
+        answer: []
+      };
+    }
+
+    const oldOpenLabelAnswer = getOldOpenLabelAnswer(answers, options);
+    if (!oldOpenLabelAnswer) {
+      return oldQrItem;
+    }
+
+    const newAnswersWithKey = answers
+      .filter((answer) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id, ...rest } = answer;
+        return !deepEqual(rest, oldOpenLabelAnswer);
+      })
+      .map((answer) => ({ ...answer, id: answerKey }));
+    return {
+      ...oldQrItem,
+      answer: newAnswersWithKey
+    };
+  }
+
   // Open label is unchecked, search for open label value and remove it
   if (!openLabelChecked) {
     // In single-selection, return empty array because there can only be one answer
@@ -163,11 +199,100 @@ export function getAnswerOptionLabel(option: QuestionnaireItemAnswerOption | str
 
   if (option['valueCoding']) {
     return option.valueCoding.display ?? `${option.valueCoding.code}`;
-  } else if (option['valueString']) {
+  } else if (option['valueString'] !== undefined) {
     return option.valueString;
-  } else if (option['valueInteger']) {
+  } else if (option['valueInteger'] !== undefined) {
     return option.valueInteger.toString();
   } else {
     return '';
   }
+}
+
+// Raw codes are not acceptable in a clinician-facing UI, so any coded option without a display -
+// whether the $lookup failed outright or simply couldn't resolve one - is hidden from
+// choice/open-choice dropdowns rather than falling back to showing the code.
+export function isDisplayUnavailable(option: QuestionnaireItemAnswerOption): boolean {
+  return !!(option.valueCoding && !option.valueCoding.display);
+}
+
+// Prefer a freshly-resolved display; if the live lookup couldn't resolve one, fall back to
+// whatever display was captured on the answer when it was originally recorded. Returns null
+// when neither source has a display - callers must never render a raw code as a substitute.
+export function withFallbackDisplay(
+  option: QuestionnaireItemAnswerOption,
+  fallbackCoding: Coding | undefined
+): QuestionnaireItemAnswerOption | null {
+  if (!option.valueCoding) {
+    return option;
+  }
+
+  if (option.valueCoding.display) {
+    return option;
+  }
+
+  if (fallbackCoding?.display) {
+    return {
+      ...option,
+      valueCoding: { ...option.valueCoding, display: fallbackCoding.display }
+    };
+  }
+
+  return null;
+}
+
+// Make sure an already-answered coded option is always represented, even if its display
+// couldn't be resolved this session - only options the user hasn't already picked should ever
+// be hidden by isDisplayUnavailable. If no display can be found anywhere (neither live nor the
+// answer's own history), the option is left out entirely rather than showing a raw code.
+export function includeAnsweredOptions(
+  allOptions: QuestionnaireItemAnswerOption[],
+  answers: Array<{ valueCoding?: Coding }>
+): QuestionnaireItemAnswerOption[] {
+  const visible = allOptions.filter((option) => !isDisplayUnavailable(option));
+  if (answers.length === 0) {
+    return visible;
+  }
+
+  // Keyed by system+code (see generateCodingKey) so lookups are O(1) instead of re-scanning
+  // the option arrays per answer, and so identity is judged consistently everywhere - never by
+  // display, which can legitimately differ between the answer's history and the live definition.
+  const visibleKeys = new Set<string>();
+  for (const option of visible) {
+    if (option.valueCoding) {
+      visibleKeys.add(generateCodingKey(option.valueCoding));
+    }
+  }
+
+  const definitionsByKey = new Map<string, QuestionnaireItemAnswerOption>();
+  for (const option of allOptions) {
+    if (option.valueCoding) {
+      definitionsByKey.set(generateCodingKey(option.valueCoding), option);
+    }
+  }
+
+  for (const answer of answers) {
+    if (!answer.valueCoding?.code) {
+      continue;
+    }
+
+    const key = generateCodingKey(answer.valueCoding);
+    if (visibleKeys.has(key)) {
+      continue;
+    }
+
+    const definitionOption = definitionsByKey.get(key);
+    if (!definitionOption?.valueCoding) {
+      continue;
+    }
+
+    const optionWithDisplay = withFallbackDisplay(definitionOption, answer.valueCoding);
+    if (!optionWithDisplay) {
+      continue;
+    }
+
+    visible.push(optionWithDisplay);
+    visibleKeys.add(key);
+  }
+
+  return visible;
 }

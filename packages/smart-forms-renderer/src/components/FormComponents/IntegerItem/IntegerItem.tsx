@@ -18,7 +18,7 @@
 import debounce from 'lodash.debounce';
 import { useCallback, useState } from 'react';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -56,7 +56,7 @@ function IntegerItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   const { displayInstructions } = useRenderingExtensions(qItem);
 
@@ -111,6 +111,7 @@ function IntegerItem(props: BaseItemProps) {
         qItem={qItem}
         input={input}
         feedback={feedback ?? ''}
+        feedbackSeverity={feedbackSeverity}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
@@ -137,6 +138,7 @@ function IntegerItem(props: BaseItemProps) {
             qItem={qItem}
             input={input}
             feedback={feedback ?? ''}
+            feedbackSeverity={feedbackSeverity}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}

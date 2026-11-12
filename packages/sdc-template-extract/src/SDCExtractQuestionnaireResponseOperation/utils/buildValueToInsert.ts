@@ -31,11 +31,20 @@ export function buildValuesToInsert(
     return valueResultsToInsert as any[];
   }
 
+  // A trailing array index in the value path (e.g. `given[0]`) is just the template's placeholder
+  // position, not a count of values. Bump it per value so a multi-value result lands at consecutive
+  // indices instead of every value colliding on the same one.
+  const trailingIndex = relativeValuePathSegments[relativeValuePathSegments.length - 1];
+  const bumpTrailingIndex = typeof trailingIndex === 'number';
+
   const valuesToInsert = [];
   if (Array.isArray(valueResultsToInsert)) {
-    for (const valueResult of valueResultsToInsert) {
-      const value = getValueFromResult([valueResult]);
-      const valueToInsert = buildSingleValueToInsertRecursive(relativeValuePathSegments, value);
+    for (let i = 0; i < valueResultsToInsert.length; i++) {
+      const value = getValueFromResult([valueResultsToInsert[i]]);
+      const segmentsForThisValue = bumpTrailingIndex
+        ? [...relativeValuePathSegments.slice(0, -1), (trailingIndex as number) + i]
+        : relativeValuePathSegments;
+      const valueToInsert = buildSingleValueToInsertRecursive(segmentsForThisValue, value);
       const fullValueToInsert = combineStaticTemplateData(staticTemplateData, valueToInsert);
       valuesToInsert.push(fullValueToInsert);
     }

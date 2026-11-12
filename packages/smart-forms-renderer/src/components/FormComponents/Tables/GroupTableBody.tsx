@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
@@ -23,7 +23,7 @@ import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/ren
 import GroupTableRow from './GroupTableRow';
 import type { DropResult } from 'react-beautiful-dnd';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { reorderRows } from '../../../utils/groupTable';
+import { getQrGroupTableRowIndexes, reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
 
 interface GroupTableBodyProps extends PropsWithParentIsReadOnlyAttribute {
@@ -59,6 +59,14 @@ function GroupTableBody(props: GroupTableBodyProps) {
     onReorderRows
   } = props;
 
+  // Each row's index within the QuestionnaireResponse, computed once for the whole table rather than
+  // re-derived per row, so rendering n rows stays linear.
+  const qrRowIndexes = useMemo(
+    () => getQrGroupTableRowIndexes(tableRows, selectedIds),
+    [tableRows, selectedIds]
+  );
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+
   function onDragEnd(result: DropResult) {
     if (!result.destination) {
       return;
@@ -79,7 +87,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
         {(droppableProvided, snapshot) => (
           <TableBody ref={droppableProvided.innerRef} {...droppableProvided.droppableProps}>
             {tableRows.map(({ id, qrItem: nullableQrItem }, index) => {
-              const itemIsSelected = selectedIds.indexOf(id) !== -1;
+              const itemIsSelected = selectedIdSet.has(id);
               const answeredQrItem = createEmptyQrItem(tableQItem, undefined);
               if (nullableQrItem) {
                 answeredQrItem.item = nullableQrItem.item;
@@ -97,7 +105,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   hoverDisabled={snapshot.isDraggingOver}
                   tableRows={tableRows}
                   itemIsSelected={itemIsSelected}
-                  selectedIds={selectedIds}
+                  qrRowIndex={qrRowIndexes[index]}
                   qItemsIndexMap={qItemsIndexMap}
                   visibleItemLabels={visibleItemLabels}
                   calculatedColumnWidths={calculatedColumnWidths}

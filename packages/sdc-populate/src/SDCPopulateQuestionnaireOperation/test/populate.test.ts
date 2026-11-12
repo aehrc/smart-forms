@@ -356,3 +356,248 @@ describe('populate - non-repeating itemPopulationContext children evaluated glob
     expect(patientIdItem?.answer?.[0]?.valueString).toBe('test-patient-123');
   });
 });
+
+// Minimal questionnaire with an open-choice item and a choice item, both with answerOptions
+// and initialExpressions that resolve to a Coding NOT present in the answerOptions.
+// Open-choice must keep the answer (arbitrary values are allowed), choice must filter it out.
+const qOpenChoicePrefill = {
+  resourceType: 'Questionnaire',
+  id: 'open-choice-prefill-test',
+  status: 'active',
+  item: [
+    {
+      linkId: 'dx-open-choice',
+      type: 'open-choice',
+      answerOption: [
+        {
+          valueCoding: {
+            system: 'http://hl7.org/fhir/sid/icd-10-cm',
+            code: 'E11.9',
+            display: 'Type 2 diabetes mellitus without complications'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: SDC_INITIAL_EXPR,
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: '%ConditionBundle.entry.resource.code.coding.first()'
+          }
+        }
+      ]
+    },
+    {
+      linkId: 'dx-choice',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            system: 'http://hl7.org/fhir/sid/icd-10-cm',
+            code: 'E11.9',
+            display: 'Type 2 diabetes mellitus without complications'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: SDC_INITIAL_EXPR,
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: '%ConditionBundle.entry.resource.code.coding.first()'
+          }
+        }
+      ]
+    }
+  ]
+};
+
+describe('populate - open-choice answers outside answerOptions', () => {
+  it('keeps a coding answer outside answerOptions for open-choice, filters it for choice', async () => {
+    const mockContext = {
+      resource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      rootResource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      patient: { resourceType: 'Patient', id: 'test-patient' },
+      ConditionBundle: {
+        resourceType: 'Bundle',
+        type: 'searchset',
+        entry: [
+          {
+            resource: {
+              resourceType: 'Condition',
+              id: 'cond-copd',
+              code: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/sid/icd-10-cm',
+                    code: 'J44.9',
+                    display: 'Chronic obstructive pulmonary disease, unspecified'
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    };
+
+    (createFhirPathContext as jest.Mock).mockImplementation(async () => mockContext);
+    (resolveLookupPromises as jest.Mock).mockImplementation(async () => ({}));
+
+    const inputParameters: InputParameters = {
+      resourceType: 'Parameters',
+      parameter: [
+        { name: 'questionnaire', resource: qOpenChoicePrefill as any },
+        { name: 'subject', valueReference: { type: 'Patient', reference: 'Patient/test-patient' } }
+      ]
+    };
+
+    const result = await populate(
+      inputParameters,
+      mockFetchResourceCallback,
+      mockFetchResourceCallbackConfig,
+      mockTerminologyCallback,
+      mockTerminologyCallbackConfig
+    );
+
+    const response = (result as OutputParameters).parameter.find((p) => p.name === 'response')
+      ?.resource as QuestionnaireResponse;
+
+    // Open-choice: the answer survives even though it is not in answerOptions
+    const openChoiceItem = response.item?.find((i) => i.linkId === 'dx-open-choice');
+    expect(openChoiceItem?.answer?.[0]?.valueCoding).toMatchObject({
+      system: 'http://hl7.org/fhir/sid/icd-10-cm',
+      code: 'J44.9'
+    });
+
+    // Choice: the non-matching answer is filtered out
+    const choiceItem = response.item?.find((i) => i.linkId === 'dx-choice');
+    expect(choiceItem?.answer).toBeUndefined();
+  });
+});
+
+const SNOMED = 'http://snomed.info/sct';
+
+// answerOption.initialSelected is the only way to give an answerOption item a default: R4 que-11
+// forbids item.initial alongside answerOption.
+const qInitialSelected = {
+  resourceType: 'Questionnaire',
+  id: 'initial-selected-test',
+  status: 'active',
+  item: [
+    {
+      linkId: 'patient-id',
+      type: 'string',
+      text: 'Patient id',
+      extension: [
+        {
+          url: SDC_INITIAL_EXPR,
+          valueExpression: { language: 'text/fhirpath', expression: '%patient.id' }
+        }
+      ]
+    },
+    {
+      linkId: 'vaccinated',
+      type: 'choice',
+      text: 'Vaccinated?',
+      answerOption: [
+        { valueCoding: { system: SNOMED, code: '373066001', display: 'Yes' } },
+        { valueCoding: { system: SNOMED, code: '373067005', display: 'No' } },
+        {
+          valueCoding: { system: SNOMED, code: '261665006', display: 'Unknown' },
+          initialSelected: true
+        }
+      ]
+    },
+    {
+      linkId: 'colours',
+      type: 'choice',
+      text: 'Colours',
+      repeats: true,
+      answerOption: [
+        { valueString: 'red', initialSelected: true },
+        { valueString: 'green' },
+        { valueString: 'blue', initialSelected: true }
+      ]
+    },
+    {
+      linkId: 'smoker',
+      type: 'choice',
+      text: 'Smoker?',
+      answerOption: [
+        { valueCoding: { system: SNOMED, code: '373066001', display: 'Yes' } },
+        {
+          valueCoding: { system: SNOMED, code: '373067005', display: 'No' },
+          initialSelected: true
+        }
+      ],
+      item: [{ linkId: 'smoker-details', type: 'string', text: 'Details' }]
+    },
+    {
+      linkId: 'recorded-status',
+      type: 'choice',
+      text: 'Recorded status',
+      extension: [
+        {
+          url: SDC_INITIAL_EXPR,
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: "%patient.active.iif($this, 'active', 'inactive')"
+          }
+        }
+      ],
+      answerOption: [{ valueString: 'active' }, { valueString: 'inactive', initialSelected: true }]
+    },
+    {
+      linkId: 'no-default',
+      type: 'choice',
+      text: 'No default',
+      answerOption: [{ valueString: 'a' }, { valueString: 'b' }]
+    }
+  ]
+};
+
+describe('populate - answerOption.initialSelected', () => {
+  it('answers items from their initialSelected answerOptions, unless an initialExpression gives a value', async () => {
+    const mockContext = {
+      resource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      rootResource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      patient: { resourceType: 'Patient', id: 'test-patient', active: true }
+    };
+
+    (createFhirPathContext as jest.Mock).mockImplementation(async () => mockContext);
+    (resolveLookupPromises as jest.Mock).mockImplementation(async () => ({}));
+
+    const inputParameters: InputParameters = {
+      resourceType: 'Parameters',
+      parameter: [
+        { name: 'questionnaire', resource: qInitialSelected as any },
+        { name: 'subject', valueReference: { type: 'Patient', reference: 'Patient/test-patient' } }
+      ]
+    };
+
+    const result = await populate(
+      inputParameters,
+      mockFetchResourceCallback,
+      mockFetchResourceCallbackConfig,
+      mockTerminologyCallback,
+      mockTerminologyCallbackConfig
+    );
+
+    const response = (result as OutputParameters).parameter.find((p) => p.name === 'response')
+      ?.resource as QuestionnaireResponse;
+    const answersOf = (linkId: string) => response.item?.find((i) => i.linkId === linkId)?.answer;
+
+    expect(answersOf('patient-id')).toEqual([{ valueString: 'test-patient' }]);
+    expect(answersOf('vaccinated')).toEqual([
+      { valueCoding: { system: SNOMED, code: '261665006', display: 'Unknown' } }
+    ]);
+    expect(answersOf('colours')).toEqual([{ valueString: 'red' }, { valueString: 'blue' }]);
+    // An item with child items takes the other code path (constructGroupItem)
+    expect(answersOf('smoker')).toEqual([
+      { valueCoding: { system: SNOMED, code: '373067005', display: 'No' } }
+    ]);
+    expect(answersOf('recorded-status')).toEqual([{ valueString: 'active' }]);
+    expect(response.item?.find((i) => i.linkId === 'no-default')).toBeUndefined();
+  });
+});

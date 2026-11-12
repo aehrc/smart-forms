@@ -41,6 +41,10 @@ export {
 // renderer without depending on that package directly. The same callback works for both.
 export type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '@aehrc/sdc-populate';
 
+// i18n / renderer string exports
+export type { RendererStrings } from './i18n';
+export { defaultRendererStrings, resolveRendererStrings } from './i18n';
+
 // state management store exports
 export type {
   QuestionnaireStoreType,
@@ -65,7 +69,7 @@ export {
 } from './stores';
 
 // hooks exports
-export type { UseResponsiveProps } from './hooks';
+export type { UseResponsiveProps, FeedbackSeverity, ValidationFeedbackWithSeverity } from './hooks';
 export {
   useHidden,
   useReadOnly,
@@ -73,6 +77,7 @@ export {
   useRendererQueryClient,
   useRenderingExtensions,
   useValidationFeedback,
+  useValidationFeedbackSeverity,
   useValueSetCodings,
   useDisplayCqfAndCalculatedExpression,
   useResponsive
@@ -105,7 +110,9 @@ export {
   canBeObservationExtracted,
   buildBundleFromObservationArray,
   getQuestionnaireItem,
-  getSectionHeading
+  getSectionHeading,
+  getValidationErrorKey,
+  getBaseLinkIdFromErrorKey
 } from './utils';
 
 // theme provider exports

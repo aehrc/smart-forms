@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { Coding } from 'fhir/r4';
 
@@ -31,7 +31,7 @@ import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
-import { useValidationFeedback } from '../../../hooks';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import { createEmptyQrItem } from '../../../utils';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -75,7 +75,8 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const validationFeedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback: validationFeedback, feedbackSeverity: validationFeedbackSeverity } =
+    useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const { displayInstructions } = useRenderingExtensions(qItem);
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!validationFeedback);
 
@@ -89,24 +90,31 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
   if (terminologyFeedback) {
     feedback = terminologyFeedback;
   } else if (validationFeedback !== '') {
-    feedback = { message: validationFeedback, color: 'error' };
+    feedback = { message: validationFeedback, color: validationFeedbackSeverity };
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const updateQrItemWithDebounce = useCallback(
-    debounce((input: string) => {
-      const emptyQrItem = createEmptyQrItem(qItem, answerKey);
-      if (input !== '') {
-        onQrItemChange({
-          ...emptyQrItem,
-          answer: [{ id: answerKey, valueString: sanitizeInput(input) }]
-        });
-      } else {
-        onQrItemChange(emptyQrItem);
-      }
-    }, DEBOUNCE_DURATION),
-    [onQrItemChange, qItem]
-  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
+  // Keep one pending text update per answer, while using its latest parent handler and answer key.
+  // The key is read through a ref because calculated answers get a new random key on every render.
+  const onQrItemChangeRef = useRef(onQrItemChange);
+  onQrItemChangeRef.current = onQrItemChange;
+  const answerKeyRef = useRef(answerKey);
+  answerKeyRef.current = answerKey;
+  const updateQrItemWithDebounce = useMemo(
+    () =>
+      debounce((input: string) => {
+        const emptyQrItem = createEmptyQrItem(qItem, answerKeyRef.current);
+        onQrItemChangeRef.current(
+          input !== ''
+            ? {
+                ...emptyQrItem,
+                answer: [{ id: answerKeyRef.current, valueString: sanitizeInput(input) }]
+              }
+            : emptyQrItem
+        );
+      }, DEBOUNCE_DURATION),
+    [qItem]
+  );
+  useEffect(() => () => updateQrItemWithDebounce.flush(), [updateQrItemWithDebounce]);
 
   if (!qItem.answerValueSet) {
     return null;
@@ -132,6 +140,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
     // newValue is null when the field is cleared e.g. via the clear button ("clear") or Escape ("clearOnEscape") -
     // the reason is not "input"/"selectOption" in those cases, so update the QR immediately here
     if (newValue === null) {
+      updateQrItemWithDebounce.cancel();
       setInput('');
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
@@ -147,6 +156,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
           return option.code === newValue;
         });
         if (foundOption) {
+          updateQrItemWithDebounce.cancel();
           newValue = foundOption;
           // For option selection, update immediately (no debounce)
           onQrItemChange({
@@ -161,9 +171,11 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
         }
       } else {
         // For empty string, update immediately
+        updateQrItemWithDebounce.cancel();
         onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
     } else if (typeof newValue === 'object' && reason === 'selectOption') {
+      updateQrItemWithDebounce.cancel();
       // For coding selection, update immediately (no debounce) i.e reason should be selectOption
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),

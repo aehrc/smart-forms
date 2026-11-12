@@ -35,6 +35,7 @@ interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
   itemText: string | undefined;
   attachmentValues: AttachmentValues;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   instructionsId: string | undefined;
   onUploadFile: (file: File | null) => void;
@@ -49,6 +50,7 @@ function AttachmentField(props: AttachmentFieldProps) {
     itemText,
     attachmentValues,
     feedback,
+    feedbackSeverity,
     readOnly,
     isTabled,
     instructionsId,
@@ -59,6 +61,7 @@ function AttachmentField(props: AttachmentFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
@@ -71,7 +74,7 @@ function AttachmentField(props: AttachmentFieldProps) {
       <div
         role="group"
         {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
-        {...(isTabled && { 'aria-label': itemText ?? 'Unnamed attachment field' })}
+        {...(isTabled && { 'aria-label': itemText ?? rendererStrings.unnamedAttachment })}
         {...(instructionsId && { 'aria-describedby': instructionsId })}>
         <Stack rowGap={1} id={itemType + '-' + linkId}>
           <Typography
@@ -148,7 +151,12 @@ function AttachmentField(props: AttachmentFieldProps) {
         </Stack>
       </div>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 }

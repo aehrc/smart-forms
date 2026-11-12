@@ -19,10 +19,10 @@ import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
-import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
+import { findInAnswerOptions } from '../../../utils/choice';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
@@ -45,7 +45,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   // Get instructions ID for aria-describedby
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -54,7 +54,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
-  const valueChoice = getQrChoiceValue(qrChoice);
+  const qrAnswer = qrChoice.answer?.[0] ?? null;
 
   const options = qItem.answerOption ?? [];
 
@@ -71,10 +71,13 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
 
     // newValue is type string
     if (typeof newValue === 'string') {
-      const qrAnswer = findInAnswerOptions(options, newValue);
+      const matchedAnswer = findInAnswerOptions(options, newValue);
       onQrItemChange(
-        qrAnswer
-          ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
+        matchedAnswer
+          ? {
+              ...createEmptyQrItem(qItem, answerKey),
+              answer: [{ ...matchedAnswer, id: answerKey }]
+            }
           : createEmptyQrItem(qItem, answerKey)
       );
       return;
@@ -92,8 +95,9 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
     <ChoiceSelectAnswerOptionView
       qItem={qItem}
       options={options}
-      valueChoice={valueChoice}
+      qrAnswer={qrAnswer}
       feedback={feedback}
+      feedbackSeverity={feedbackSeverity}
       readOnly={readOnly}
       expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
       isRepeated={isRepeated}

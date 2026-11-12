@@ -20,7 +20,7 @@ import { useCallback, useMemo } from 'react';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useOpenLabel from '../../../hooks/useOpenLabel';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -58,7 +58,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const { displayInstructions } = renderingExtensions;
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
   const openLabelText = getOpenLabelText(qItem);
@@ -164,6 +164,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
           feedback={feedback}
+          feedbackSeverity={feedbackSeverity}
           readOnly={readOnly}
           expressionUpdated={
             calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
@@ -201,6 +202,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
             openLabelValue={openLabelValue}
             openLabelChecked={openLabelChecked}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             expressionUpdated={
               calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated

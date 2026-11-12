@@ -28,8 +28,11 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import { isCodingDisabled } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import AutocompleteWrappedValue from '../ItemParts/AutocompleteWrappedValue';
+import { autocompleteWrappedValueSx } from '../ItemParts/AutocompleteWrappedValue.styles';
 import { StyledAlert } from '../../Alert.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { StandardTextField } from '../Textfield.styles';
@@ -43,6 +46,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps
   valueCoding: Coding | null;
   terminologyError: TerminologyError;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -57,6 +61,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     valueCoding,
     terminologyError,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     isTabled,
@@ -68,6 +73,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -84,7 +90,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   if (codings.length > 0) {
     return (
       <FormControl
-        error={!!feedback}
+        error={!!feedback && feedbackSeverity !== 'warning'}
         sx={{
           width: '100%',
           maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -110,10 +116,9 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           renderInput={(params) => (
             <StandardTextField
-              multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
-              error={!!feedback}
+              error={!!feedback && feedbackSeverity !== 'warning'}
               placeholder={valueCoding ? undefined : entryFormat || displayPrompt}
               onFocus={handleFocus}
               {...params}
@@ -121,6 +126,12 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 input: {
                   ...params.InputProps,
                   readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                  startAdornment: (
+                    <AutocompleteWrappedValue
+                      text={valueCoding ? (valueCoding.display ?? `${valueCoding.code}`) : ''}
+                    />
+                  ),
+                  sx: autocompleteWrappedValueSx,
                   endAdornment: (
                     <>
                       {params.InputProps.endAdornment}
@@ -132,7 +143,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 htmlInput: {
                   ...params.inputProps,
                   ...(isTabled
-                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    ? { 'aria-label': qItem.text ?? rendererStrings.unnamedChoiceDropdown }
                     : { 'aria-labelledby': `label-${qItem.linkId}` }),
                   ...(instructionsId && { 'aria-describedby': instructionsId }),
                   role: 'combobox'
@@ -146,7 +157,8 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
         />
 
         {feedback ? (
-          <FormHelperText>
+          <FormHelperText
+            sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
             <AccessibleFeedback>{feedback}</AccessibleFeedback>
           </FormHelperText>
         ) : null}
@@ -159,8 +171,9 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography component="div">
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
+          {interpolate(rendererStrings.terminologyServerFetchError, {
+            valueSet: `${terminologyError.answerValueSet}`
+          })}
         </Typography>
       </StyledAlert>
     );
@@ -169,7 +182,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   if (codings.length === 0) {
     return (
       <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
-        No options available.
+        {rendererStrings.optionsUnavailable}
       </Typography>
     );
   }
@@ -177,9 +190,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography component="div">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
+      <Typography component="div">{rendererStrings.optionsFetchError}</Typography>
     </StyledAlert>
   );
 }

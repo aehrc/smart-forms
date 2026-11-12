@@ -28,6 +28,7 @@ interface UrlFieldProps extends PropsWithIsTabledAttribute {
   itemType: string;
   input: string;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   displayPrompt: string;
   displayUnit: string;
   entryFormat: string;
@@ -42,6 +43,7 @@ function UrlField(props: UrlFieldProps) {
     itemType,
     input,
     feedback,
+    feedbackSeverity,
     displayPrompt,
     displayUnit,
     entryFormat,
@@ -62,7 +64,7 @@ function UrlField(props: UrlFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       value={input}
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       onChange={(event) => onInputChange(event.target.value)}
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -84,6 +86,9 @@ function UrlField(props: UrlFieldProps) {
         },
         htmlInput: {
           ...(instructionsId && { 'aria-describedby': instructionsId })
+        },
+        formHelperText: {
+          sx: feedbackSeverity === 'warning' && !!feedback ? { color: 'warning.main' } : undefined
         }
       }}
       helperText={feedback}

@@ -26,7 +26,7 @@ import AttachmentFieldWrapper from './AttachmentFieldWrapper';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { createAttachmentAnswer } from '../../../utils/fileUtils';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 
 export interface AttachmentValues {
@@ -60,7 +60,7 @@ function AttachmentItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   // Get instructions ID for aria-describedby
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -114,6 +114,7 @@ function AttachmentItem(props: BaseItemProps) {
         qItem={qItem}
         attachmentValues={{ uploadedFile: uploadedFile, url: url, fileName: fileName }}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         isRepeated={isRepeated}
         isTabled={isTabled}

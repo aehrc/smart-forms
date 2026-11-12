@@ -1,26 +1,36 @@
 {
   "name": "extract-express",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "compile": "tsc",
     "start": "node --inspect lib/index.js",
     "start:watch": "node --inspect --watch lib/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Sean Fong",
   "license": "Apache-2.0",
   "dependencies": {
-    "express": "^5.2.0",
     "cors": "^2.8.6",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "express": "^5.3.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.3",
     "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/fhir": "^0.0.38",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.15.30",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.4.2",
     "typescript": "^5.9.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src"
+    ]
   }
 }

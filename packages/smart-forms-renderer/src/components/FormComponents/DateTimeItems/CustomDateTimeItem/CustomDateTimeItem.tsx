@@ -23,7 +23,7 @@ import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
 import useTimeValidation from '../../../../hooks/useTimeValidation';
-import useValidationFeedback from '../../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../../utils/qrItem';
@@ -97,7 +97,10 @@ function CustomDateTimeItem(props: BaseItemProps) {
 
   // Perform validation checks
   // Constraint and required feedback takes priority; fall back to date/time format feedback.
-  const validationFeedback = useValidationFeedback(qItem, undefined);
+  const { feedback: validationFeedback, feedbackSeverity } = useValidationFeedbackSeverity(
+    qItem,
+    undefined
+  );
   let dateFeedback = useDateValidation(dateInput, dateParseFail);
   const { timeFeedback, is24HourNotation } = useTimeValidation(
     timeInput,
@@ -192,6 +195,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
           periodInput={periodInput}
           is24HourNotation={is24HourNotation}
           dateFeedback={dateFeedback ?? ''}
+          dateFeedbackSeverity={feedbackSeverity}
           timeFeedback={timeFeedback ?? ''}
           dateFocused={dateFocused}
           displayPrompt={displayPrompt}
@@ -230,6 +234,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
             periodInput={periodInput}
             is24HourNotation={is24HourNotation}
             dateFeedback={dateFeedback ?? ''}
+            dateFeedbackSeverity={feedbackSeverity}
             timeFeedback={timeFeedback ?? ''}
             dateFocused={dateFocused}
             displayPrompt={displayPrompt}

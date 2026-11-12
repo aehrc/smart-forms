@@ -18,7 +18,7 @@
 import debounce from 'lodash.debounce';
 import { useCallback, useState } from 'react';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -62,7 +62,7 @@ function DecimalItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   const { displayInstructions } = useRenderingExtensions(qItem);
 
@@ -127,6 +127,7 @@ function DecimalItem(props: BaseItemProps) {
         qItem={qItem}
         input={input}
         feedback={feedback ?? ''}
+        feedbackSeverity={feedbackSeverity}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
@@ -153,6 +154,7 @@ function DecimalItem(props: BaseItemProps) {
             qItem={qItem}
             input={input}
             feedback={feedback ?? ''}
+            feedbackSeverity={feedbackSeverity}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}

@@ -23,6 +23,7 @@ import {
   compareAnswerOptionValue,
   convertCodingsToAnswerOptions,
   findInAnswerOptions,
+  getAnswerValueString,
   getChoiceControlType,
   getChoiceOrientation,
   getQrChoiceValue,
@@ -175,6 +176,18 @@ describe('findInAnswerOptions', () => {
     const result = findInAnswerOptions([], 'anything');
     expect(result).toBeUndefined();
   });
+
+  it('finds option by valueInteger 0 (falsy but valid)', () => {
+    const zeroIntOptions = [{ valueInteger: 0 }, { valueInteger: 1 }];
+    const result = findInAnswerOptions(zeroIntOptions, '0');
+    expect(result).toEqual({ valueInteger: 0 });
+  });
+
+  it('finds option by valueString "" (falsy but valid)', () => {
+    const emptyStringOptions = [{ valueString: '' }, { valueString: 'hello' }];
+    const result = findInAnswerOptions(emptyStringOptions, '');
+    expect(result).toEqual({ valueString: '' });
+  });
 });
 
 describe('compareAnswerOptionValue', () => {
@@ -220,6 +233,50 @@ describe('compareAnswerOptionValue', () => {
     const sampleOption = { valueInteger: 42 };
     const wrongValue = { valueString: 'hello' };
     expect(compareAnswerOptionValue(sampleOption, wrongValue)).toBe(false);
+  });
+
+  it('compares by valueInteger 0 (falsy but valid)', () => {
+    const sampleOption = { valueInteger: 0 };
+    const correctValue = { valueInteger: 0 };
+    const wrongValue = { valueInteger: 1 };
+    expect(compareAnswerOptionValue(sampleOption, correctValue)).toBe(true);
+    expect(compareAnswerOptionValue(sampleOption, wrongValue)).toBe(false);
+  });
+
+  it('compares by valueString "" (falsy but valid)', () => {
+    const sampleOption = { valueString: '' };
+    const correctValue = { valueString: '' };
+    const wrongValue = { valueString: 'hello' };
+    expect(compareAnswerOptionValue(sampleOption, correctValue)).toBe(true);
+    expect(compareAnswerOptionValue(sampleOption, wrongValue)).toBe(false);
+  });
+});
+
+describe('getAnswerValueString', () => {
+  it('returns the code for a valueCoding answer', () => {
+    expect(
+      getAnswerValueString({ valueCoding: { system: 'http://loinc.org', code: '1234-5' } })
+    ).toBe('1234-5');
+  });
+
+  it('falls back to display when code is missing', () => {
+    expect(
+      getAnswerValueString({ valueCoding: { system: 'http://loinc.org', display: 'Test' } })
+    ).toBe('Test');
+  });
+
+  it('returns the string for a valueString answer, including ""', () => {
+    expect(getAnswerValueString({ valueString: 'hello' })).toBe('hello');
+    expect(getAnswerValueString({ valueString: '' })).toBe('');
+  });
+
+  it('returns the stringified integer for a valueInteger answer, including 0', () => {
+    expect(getAnswerValueString({ valueInteger: 42 })).toBe('42');
+    expect(getAnswerValueString({ valueInteger: 0 })).toBe('0');
+  });
+
+  it('returns null when the answer has no recognised value', () => {
+    expect(getAnswerValueString({})).toBeNull();
   });
 });
 
@@ -576,7 +633,7 @@ describe('isOptionDisabled', () => {
       display: 'Example'
     }
   };
-  const optionKey = 'coding:http://loinc.org-1234-5-Example';
+  const optionKey = 'coding:http://loinc.org-code:1234-5';
   it('returns false if the toggle map is empty', () => {
     const map = new Map();
     expect(isOptionDisabled(sampleOption, map)).toBe(false);
@@ -604,7 +661,7 @@ describe('isCodingDisabled', () => {
     code: '1234-5',
     display: 'Example'
   };
-  const codingKey = 'coding:http://loinc.org-1234-5-Example';
+  const codingKey = 'coding:http://loinc.org-code:1234-5';
 
   it('returns false if the toggle map is empty', () => {
     const map = new Map();

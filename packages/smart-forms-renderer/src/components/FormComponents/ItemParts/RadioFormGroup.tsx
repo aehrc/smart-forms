@@ -15,6 +15,7 @@ interface ChoiceRadioGroupProps {
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -31,6 +32,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     options,
     valueRadio,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -43,6 +45,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -67,7 +70,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
                 ? `label-${qItem.linkId} ${instructionsId}`
                 : `label-${qItem.linkId}`
             })}
-            {...(isTabled && { 'aria-label': qItem.text ?? 'Unnamed radio group' })}
+            {...(isTabled && { 'aria-label': qItem.text ?? rendererStrings.unnamedRadioGroup })}
             {...(isTabled && instructionsId && { 'aria-describedby': instructionsId })}
             aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             row={orientation === ChoiceItemOrientation.Horizontal}
@@ -96,10 +99,15 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
-        <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
+        <ClearInputButton buttonShown={valueRadio !== null} readOnly={readOnly} onClear={onClear} />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 }

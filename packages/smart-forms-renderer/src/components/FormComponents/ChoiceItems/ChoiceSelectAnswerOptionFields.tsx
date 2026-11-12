@@ -24,9 +24,11 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
 import { useRendererConfigStore } from '../../../stores';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
@@ -40,6 +42,7 @@ interface ChoiceSelectAnswerOptionFieldsProps
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -53,6 +56,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     options,
     valueSelect,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     isTabled,
@@ -64,6 +68,12 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    valueSelect ? [valueSelect] : []
+  );
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -75,7 +85,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   return (
     <FormControl
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       sx={{
         width: '100%',
         maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -85,7 +95,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
       <Autocomplete
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
-        options={options}
+        options={visibleOptions}
         getOptionDisabled={(option) => isOptionDisabled(option, answerOptionsToggleExpressionsMap)}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         isOptionEqualToValue={(option, value) => compareAnswerOptionValue(option, value)}
@@ -136,7 +146,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             <StandardTextField
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
-              error={!!feedback}
+              error={!!feedback && feedbackSeverity !== 'warning'}
               placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
               {...params}
               slotProps={{
@@ -159,7 +169,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                 htmlInput: {
                   ...params.inputProps,
                   ...(isTabled
-                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    ? { 'aria-label': qItem.text ?? rendererStrings.unnamedChoiceDropdown }
                     : { 'aria-labelledby': `label-${qItem.linkId}` }),
                   ...(mergedAriaDescribedBy && { 'aria-describedby': mergedAriaDescribedBy }),
                   role: 'combobox'
@@ -173,7 +183,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
           return (
             <li key={key} {...rest}>
               <span>
-                {option.valueString ? (
+                {option.valueString !== undefined ? (
                   <StyledText
                     textToDisplay={getAnswerOptionLabel(option)}
                     element={option._valueString}
@@ -191,7 +201,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
           const { onDelete, ...rest } = getItemProps();
           return (
             <span {...rest} style={{ paddingLeft: '8.5px' }}>
-              {value.valueString && selectedOption ? (
+              {value.valueString !== undefined && selectedOption ? (
                 <StyledText
                   textToDisplay={getAnswerOptionLabel(value)}
                   element={selectedOption._valueString}
@@ -204,8 +214,11 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         }}
       />
 
+      {hasUnavailableDisplayOptions ? (
+        <AnswerOptionUnavailableWarning variant="helperText" />
+      ) : null}
       {feedback ? (
-        <FormHelperText>
+        <FormHelperText sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
         </FormHelperText>
       ) : null}

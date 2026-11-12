@@ -24,7 +24,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
-import { useQuestionnaireStore } from '../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../stores';
 import FormBodySingleCollapsibleWrapper from './FormBodySingleCollapsibleWrapper';
 
 interface FormBodyCollapsibleProps
@@ -40,6 +40,7 @@ function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
   const switchTab = useQuestionnaireStore.use.switchTab();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -57,7 +58,7 @@ function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
   }
 
   if (!qItems || !qrItems) {
-    return <>Unable to load form</>;
+    return <>{rendererStrings.unableToLoadForm}</>;
   }
 
   function handleToggleExpand(index: number) {
@@ -65,7 +66,7 @@ function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
   }
 
   if (!qItems || !qrItems) {
-    return <>Unable to load form</>;
+    return <>{rendererStrings.unableToLoadForm}</>;
   }
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);

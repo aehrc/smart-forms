@@ -24,8 +24,6 @@ import type {
 } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { default as htmlParse } from 'html-react-parser';
-import type { JSX } from 'react';
 import { getInitialExpression } from './getExpressionsFromItem';
 
 export function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
@@ -319,33 +317,6 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
         typeof childItem.text === 'string'
       ) {
         return childItem.text;
-      }
-    }
-  }
-
-  return '';
-}
-
-/**
- * Get text display flyover for items with itemControlCode flyover and has an flyover childItem
- * Also works for XHTML rendering as a bonus
- *
- * @author Sean Fong
- */
-export function getTextDisplayFlyover(
-  qItem: QuestionnaireItem
-): string | JSX.Element | JSX.Element[] {
-  if (qItem.item) {
-    for (const childItem of qItem.item) {
-      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'flyover')) {
-        const xHtmlString = getXHtmlString(childItem);
-        if (xHtmlString) {
-          return htmlParse(xHtmlString);
-        }
-
-        if (typeof childItem.text === 'string') {
-          return childItem.text;
-        }
       }
     }
   }

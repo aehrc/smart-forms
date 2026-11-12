@@ -18,7 +18,7 @@
 import { useState } from 'react';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../../utils/qrItem';
@@ -68,7 +68,10 @@ function CustomDateItem(props: BaseItemProps) {
 
   // Perform validation checks
   // Constraint and required feedback takes priority; fall back to date format feedback.
-  const validationFeedback = useValidationFeedback(qItem, undefined);
+  const { feedback: validationFeedback, feedbackSeverity } = useValidationFeedbackSeverity(
+    qItem,
+    undefined
+  );
   const dateValidationFeedback = useDateValidation(input, dateParseFail);
   const feedback = validationFeedback || dateValidationFeedback;
 
@@ -109,6 +112,7 @@ function CustomDateItem(props: BaseItemProps) {
         valueDate={displayDate}
         input={input}
         feedback={feedback ?? ''}
+        feedbackSeverity={feedbackSeverity}
         isFocused={focused}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
@@ -142,6 +146,7 @@ function CustomDateItem(props: BaseItemProps) {
             valueDate={displayDate}
             input={input}
             feedback={feedback ?? ''}
+            feedbackSeverity={feedbackSeverity}
             isFocused={focused}
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
