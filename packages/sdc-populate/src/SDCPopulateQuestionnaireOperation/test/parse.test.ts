@@ -275,6 +275,20 @@ describe('parseValueToAnswer', () => {
     });
   });
 
+  it('does not misclassify a Coding carrying only system and code as a value-less Quantity when the item is not type quantity', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'choice'
+    };
+    const value = { system: 'http://example.com/local-codes', code: 'x' };
+
+    // { system, code } alone is structurally identical to a value-less Quantity - without a
+    // numeric value, and the item not being type quantity, this must resolve as a Coding
+    expect(parseValueToAnswer(qItem, value)).toEqual({
+      valueCoding: { system: 'http://example.com/local-codes', code: 'x' }
+    });
+  });
+
   it('returns valueCoding for object with system and code', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',

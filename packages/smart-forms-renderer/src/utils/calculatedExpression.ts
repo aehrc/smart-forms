@@ -747,8 +747,8 @@ export function parseValueToAnswer(
     // In this case value is expected to be a Quantity object
     if (typeof value === 'object') {
       if (checkIsQuantity(value)) {
-        // value is read live off a source resource via FHIRPath, so any extension on it is scoped
-        // to that resource's own context and is not necessarily conformant on a
+        // value is read live off a source resource via FHIRPath, so any extension on it is
+        // scoped to that resource's own context and is not necessarily conformant on a
         // QuestionnaireResponse answer
         return {
           valueQuantity: {

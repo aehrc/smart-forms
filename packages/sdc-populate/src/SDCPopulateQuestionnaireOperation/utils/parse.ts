@@ -26,10 +26,9 @@ import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './construct
 import { getRelevantCodingProperties } from './codingProperties';
 
 /**
- * Checks if a value is Quantity-shaped. Quantity.value is the only field that matters for
- * recognising one - unit/system/code are each individually optional (e.g. a UCUM quantity can
- * carry system/code with no human-readable unit text), so gating on `value.unit` being truthy
- * misses those and lets them fall through to the JSON.stringify valueString fallback instead.
+ * Checks if a value is Quantity-shaped. A numeric value is required because `{ system, code }`
+ * alone is structurally identical to a systemless/codeless Coding - the value is corroborating
+ * evidence needed to avoid misclassifying a Coding as a Quantity.
  */
 function checkIsQuantity(value: unknown): value is Quantity {
   if (typeof value !== 'object' || value === null) {
