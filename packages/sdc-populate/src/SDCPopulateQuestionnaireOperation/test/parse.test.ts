@@ -242,6 +242,22 @@ describe('parseValueToAnswer', () => {
     expect(parseValueToAnswer(qItem, value)).toEqual({ valueQuantity: value });
   });
 
+  it('strips non-conformant extensions off a source-derived valueQuantity', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'quantity'
+    };
+    const value = {
+      unit: 'mg',
+      value: 10,
+      extension: [{ url: 'http://example.com/source-system-extension', valueString: 'foo' }]
+    };
+
+    expect(parseValueToAnswer(qItem, value)).toEqual({
+      valueQuantity: { unit: 'mg', value: 10 }
+    });
+  });
+
   it('returns valueCoding for object with system and code', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',
@@ -251,6 +267,35 @@ describe('parseValueToAnswer', () => {
 
     expect(parseValueToAnswer(qItem, value)).toEqual({
       valueCoding: { system: 'sys', code: 'cd', display: 'disp' }
+    });
+  });
+
+  it('strips non-conformant extensions off a source-derived valueCoding, e.g. the AU-base medication-type extension on a MedicationStatement.code.coding', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'choice'
+    };
+    const value = {
+      system: 'http://snomed.info/sct',
+      code: '1234',
+      display: 'Some medication',
+      extension: [
+        {
+          url: 'https://healthterminologies.gov.au/fhir/StructureDefinition/medication-type-1',
+          valueCoding: {
+            system: 'https://healthterminologies.gov.au/fhir/CodeSystem/medication-type-1',
+            code: 'amt-tpuu'
+          }
+        }
+      ]
+    };
+
+    expect(parseValueToAnswer(qItem, value)).toEqual({
+      valueCoding: {
+        system: 'http://snomed.info/sct',
+        code: '1234',
+        display: 'Some medication'
+      }
     });
   });
 

@@ -628,7 +628,7 @@ function getMatchingAnswerFromAnswerOptions(
 }
 
 // duplicate functions in sdc-populate
-function parseValueToAnswer(
+export function parseValueToAnswer(
   qItem: QuestionnaireItem,
   value: any
 ): QuestionnaireResponseItemAnswer | null {
@@ -707,8 +707,11 @@ function parseValueToAnswer(
       //If no matching answer is found, then we return the value as it is
       else {
         // if it is an object so that Calculated Expressions can retain the selected choice option.
+        // value may be read live off a source resource via FHIRPath (e.g. %patient...), so any
+        // extension on it is scoped to that resource's own context and is not necessarily
+        // conformant on a QuestionnaireResponse answer - strip it.
         if (typeof value === 'object') {
-          return { valueCoding: value };
+          return { valueCoding: getRelevantCodingProperties(value, { includeExtension: false }) };
         }
         // if it is a string from the choice field, return as it is
         else if (typeof value === 'string') {
@@ -744,7 +747,12 @@ function parseValueToAnswer(
     // In this case value is expected to be a Quantity object
     if (typeof value === 'object') {
       if (checkIsQuantity(value)) {
-        return { valueQuantity: value };
+        // value is read live off a source resource via FHIRPath, so any extension on it is scoped
+        // to that resource's own context and is not necessarily conformant on a
+        // QuestionnaireResponse answer
+        const quantityWithoutExtension = { ...value };
+        delete quantityWithoutExtension.extension;
+        return { valueQuantity: quantityWithoutExtension };
       }
     }
   }

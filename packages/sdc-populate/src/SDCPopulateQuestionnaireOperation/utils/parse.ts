@@ -131,14 +131,18 @@ export function parseValueToAnswer(
     }
   }
 
+  // value is read live off a source resource via FHIRPath, so any extension on it is scoped to
+  // that resource's own context and is not necessarily conformant on a QuestionnaireResponse answer
   if (typeof value === 'object' && value.unit) {
-    return { valueQuantity: value };
+    const quantityWithoutExtension = { ...value };
+    delete quantityWithoutExtension.extension;
+    return { valueQuantity: quantityWithoutExtension };
   }
 
   // A Coding may legally omit its system or code
   if (valueIsCoding(value)) {
     return {
-      valueCoding: getRelevantCodingProperties(value)
+      valueCoding: getRelevantCodingProperties(value, { includeExtension: false })
     };
   }
 
