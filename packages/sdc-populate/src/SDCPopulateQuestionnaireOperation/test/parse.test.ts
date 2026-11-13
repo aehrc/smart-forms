@@ -258,6 +258,23 @@ describe('parseValueToAnswer', () => {
     });
   });
 
+  it('returns valueQuantity for a unit-less, code-only UCUM quantity instead of falling back to valueString', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'quantity'
+    };
+    const value = {
+      value: 70,
+      system: 'http://unitsofmeasure.org',
+      code: 'kg',
+      extension: [{ url: 'http://example.com/source-system-extension', valueString: 'foo' }]
+    };
+
+    expect(parseValueToAnswer(qItem, value)).toEqual({
+      valueQuantity: { value: 70, system: 'http://unitsofmeasure.org', code: 'kg' }
+    });
+  });
+
   it('returns valueCoding for object with system and code', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',

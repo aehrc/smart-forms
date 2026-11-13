@@ -18,11 +18,33 @@
 import type {
   QuestionnaireItem,
   QuestionnaireItemInitial,
-  QuestionnaireResponseItemAnswer
+  QuestionnaireResponseItemAnswer,
+  Quantity
 } from 'fhir/r4';
 import { findInAnswerOptions, valueIsCoding } from './answerOption';
 import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './constructResponse';
 import { getRelevantCodingProperties } from './codingProperties';
+
+/**
+ * Checks if a value is Quantity-shaped. Quantity.value is the only field that matters for
+ * recognising one - unit/system/code are each individually optional (e.g. a UCUM quantity can
+ * carry system/code with no human-readable unit text), so gating on `value.unit` being truthy
+ * misses those and lets them fall through to the JSON.stringify valueString fallback instead.
+ */
+function checkIsQuantity(value: unknown): value is Quantity {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const quantity = value as Partial<Quantity>;
+  return (
+    typeof quantity.value === 'number' &&
+    (quantity.comparator === undefined || typeof quantity.comparator === 'string') &&
+    (quantity.unit === undefined || typeof quantity.unit === 'string') &&
+    (quantity.system === undefined || typeof quantity.system === 'string') &&
+    (quantity.code === undefined || typeof quantity.code === 'string')
+  );
+}
 
 /**
  * Parses a QuestionnaireItemInitial into a QuestionnaireResponseItemAnswer.
@@ -133,10 +155,16 @@ export function parseValueToAnswer(
 
   // value is read live off a source resource via FHIRPath, so any extension on it is scoped to
   // that resource's own context and is not necessarily conformant on a QuestionnaireResponse answer
-  if (typeof value === 'object' && value.unit) {
-    const quantityWithoutExtension = { ...value };
-    delete quantityWithoutExtension.extension;
-    return { valueQuantity: quantityWithoutExtension };
+  if (checkIsQuantity(value)) {
+    return {
+      valueQuantity: {
+        value: value.value,
+        ...(value.comparator && { comparator: value.comparator }),
+        ...(value.unit && { unit: value.unit }),
+        ...(value.system && { system: value.system }),
+        ...(value.code && { code: value.code })
+      }
+    };
   }
 
   // A Coding may legally omit its system or code

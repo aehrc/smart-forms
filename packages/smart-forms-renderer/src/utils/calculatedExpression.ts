@@ -710,7 +710,7 @@ export function parseValueToAnswer(
         // value may be read live off a source resource via FHIRPath (e.g. %patient...), so any
         // extension on it is scoped to that resource's own context and is not necessarily
         // conformant on a QuestionnaireResponse answer - strip it.
-        if (typeof value === 'object') {
+        if (typeof value === 'object' && value !== null) {
           return { valueCoding: getRelevantCodingProperties(value, { includeExtension: false }) };
         }
         // if it is a string from the choice field, return as it is
@@ -750,9 +750,14 @@ export function parseValueToAnswer(
         // value is read live off a source resource via FHIRPath, so any extension on it is scoped
         // to that resource's own context and is not necessarily conformant on a
         // QuestionnaireResponse answer
-        const quantityWithoutExtension = { ...value };
-        delete quantityWithoutExtension.extension;
-        return { valueQuantity: quantityWithoutExtension };
+        return {
+          valueQuantity: {
+            value: value.value,
+            ...(value.unit && { unit: value.unit }),
+            ...(value.system && { system: value.system }),
+            ...(value.code && { code: value.code })
+          }
+        };
       }
     }
   }
