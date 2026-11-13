@@ -68,6 +68,23 @@ describe('getRelevantCodingProperties', () => {
     });
   });
 
+  it('strips extension when includeExtension is false, e.g. for a Coding read live off a source resource', () => {
+    const sampleCodingWithExtension = {
+      ...sampleCoding,
+      extension: [{ url: 'x', valueString: 'y' }]
+    };
+
+    const result = getRelevantCodingProperties(sampleCodingWithExtension, {
+      includeExtension: false
+    });
+    expect(result).toEqual({
+      system: 'http://loinc.org',
+      code: '1234-5',
+      display: 'Test Code'
+    });
+    expect(result).not.toHaveProperty('extension');
+  });
+
   it('does not include other unexpected properties', () => {
     const sampleCodingWithExtension = {
       ...sampleCoding,

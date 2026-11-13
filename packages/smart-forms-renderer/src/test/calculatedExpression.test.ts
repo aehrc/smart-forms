@@ -21,9 +21,10 @@ import {
   checkIsDateTime,
   checkIsTime,
   evaluateCalculatedExpressionsFhirPath,
-  evaluateInitialCalculatedExpressions
+  evaluateInitialCalculatedExpressions,
+  parseValueToAnswer
 } from '../utils/calculatedExpression';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 // Import the mocked functions
 import fhirpath from 'fhirpath';
 import { createFhirPathContext, handleFhirPathResult } from '../utils/fhirpath';
@@ -532,6 +533,51 @@ describe('calculatedExpression utils', () => {
       const result = await evaluateInitialCalculatedExpressions(params);
 
       expect(result.initialCalculatedExpressions['nested-item']).toBeDefined();
+    });
+  });
+
+  describe('parseValueToAnswer', () => {
+    it('strips non-conformant extensions off a source-derived valueQuantity', () => {
+      const qItem: QuestionnaireItem = { linkId: 'q1', type: 'quantity' };
+      const value = {
+        value: 10,
+        unit: 'mg',
+        extension: [{ url: 'http://example.com/source-system-extension', valueString: 'foo' }]
+      };
+
+      expect(parseValueToAnswer(qItem, value)).toEqual({
+        valueQuantity: { value: 10, unit: 'mg' }
+      });
+    });
+
+    it('strips non-conformant extensions off a source-derived valueCoding that does not match the answerValueSet, e.g. the AU-base medication-type extension on a MedicationStatement.code.coding', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'q1',
+        type: 'choice',
+        answerValueSet: 'http://example.com/ValueSet/unrelated'
+      };
+      const value = {
+        system: 'http://snomed.info/sct',
+        code: '1234',
+        display: 'Some medication',
+        extension: [
+          {
+            url: 'https://healthterminologies.gov.au/fhir/StructureDefinition/medication-type-1',
+            valueCoding: {
+              system: 'https://healthterminologies.gov.au/fhir/CodeSystem/medication-type-1',
+              code: 'amt-tpuu'
+            }
+          }
+        ]
+      };
+
+      expect(parseValueToAnswer(qItem, value)).toEqual({
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '1234',
+          display: 'Some medication'
+        }
+      });
     });
   });
 
