@@ -90,7 +90,7 @@ export async function validateCodePromise(
   terminologyServerUrl: string
 ): Promise<ValidateCodeResponse | null> {
   const validateCodeResponse = await terminologyRequest(
-    `ValueSet/$validate-code?url=${url}&system=${system}&code=${code}`,
+    `ValueSet/$validate-code?url=${encodeURIComponent(url)}&system=${encodeURIComponent(system)}&code=${encodeURIComponent(code)}`,
     terminologyServerUrl
   );
 
@@ -102,14 +102,20 @@ export async function validateCodePromise(
 }
 
 async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
+  let timer: ReturnType<typeof setTimeout> | undefined;
   const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => {
+    timer = setTimeout(() => {
       reject(new Error(`Promise timed out after ${timeoutMs} milliseconds`));
     }, timeoutMs);
   });
 
-  // Use Promise.race to wait for either the original promise or the timeout promise
-  return Promise.race([promise, timeoutPromise]);
+  // Use Promise.race to wait for either the original promise or the timeout promise.
+  // Clear the timer afterwards so it does not stay pending once the race has settled.
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 export async function resolveValueSetPromises(

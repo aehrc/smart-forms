@@ -37,7 +37,9 @@ export function terminologyRequest(query: string, terminologyServerUrl: string):
   const { fetchTerminologyCallback } = terminologyServerStore.getState();
 
   if (fetchTerminologyCallback) {
-    return fetchTerminologyCallback(query, { terminologyServerUrl });
+    // Wrap the call so a callback that throws synchronously, or returns a non-promise value,
+    // still produces a promise (rejected or resolved) instead of throwing into the caller.
+    return Promise.resolve().then(() => fetchTerminologyCallback(query, { terminologyServerUrl }));
   }
 
   return client({ serverUrl: terminologyServerUrl }).request({ url: query });

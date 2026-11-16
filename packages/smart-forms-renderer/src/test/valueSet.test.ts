@@ -213,7 +213,7 @@ describe('valueSet', () => {
 
       expect(mockClient).toHaveBeenCalledWith({ serverUrl: terminologyServerUrl });
       expect(mockRequest).toHaveBeenCalledWith({
-        url: `ValueSet/$validate-code?url=${url}&system=${system}&code=${code}`
+        url: `ValueSet/$validate-code?url=${encodeURIComponent(url)}&system=${encodeURIComponent(system)}&code=${encodeURIComponent(code)}`
       });
       expect(result).toEqual(mockValidateCodeResponse);
     });

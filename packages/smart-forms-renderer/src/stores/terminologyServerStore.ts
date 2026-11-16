@@ -23,6 +23,8 @@ import type { FetchTerminologyCallback } from '@aehrc/sdc-populate';
 /**
  * Options that control how the renderer talks to a terminology server.
  * Every property is optional, anything left out keeps its current value.
+ * Passing `fetchTerminologyCallback` explicitly as `undefined` or `null` clears it and restores the
+ * built-in transport.
  *
  * @property fetchTerminologyCallback - Transport used for every terminology request the renderer makes
  *   (`ValueSet/$expand`, `ValueSet/$validate-code` and `CodeSystem/$lookup`).
@@ -42,6 +44,21 @@ import type { FetchTerminologyCallback } from '@aehrc/sdc-populate';
 export interface TerminologyRequestOptions {
   fetchTerminologyCallback?: FetchTerminologyCallback | null;
   requestTimeoutMs?: number;
+}
+
+function isValidTimeoutMs(timeoutMs: number | undefined): timeoutMs is number {
+  if (timeoutMs === undefined) {
+    return false;
+  }
+
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+    console.warn(
+      `terminologyServerStore: ignoring invalid requestTimeoutMs ${timeoutMs}. It must be a positive, finite number.`
+    );
+    return false;
+  }
+
+  return true;
 }
 
 /**
@@ -88,10 +105,12 @@ export const terminologyServerStore = createStore<TerminologyServerStoreType>()(
   setRequestOptions: (options: TerminologyRequestOptions) =>
     set((state) => ({
       fetchTerminologyCallback:
-        options.fetchTerminologyCallback === undefined
-          ? state.fetchTerminologyCallback
-          : options.fetchTerminologyCallback,
-      requestTimeoutMs: options.requestTimeoutMs ?? state.requestTimeoutMs
+        'fetchTerminologyCallback' in options
+          ? (options.fetchTerminologyCallback ?? null)
+          : state.fetchTerminologyCallback,
+      requestTimeoutMs: isValidTimeoutMs(options.requestTimeoutMs)
+        ? options.requestTimeoutMs
+        : state.requestTimeoutMs
     })),
   resetRequestOptions: () =>
     set(() => ({

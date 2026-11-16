@@ -132,6 +132,19 @@ describe('terminologyRequest', () => {
         terminologyRequest('ValueSet/$expand?url=x', TERMINOLOGY_SERVER_URL)
       ).rejects.toThrow('Transport unavailable');
     });
+
+    it('should return a rejected promise when the injected callback throws synchronously', async () => {
+      const fetchTerminologyCallback = jest.fn(() => {
+        throw new Error('No auth token');
+      }) as unknown as jest.MockedFunction<FetchTerminologyCallback>;
+      terminologyServerStore.getState().setRequestOptions({ fetchTerminologyCallback });
+
+      let result: Promise<unknown> | undefined;
+      expect(() => {
+        result = terminologyRequest('ValueSet/$expand?url=x', TERMINOLOGY_SERVER_URL);
+      }).not.toThrow();
+      await expect(result).rejects.toThrow('No auth token');
+    });
   });
 
   describe('call sites', () => {
@@ -188,11 +201,31 @@ describe('terminologyRequest', () => {
       );
 
       expect(fetchTerminologyCallback).toHaveBeenCalledWith(
-        'ValueSet/$validate-code?url=http://hl7.org/fhir/ValueSet/ucum-units&system=http://unitsofmeasure.org&code=mg',
+        'ValueSet/$validate-code?url=http%3A%2F%2Fhl7.org%2Ffhir%2FValueSet%2Fucum-units&system=http%3A%2F%2Funitsofmeasure.org&code=mg',
         { terminologyServerUrl: TERMINOLOGY_SERVER_URL }
       );
       expect(mockClient).not.toHaveBeenCalled();
       expect(result).toEqual(mockValidateCodeResponse);
+    });
+
+    it('should URL-encode reserved characters in $validate-code parameters', async () => {
+      const fetchTerminologyCallback = injectTerminologyCallback(null);
+
+      await validateCodePromise(
+        'http://hl7.org/fhir/ValueSet/ucum-units',
+        'http://unitsofmeasure.org',
+        '10*3/uL',
+        TERMINOLOGY_SERVER_URL
+      );
+      await validateCodePromise(
+        'http://hl7.org/fhir/ValueSet/ucum-units',
+        'http://unitsofmeasure.org',
+        '%',
+        TERMINOLOGY_SERVER_URL
+      );
+
+      expect(fetchTerminologyCallback.mock.calls[0][0]).toMatch(/&code=10\*3%2FuL$/);
+      expect(fetchTerminologyCallback.mock.calls[1][0]).toMatch(/&code=%25$/);
     });
 
     it('should route getCodeSystemLookupPromise through the injected callback', async () => {
@@ -235,7 +268,7 @@ describe('terminologyRequest', () => {
         url: 'ValueSet/$expand?url=http://example.com/ValueSet/test'
       });
       expect(mockRequest).toHaveBeenNthCalledWith(2, {
-        url: 'ValueSet/$validate-code?url=http://hl7.org/fhir/ValueSet/ucum-units&system=http://unitsofmeasure.org&code=mg'
+        url: 'ValueSet/$validate-code?url=http%3A%2F%2Fhl7.org%2Ffhir%2FValueSet%2Fucum-units&system=http%3A%2F%2Funitsofmeasure.org&code=mg'
       });
       expect(mockRequest).toHaveBeenNthCalledWith(3, {
         url: 'CodeSystem/$lookup?system=http://snomed.info/sct&code=73211009'
@@ -291,6 +324,33 @@ describe('terminologyRequest', () => {
 
       expect(result['slow'].valueSet).toEqual(mockValueSet);
     });
+
+    it('should clear the timeout timer once the value set resolves', async () => {
+      jest.useFakeTimers();
+      terminologyServerStore.getState().setRequestOptions({ requestTimeoutMs: 20000 });
+
+      const valueSetPromises: Record<string, ValueSetPromise> = {
+        fast: { promise: Promise.resolve<ValueSet>({ resourceType: 'ValueSet', status: 'active' }) }
+      };
+
+      await resolveValueSetPromises(valueSetPromises);
+
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it.each([0, -1, NaN, Infinity])(
+      'should ignore an invalid timeout of %p and keep the current one',
+      (invalidTimeoutMs) => {
+        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        terminologyServerStore.getState().setRequestOptions({ requestTimeoutMs: 20000 });
+
+        terminologyServerStore.getState().setRequestOptions({ requestTimeoutMs: invalidTimeoutMs });
+
+        expect(terminologyServerStore.getState().requestTimeoutMs).toBe(20000);
+        expect(warnSpy).toHaveBeenCalled();
+        warnSpy.mockRestore();
+      }
+    );
   });
 
   describe('setRequestOptions and resetRequestOptions', () => {
@@ -312,6 +372,24 @@ describe('terminologyRequest', () => {
       expect(terminologyServerStore.getState().url).toBe('https://example.com/fhir');
 
       terminologyServerStore.getState().resetUrl();
+    });
+
+    it('should keep the callback when the key is left out', () => {
+      const fetchTerminologyCallback = injectTerminologyCallback({ resourceType: 'ValueSet' });
+
+      terminologyServerStore.getState().setRequestOptions({});
+
+      expect(terminologyServerStore.getState().fetchTerminologyCallback).toBe(
+        fetchTerminologyCallback
+      );
+    });
+
+    it('should clear the callback when it is passed explicitly as undefined', () => {
+      injectTerminologyCallback({ resourceType: 'ValueSet' });
+
+      terminologyServerStore.getState().setRequestOptions({ fetchTerminologyCallback: undefined });
+
+      expect(terminologyServerStore.getState().fetchTerminologyCallback).toBeNull();
     });
 
     it('should restore every option to its default', () => {
