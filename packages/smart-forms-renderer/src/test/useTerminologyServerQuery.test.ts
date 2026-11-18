@@ -146,7 +146,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=f&count=10'
         ],
         queryFn: expect.any(Function),
@@ -171,7 +173,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'
         ],
         queryFn: expect.any(Function),
@@ -189,7 +193,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'
         ],
         queryFn: expect.any(Function),
@@ -206,7 +212,12 @@ describe('useTerminologyServerQuery', () => {
       renderHook(() => useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', expect.any(String), false, 'contained-valueset&filter=fever&count=10'],
+        queryKey: [
+          'expandValueSet',
+          expect.any(String),
+          false,
+          'contained-valueset&filter=fever&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -226,7 +237,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://updated.example.com/ValueSet/conditions&filter=fever&count=10'
         ],
         queryFn: expect.any(Function),
@@ -417,7 +430,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=9999'
         ],
         queryFn: expect.any(Function),
@@ -434,7 +449,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=fever & cold&count=10'
         ],
         queryFn: expect.any(Function),
@@ -451,7 +468,12 @@ describe('useTerminologyServerQuery', () => {
       renderHook(() => useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', expect.any(String), false, 'non-existent-valueset&filter=fever&count=10'],
+        queryKey: [
+          'expandValueSet',
+          expect.any(String),
+          false,
+          'non-existent-valueset&filter=fever&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -471,7 +493,12 @@ describe('useTerminologyServerQuery', () => {
       renderHook(() => useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', expect.any(String), false, 'contained-valueset&filter=fever&count=10'],
+        queryKey: [
+          'expandValueSet',
+          expect.any(String),
+          false,
+          'contained-valueset&filter=fever&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -487,7 +514,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'
         ],
         queryFn: expect.any(Function),
@@ -499,7 +528,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=cold&count=10'
         ],
         queryFn: expect.any(Function),
@@ -526,7 +557,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=fe&count=10'
         ],
         queryFn: expect.any(Function),
@@ -539,7 +572,9 @@ describe('useTerminologyServerQuery', () => {
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: [
-          'expandValueSet', expect.any(String), false,
+          'expandValueSet',
+          expect.any(String),
+          false,
           'http://hl7.org/fhir/ValueSet/condition-code&filter=f&count=10'
         ],
         queryFn: expect.any(Function),
