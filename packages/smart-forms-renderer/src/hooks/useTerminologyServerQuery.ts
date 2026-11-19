@@ -37,6 +37,7 @@ function useTerminologyServerQuery(
   const itemPreferredTerminologyServers =
     useQuestionnaireStore.use.itemPreferredTerminologyServers();
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
+  const hasInjectedTransport = useTerminologyServerStore.use.fetchTerminologyCallback() !== null;
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   let fullUrl = '';
@@ -76,7 +77,8 @@ function useTerminologyServerQuery(
   );
 
   const { isFetching, error, data } = useQuery<ValueSet>({
-    queryKey: ['expandValueSet', fullUrl],
+    // Include the server and transport so results are not reused across a server or transport change
+    queryKey: ['expandValueSet', terminologyServerUrl, hasInjectedTransport, fullUrl],
     queryFn: () => getValueSetPromise(fullUrl, terminologyServerUrl),
     enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined
   });
