@@ -674,4 +674,45 @@ describe('extractTargetConstraint - Phase 5', () => {
       expect(result['item-constraint'].linkId).toBe('item-1');
     });
   });
+
+  describe('expression language', () => {
+    function makeQuestionnaire(language: string): Questionnaire {
+      return {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+            extension: [
+              { url: 'key', valueId: 'age-check' },
+              { url: 'severity', valueCode: 'error' },
+              {
+                url: 'expression',
+                valueExpression: { language, expression: 'AgeInYears() > 18' }
+              },
+              { url: 'human', valueString: 'Must be an adult' }
+            ]
+          }
+        ]
+      };
+    }
+
+    it('skips a text/cql expression and warns', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      const result = extractTargetConstraints(makeQuestionnaire('text/cql'));
+
+      expect(result).toEqual({});
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain('text/cql');
+      warnSpy.mockRestore();
+    });
+
+    it('keeps a text/fhirpath expression', () => {
+      const result = extractTargetConstraints(makeQuestionnaire('text/fhirpath'));
+
+      expect(result['age-check']).toBeDefined();
+      expect(result['age-check'].valueExpression.language).toBe('text/fhirpath');
+    });
+  });
 });

@@ -778,5 +778,43 @@ describe('getExpressionsFromItem utils', () => {
 
       expect(result).toBeNull();
     });
+
+    it('should skip a text/cql expression and keep a text/fhirpath one', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'choice',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+            extension: [
+              { url: 'option', valueString: 'cql-option' },
+              {
+                url: 'expression',
+                valueExpression: { language: 'text/cql', expression: 'AgeInYears() > 18' }
+              }
+            ]
+          },
+          {
+            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+            extension: [
+              { url: 'option', valueString: 'fhirpath-option' },
+              {
+                url: 'expression',
+                valueExpression: { language: 'text/fhirpath', expression: '%condition = true' }
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = getAnswerOptionsToggleExpressions(qItem);
+
+      expect(result).toHaveLength(1);
+      expect(result![0].options).toEqual([{ valueString: 'fhirpath-option' }]);
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain('text/cql');
+      warnSpy.mockRestore();
+    });
   });
 });

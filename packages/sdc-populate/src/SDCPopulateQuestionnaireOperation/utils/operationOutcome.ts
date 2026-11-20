@@ -60,3 +60,14 @@ export function createNotFoundWarningIssue(warningMessage: string): OperationOut
     details: { text: warningMessage }
   };
 }
+
+/**
+ * Create an OperationOutcome issue of severity "warning" and code "not-supported" with a supplied warning message
+ */
+export function createNotSupportedWarningIssue(warningMessage: string): OperationOutcomeIssue {
+  return {
+    severity: 'warning',
+    code: 'not-supported',
+    details: { text: warningMessage }
+  };
+}
