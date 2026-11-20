@@ -25,6 +25,7 @@ import Stack from '@mui/material/Stack';
 import type { AttachmentValues } from './AttachmentItem';
 import AttachmentUrlField from './AttachmentUrlField';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import { StyledRequiredTypography } from '../Item.styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
@@ -87,7 +88,13 @@ function AttachmentField(props: AttachmentFieldProps) {
           <Box>
             <AttachmentFileCollector
               uploadedFile={uploadedFile}
-              errorMessage={fileError ? rendererStrings[fileError] : ''}
+              errorMessage={
+                fileError
+                  ? interpolate(rendererStrings[fileError.error], {
+                      fileName: fileError.rejectedFileName
+                    })
+                  : ''
+              }
               readOnly={readOnly}
               isTabled={isTabled}
               instructionsId={instructionsId}

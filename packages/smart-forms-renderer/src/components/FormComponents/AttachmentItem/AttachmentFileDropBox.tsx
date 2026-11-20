@@ -49,8 +49,6 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
     boxMessage = 'Attachment item is read only';
   } else if (isActive) {
     boxMessage = 'Release to drop file';
-  } else if (errorMessage) {
-    boxMessage = errorMessage;
   } else if (file) {
     boxMessage = file.name || rendererStrings.attachedFile;
   }
@@ -80,6 +78,12 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
               </Typography>
             )}
           </Box>
+        ) : null}
+
+        {errorMessage && !readOnly ? (
+          <Typography component="div" role="alert" variant="body2" color="error" pt={1}>
+            {errorMessage}
+          </Typography>
         ) : null}
       </Box>
     </AttachmentFileDropBoxWrapper>

@@ -34,11 +34,16 @@ import { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 
 export type AttachmentFileDetails = Partial<Pick<File, 'name' | 'size' | 'type'>>;
 
+export interface AttachmentFileErrorDetails {
+  error: AttachmentFileError;
+  rejectedFileName: string;
+}
+
 export interface AttachmentValues {
   uploadedFile: AttachmentFileDetails | null;
   url: string;
   fileName: string;
-  fileError?: AttachmentFileError;
+  fileError?: AttachmentFileErrorDetails;
 }
 
 function AttachmentItem(props: BaseItemProps) {
@@ -62,7 +67,7 @@ function AttachmentItem(props: BaseItemProps) {
         }
       : null
   );
-  const [fileError, setFileError] = useState<AttachmentFileError>();
+  const [fileError, setFileError] = useState<AttachmentFileErrorDetails>();
   const [url, setUrl] = useState(initialAttachment?.url ?? '');
   const [fileName, setFileName] = useState(initialAttachment?.title ?? '');
   const acceptedFile = useRef<{ file: AttachmentFileDetails | null; attachment?: Attachment }>({
@@ -109,7 +114,7 @@ function AttachmentItem(props: BaseItemProps) {
 
     if (result && 'error' in result) {
       setUploadedFile(acceptedFile.current.file);
-      setFileError(result.error);
+      setFileError({ error: result.error, rejectedFileName: file?.name ?? '' });
       saveText.flush();
       return;
     }

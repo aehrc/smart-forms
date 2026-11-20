@@ -72,7 +72,10 @@ test('keeps an attached file when its replacement has no content type', async ()
   await waitFor(() => expect(savedAttachment()).toEqual({ ...attachment, url, title }));
 
   upload(new File(['replacement'], 'report.unknown'));
-  await screen.findByText(/file type is unknown/i);
+  const alert = await screen.findByRole('alert');
+  expect(alert).toHaveTextContent(/^report\.unknown: The file type is unknown/);
+  expect(screen.getByText('report.txt')).toBeVisible();
+  expect(screen.getByText('Type: text/plain')).toBeVisible();
   expect(savedAttachment()).toEqual({ ...attachment, url, title });
   expect(read).toHaveBeenCalledTimes(1);
 });
@@ -91,7 +94,9 @@ test('keeps the saved URL and the latest title edit when reading a file fails', 
   const file = new File(['report'], 'report.txt', { type: 'text/plain' });
   upload(file);
 
-  await screen.findByText(/file could not be read/i);
+  expect(await screen.findByRole('alert')).toHaveTextContent(
+    /^report\.txt: The file could not be read/
+  );
   expect(savedAttachment()).toEqual({ url, title });
 
   upload(file);

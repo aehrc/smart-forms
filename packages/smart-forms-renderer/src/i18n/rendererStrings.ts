@@ -126,9 +126,9 @@ export interface RendererStrings {
   removeFile: string;
   /** Label for an attached file without a saved title. */
   attachedFile: string;
-  /** Shown when the browser can't identify an uploaded file's type. */
+  /** Shown when the browser can't identify an uploaded file's type. Supports `{fileName}`. */
   attachmentTypeUnknown: string;
-  /** Shown when the browser can't read an uploaded file. */
+  /** Shown when the browser can't read an uploaded file. Supports `{fileName}`. */
   attachmentReadError: string;
   /** Date-picker calendar button label. */
   pickDate: string;
@@ -241,8 +241,9 @@ export const defaultRendererStrings: RendererStrings = {
   attachFile: 'Attach file',
   removeFile: 'Remove file',
   attachedFile: 'Attached file',
-  attachmentTypeUnknown: 'The file type is unknown. Choose a file with a recognized type.',
-  attachmentReadError: 'The file could not be read. Try attaching it again.',
+  attachmentTypeUnknown:
+    '{fileName}: The file type is unknown. Choose a file with a recognized type.',
+  attachmentReadError: '{fileName}: The file could not be read. Try attaching it again.',
   pickDate: 'Pick a date',
   syncSuccessful: 'Sync successful',
   syncWithServer: 'Sync with server',
