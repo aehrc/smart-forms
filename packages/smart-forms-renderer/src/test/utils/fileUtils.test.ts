@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { getFileSize, createAttachmentAnswer, readAttachmentFile } from '../../utils/fileUtils';
+import { getAttachmentAnswer, getFileSize, readAttachmentFile } from '../../utils/fileUtils';
 
 describe('fileUtils', () => {
   afterEach(() => {
@@ -73,12 +73,14 @@ describe('fileUtils', () => {
     });
   });
 
-  describe('createAttachmentAnswer', () => {
+  describe('readAttachmentFile', () => {
+    const dataUrl =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+
     // Mock FileReader
     const mockFileReader = {
       readAsDataURL: jest.fn(),
-      result:
-        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
+      result: dataUrl,
       onload: null as any,
       onerror: null as any
     };
@@ -98,255 +100,100 @@ describe('fileUtils', () => {
       return file;
     };
 
-    it('should return null when both file and url are absent', async () => {
-      const result = await createAttachmentAnswer(null, '', 'test.png');
-      expect(result).toBeNull();
-    });
-
-    it('should create a url-only attachment when no file is uploaded', async () => {
-      const result = await createAttachmentAnswer(null, 'http://example.com', 'test.png');
-
-      expect(result).toEqual({
-        url: 'http://example.com',
-        title: 'test.png'
-      });
-    });
-
-    it('should create attachment without url when url is empty', async () => {
-      const file = createMockFile('test.txt', 512, 'text/plain');
-
-      const promise = createAttachmentAnswer(file, '', 'test.txt');
-
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload();
-        }
-      }, 0);
-
-      const result = await promise;
-
-      expect(result).toEqual({
-        contentType: 'text/plain',
-        data: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-        size: 512,
-        title: 'test.txt'
-      });
-    });
-
-    it('should create attachment with all properties when successful', async () => {
+    it('returns the content type, data and size of a file it reads', async () => {
       const file = createMockFile('test.png', 1024, 'image/png');
 
-      // Mock successful FileReader
-      const promise = createAttachmentAnswer(file, 'http://example.com/upload', 'custom-name.png');
-
-      // Simulate FileReader success
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload();
-        }
-      }, 0);
-
-      const result = await promise;
-
-      expect(result).toEqual({
-        contentType: 'image/png',
-        data: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-        size: 1024,
-        url: 'http://example.com/upload',
-        title: 'custom-name.png'
-      });
-    });
-
-    it('should create attachment without title when fileName is empty', async () => {
-      const file = createMockFile('test.pdf', 2048, 'application/pdf');
-
-      const promise = createAttachmentAnswer(file, 'http://example.com/upload', '');
-
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload();
-        }
-      }, 0);
-
-      const result = await promise;
-
-      expect(result).toEqual({
-        contentType: 'application/pdf',
-        data: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
-        size: 2048,
-        url: 'http://example.com/upload'
-        // No title property
-      });
-    });
-
-    it('should include url when provided', async () => {
-      const file = createMockFile(
-        'document.docx',
-        4096,
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-      );
-
-      const promise = createAttachmentAnswer(
-        file,
-        'https://secure.example.com/files/upload',
-        'important-doc.docx'
-      );
-
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload();
-        }
-      }, 0);
-
-      const result = await promise;
-
-      expect(result?.url).toBe('https://secure.example.com/files/upload');
-    });
-
-    it('preserves the URL and title when FileReader reports an error', async () => {
-      const file = createMockFile('test.jpg', 1024, 'image/jpeg');
-
-      const promise = createAttachmentAnswer(file, ' http://example.com ', 'My photo');
-      mockFileReader.onerror();
+      const promise = readAttachmentFile(file);
+      mockFileReader.onload();
 
       await expect(promise).resolves.toEqual({
+        contentType: 'image/png',
+        data: dataUrl,
+        size: 1024
+      });
+      expect(mockFileReader.readAsDataURL).toHaveBeenCalledWith(file);
+    });
+
+    it('keeps the size of a zero-size file', async () => {
+      const file = createMockFile('empty.txt', 0, 'text/plain', '');
+
+      const promise = readAttachmentFile(file);
+      mockFileReader.onload();
+
+      await expect(promise).resolves.toMatchObject({ size: 0 });
+    });
+
+    it.each(['', '   '])(
+      'rejects the blank content type %p without reading the file',
+      async (contentType) => {
+        const file = createMockFile('unknown', 1024, contentType);
+
+        await expect(readAttachmentFile(file)).resolves.toEqual({
+          error: 'attachmentTypeUnknown'
+        });
+        expect(mockFileReader.readAsDataURL).not.toHaveBeenCalled();
+      }
+    );
+
+    it('returns a read error when FileReader reports an error', async () => {
+      const file = createMockFile('test.jpg', 1024, 'image/jpeg');
+
+      const promise = readAttachmentFile(file);
+      mockFileReader.onerror();
+
+      await expect(promise).resolves.toEqual({ error: 'attachmentReadError' });
+    });
+
+    it('returns a read error when FileReader throws', async () => {
+      const file = createMockFile('test.txt', 1024, 'text/plain');
+      global.FileReader = jest.fn(() => {
+        throw new Error('FileReader constructor error');
+      }) as any;
+
+      await expect(readAttachmentFile(file)).resolves.toEqual({
+        error: 'attachmentReadError'
+      });
+    });
+  });
+
+  describe('getAttachmentAnswer', () => {
+    const fileFields = { contentType: 'text/plain', data: 'UmVwb3J0', size: 6 };
+
+    it.each(['', '   ', undefined])(
+      'returns null when there is no file data and the URL is %p',
+      (url) => {
+        expect(getAttachmentAnswer({ url, title: 'Report' })).toBeNull();
+      }
+    );
+
+    it('returns a URL-only answer with its title', () => {
+      expect(getAttachmentAnswer({ url: 'http://example.com', title: 'Report' })).toEqual({
         url: 'http://example.com',
-        title: 'My photo'
+        title: 'Report'
       });
     });
 
-    it('should handle different file types correctly', async () => {
-      const file = createMockFile('image.png', 1024, 'image/png');
-
-      const promise = createAttachmentAnswer(file, 'http://example.com', 'image.png');
-
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload();
-        }
-      }, 0);
-
-      const result = await promise;
-
-      expect(result?.contentType).toBe('image/png');
-      expect(result?.size).toBe(1024);
-      expect(result?.title).toBe('image.png');
+    it('combines file data with the URL and title', () => {
+      expect(
+        getAttachmentAnswer({ ...fileFields, url: 'http://example.com', title: 'Report' })
+      ).toEqual({ ...fileFields, url: 'http://example.com', title: 'Report' });
     });
 
-    it('should handle very large files', async () => {
-      const file = createMockFile('large-file.zip', 104857600, 'application/zip'); // 100MB
-
-      const promise = createAttachmentAnswer(file, 'http://example.com/large', 'huge.zip');
-
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload();
-        }
-      }, 0);
-
-      const result = await promise;
-
-      expect(result?.size).toBe(104857600);
+    it('returns file data without a URL or title when both are empty', () => {
+      expect(getAttachmentAnswer({ ...fileFields, url: '   ', title: '' })).toEqual(fileFields);
     });
 
-    it('should handle files with special characters in names', async () => {
-      const file = createMockFile('файл-тест.txt', 1024, 'text/plain');
-
-      const promise = createAttachmentAnswer(file, 'http://example.com', 'файл-тест-renamed.txt');
-
-      setTimeout(() => {
-        if (mockFileReader.onload) {
-          mockFileReader.onload();
-        }
-      }, 0);
-
-      const result = await promise;
-
-      expect(result?.title).toBe('файл-тест-renamed.txt');
-    });
-
-    describe('edge cases', () => {
-      it('should handle zero-size files', async () => {
-        const file = createMockFile('empty.txt', 0, 'text/plain', '');
-
-        const promise = createAttachmentAnswer(file, 'http://example.com', 'empty.txt');
-
-        setTimeout(() => {
-          if (mockFileReader.onload) {
-            mockFileReader.onload();
-          }
-        }, 0);
-
-        const result = await promise;
-
-        expect(result?.size).toBe(0);
-      });
-
-      it.each(['', '   '])(
-        'rejects the blank content type %p without reading the file',
-        async (contentType) => {
-          const file = createMockFile('unknown', 1024, contentType);
-
-          await expect(readAttachmentFile(file)).resolves.toEqual({
-            error: 'attachmentTypeUnknown'
-          });
-          await expect(createAttachmentAnswer(file, '', 'Report')).resolves.toBeNull();
-          expect(mockFileReader.readAsDataURL).not.toHaveBeenCalled();
-        }
-      );
-
-      it('should handle whitespace-only URLs and filenames', async () => {
-        const file = createMockFile('test.txt', 1024, 'text/plain');
-
-        const promise1 = createAttachmentAnswer(file, '   ', 'test.txt');
-
-        setTimeout(() => {
-          if (mockFileReader.onload) {
-            mockFileReader.onload();
-          }
-        }, 0);
-
-        const result1 = await promise1;
-        expect(result1?.url).toBeUndefined(); // Whitespace-only URL is not a url
-
-        const promise2 = createAttachmentAnswer(file, 'http://example.com', '   ');
-
-        setTimeout(() => {
-          if (mockFileReader.onload) {
-            mockFileReader.onload();
-          }
-        }, 0);
-
-        const result2 = await promise2;
-        expect(result2?.title).toBe('   ');
+    it('trims the URL', () => {
+      expect(getAttachmentAnswer({ url: ' http://example.com ' })).toEqual({
+        url: 'http://example.com'
       });
     });
 
-    describe('async error handling', () => {
-      it('should catch and handle promise rejections', async () => {
-        const file = createMockFile('test.txt', 1024, 'text/plain');
-
-        // Mock FileReader to throw synchronous error
-        global.FileReader = jest.fn(() => {
-          throw new Error('FileReader constructor error');
-        }) as any;
-
-        const result = await readAttachmentFile(file);
-
-        expect(result).toEqual({ error: 'attachmentReadError' });
-      });
-
-      it('should handle FileReader onload not being called', async () => {
-        const file = createMockFile('test.txt', 1024, 'text/plain');
-
-        const promise = createAttachmentAnswer(file, 'http://example.com', 'test.txt');
-
-        // Don't call onload - let it timeout/hang
-        // This tests that we don't have infinite hanging promises
-
-        // We can't easily test timeout without actually waiting,
-        // but we can verify the FileReader was set up correctly
-        expect(mockFileReader.readAsDataURL).toHaveBeenCalledWith(file);
+    it('keeps other attachment fields such as the hash', () => {
+      const hash = '7kXDAya3UDh1iXUsD3Xh3Yfdx+Q=';
+      expect(getAttachmentAnswer({ url: 'http://example.com', hash })).toEqual({
+        url: 'http://example.com',
+        hash
       });
     });
   });

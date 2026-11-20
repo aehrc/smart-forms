@@ -63,13 +63,3 @@ export function getAttachmentAnswer({ url, title, ...fields }: Attachment): Atta
   }
   return answer;
 }
-
-export async function createAttachmentAnswer(
-  file: File | null,
-  url: string,
-  fileName: string
-): Promise<Attachment | null> {
-  const fileResult = file ? await readAttachmentFile(file) : {};
-  const fileData = 'error' in fileResult ? {} : fileResult;
-  return getAttachmentAnswer({ ...fileData, url, title: fileName });
-}
