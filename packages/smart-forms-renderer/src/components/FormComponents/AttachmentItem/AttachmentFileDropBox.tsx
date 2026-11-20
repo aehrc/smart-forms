@@ -22,9 +22,10 @@ import React from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { getFileSize } from '../../../utils/fileUtils';
 import { useRendererConfigStore } from '../../../stores';
+import type { AttachmentFileDetails } from './AttachmentItem';
 
 export interface AttachmentFileDropBoxProps extends PropsWithIsTabledAttribute {
-  file: File | null;
+  file: AttachmentFileDetails | null;
   onDrop: (item: { files: any[] }) => void;
   errorMessage: string;
   readOnly: boolean;
@@ -35,6 +36,7 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
@@ -47,10 +49,8 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
     boxMessage = 'Attachment item is read only';
   } else if (isActive) {
     boxMessage = 'Release to drop file';
-  } else if (errorMessage) {
-    boxMessage = errorMessage;
   } else if (file) {
-    boxMessage = file.name;
+    boxMessage = file.name || rendererStrings.attachedFile;
   }
 
   return (
@@ -67,13 +67,23 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
 
         {file ? (
           <Box pt={1}>
-            <Typography component="div" fontSize={10}>
-              Size: {getFileSize(file.size.toString() ?? '0')}
-            </Typography>
-            <Typography component="div" fontSize={10}>
-              Type: {file.type}
-            </Typography>
+            {file.size !== undefined && (
+              <Typography component="div" fontSize={10}>
+                Size: {getFileSize(file.size.toString())}
+              </Typography>
+            )}
+            {file.type && (
+              <Typography component="div" fontSize={10}>
+                Type: {file.type}
+              </Typography>
+            )}
           </Box>
+        ) : null}
+
+        {errorMessage && !readOnly ? (
+          <Typography component="div" role="alert" variant="body2" color="error" pt={1}>
+            {errorMessage}
+          </Typography>
         ) : null}
       </Box>
     </AttachmentFileDropBoxWrapper>
