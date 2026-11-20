@@ -38,7 +38,12 @@ export async function readAttachmentFile(
   try {
     const data = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
+      // readAsDataURL returns "data:<mime>;base64,<data>", but Attachment.data is plain base64.
+      // The MIME type can contain commas and base64 can't, so the data starts after the last one.
+      reader.onload = () => {
+        const result = reader.result as string;
+        resolve(result.slice(result.lastIndexOf(',') + 1));
+      };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });

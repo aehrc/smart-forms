@@ -58,6 +58,15 @@ async function renderAttachment(attachment?: Attachment) {
 
 afterEach(() => jest.restoreAllMocks());
 
+test('saves an uploaded file as plain base64 data', async () => {
+  const upload = await renderAttachment();
+  upload(new File(['report'], 'report.txt', { type: 'text/plain' }));
+
+  await waitFor(() =>
+    expect(savedAttachment()).toEqual({ contentType: 'text/plain', data: 'cmVwb3J0', size: 6 })
+  );
+});
+
 test('keeps an attached file when its replacement has no content type', async () => {
   const upload = await renderAttachment();
   const read = jest.spyOn(FileReader.prototype, 'readAsDataURL');

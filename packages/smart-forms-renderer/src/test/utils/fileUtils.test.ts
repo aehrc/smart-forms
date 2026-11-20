@@ -74,8 +74,9 @@ describe('fileUtils', () => {
   });
 
   describe('readAttachmentFile', () => {
-    const dataUrl =
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+    const base64 =
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+    const dataUrl = `data:image/png;base64,${base64}`;
 
     // Mock FileReader
     const mockFileReader = {
@@ -86,6 +87,7 @@ describe('fileUtils', () => {
     };
 
     beforeEach(() => {
+      mockFileReader.result = dataUrl;
       global.FileReader = jest.fn(() => mockFileReader) as any;
     });
 
@@ -100,7 +102,7 @@ describe('fileUtils', () => {
       return file;
     };
 
-    it('returns the content type, data and size of a file it reads', async () => {
+    it('returns the content type, base64 data and size of a file it reads', async () => {
       const file = createMockFile('test.png', 1024, 'image/png');
 
       const promise = readAttachmentFile(file);
@@ -108,10 +110,20 @@ describe('fileUtils', () => {
 
       await expect(promise).resolves.toEqual({
         contentType: 'image/png',
-        data: dataUrl,
+        data: base64,
         size: 1024
       });
       expect(mockFileReader.readAsDataURL).toHaveBeenCalledWith(file);
+    });
+
+    it('returns only the base64 data when the content type contains a comma', async () => {
+      const file = createMockFile('test.txt', 6, 'text/plain;x="a,b"');
+      mockFileReader.result = 'data:text/plain;x="a,b";base64,cmVwb3J0';
+
+      const promise = readAttachmentFile(file);
+      mockFileReader.onload();
+
+      await expect(promise).resolves.toMatchObject({ data: 'cmVwb3J0' });
     });
 
     it('keeps the size of a zero-size file', async () => {
