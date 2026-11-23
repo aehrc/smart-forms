@@ -121,6 +121,22 @@ export async function parseAndConvertUcumQuantities(
       continue;
     }
 
+    // Convert collection members through the same scalar conversion path.
+    if (Array.isArray(calcExpression.value)) {
+      calcExpression.value = await Promise.all(
+        calcExpression.value.map(async (value) => {
+          const converted = await parseAndConvertUcumQuantities(
+            { [linkId]: [{ ...calcExpression, value }] },
+            questionnaireItemMap,
+            itemPreferredTerminologyServers,
+            defaultTerminologyServerUrl
+          );
+          return converted[linkId][0].value;
+        })
+      );
+      continue;
+    }
+
     // Skip if calculated expression value is not a valid quantity string
     if (!isQuantityString(calcExpression.value)) {
       continue;
