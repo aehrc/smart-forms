@@ -36,6 +36,11 @@ export {
   QuestionnaireTitleText
 } from './components';
 
+// terminology transport exports
+// Re-exported from '@aehrc/sdc-populate' so a consumer can type a terminology transport for the
+// renderer without depending on that package directly. The same callback works for both.
+export type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '@aehrc/sdc-populate';
+
 // i18n / renderer string exports
 export type { RendererStrings } from './i18n';
 export { defaultRendererStrings, resolveRendererStrings } from './i18n';
@@ -46,6 +51,7 @@ export type {
   QuestionnaireResponseStoreType,
   SmartConfigStoreType,
   TerminologyServerStoreType,
+  TerminologyRequestOptions,
   RendererConfig,
   RendererConfigStoreType
 } from './stores';

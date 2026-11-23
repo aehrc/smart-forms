@@ -25,6 +25,7 @@ import Stack from '@mui/material/Stack';
 import type { AttachmentValues } from './AttachmentItem';
 import AttachmentUrlField from './AttachmentUrlField';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import { StyledRequiredTypography } from '../Item.styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
@@ -65,7 +66,7 @@ function AttachmentField(props: AttachmentFieldProps) {
 
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
-  const { uploadedFile, url, fileName } = attachmentValues;
+  const { uploadedFile, url, fileName, fileError } = attachmentValues;
 
   // TODO: Consider accessible items for attachment fields too if #1096 is fixed.
 
@@ -87,6 +88,13 @@ function AttachmentField(props: AttachmentFieldProps) {
           <Box>
             <AttachmentFileCollector
               uploadedFile={uploadedFile}
+              errorMessage={
+                fileError
+                  ? interpolate(rendererStrings[fileError.error], {
+                      fileName: fileError.rejectedFileName
+                    })
+                  : ''
+              }
               readOnly={readOnly}
               isTabled={isTabled}
               instructionsId={instructionsId}
