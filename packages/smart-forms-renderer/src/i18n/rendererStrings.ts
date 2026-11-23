@@ -128,6 +128,8 @@ export interface RendererStrings {
   attachedFile: string;
   /** Shown when the browser can't identify an uploaded file's type. Supports `{fileName}`. */
   attachmentTypeUnknown: string;
+  /** Shown when an uploaded file is empty (0 bytes). Supports `{fileName}`. */
+  attachmentEmpty: string;
   /** Shown when the browser can't read an uploaded file. Supports `{fileName}`. */
   attachmentReadError: string;
   /** Date-picker calendar button label. */
@@ -243,6 +245,7 @@ export const defaultRendererStrings: RendererStrings = {
   attachedFile: 'Attached file',
   attachmentTypeUnknown:
     '{fileName}: The file type is unknown. Choose a file with a recognized type.',
+  attachmentEmpty: '{fileName}: The file is empty. Choose a file with content.',
   attachmentReadError: '{fileName}: The file could not be read. Try attaching it again.',
   pickDate: 'Pick a date',
   syncSuccessful: 'Sync successful',

@@ -25,7 +25,10 @@ export function getFileSize(fileSizeString: string) {
   return `${Math.round(+fileSizeString / 1024) / 1000}MB`;
 }
 
-export type AttachmentFileError = 'attachmentTypeUnknown' | 'attachmentReadError';
+export type AttachmentFileError =
+  | 'attachmentTypeUnknown'
+  | 'attachmentEmpty'
+  | 'attachmentReadError';
 
 export async function readAttachmentFile(
   file: File
@@ -35,10 +38,20 @@ export async function readAttachmentFile(
     return { error: 'attachmentTypeUnknown' };
   }
 
+  // An empty file has no data to store, and Attachment.data can't be an empty string.
+  if (file.size === 0) {
+    return { error: 'attachmentEmpty' };
+  }
+
   try {
     const data = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
+      // readAsDataURL returns "data:<mime>;base64,<data>", but Attachment.data is plain base64.
+      // The MIME type can contain commas and base64 can't, so the data starts after the last one.
+      reader.onload = () => {
+        const result = reader.result as string;
+        resolve(result.slice(result.lastIndexOf(',') + 1));
+      };
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });

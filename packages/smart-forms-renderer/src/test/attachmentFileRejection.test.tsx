@@ -58,6 +58,15 @@ async function renderAttachment(attachment?: Attachment) {
 
 afterEach(() => jest.restoreAllMocks());
 
+test('saves an uploaded file as plain base64 data', async () => {
+  const upload = await renderAttachment();
+  upload(new File(['report'], 'report.txt', { type: 'text/plain' }));
+
+  await waitFor(() =>
+    expect(savedAttachment()).toEqual({ contentType: 'text/plain', data: 'cmVwb3J0', size: 6 })
+  );
+});
+
 test('keeps an attached file when its replacement has no content type', async () => {
   const upload = await renderAttachment();
   const read = jest.spyOn(FileReader.prototype, 'readAsDataURL');
@@ -77,6 +86,21 @@ test('keeps an attached file when its replacement has no content type', async ()
   expect(screen.getByText('report.txt')).toBeVisible();
   expect(screen.getByText('Type: text/plain')).toBeVisible();
   expect(savedAttachment()).toEqual({ ...attachment, url, title });
+  expect(read).toHaveBeenCalledTimes(1);
+});
+
+test('keeps an attached file when its replacement is empty', async () => {
+  const upload = await renderAttachment();
+  const read = jest.spyOn(FileReader.prototype, 'readAsDataURL');
+  upload(new File(['report'], 'report.txt', { type: 'text/plain' }));
+  await waitFor(() => expect(savedAttachment()?.data).toBeTruthy());
+  const attachment = savedAttachment();
+
+  upload(new File([], 'empty.txt', { type: 'text/plain' }));
+  const alert = await screen.findByRole('alert');
+  expect(alert).toHaveTextContent(/^empty\.txt: The file is empty/);
+  expect(screen.getByText('report.txt')).toBeVisible();
+  expect(savedAttachment()).toEqual(attachment);
   expect(read).toHaveBeenCalledTimes(1);
 });
 
