@@ -778,6 +778,7 @@ export function parseValueToAnswer(
         return {
           valueQuantity: {
             value: value.value,
+            ...(value.comparator && { comparator: value.comparator }),
             ...(value.unit && { unit: value.unit }),
             ...(value.system && { system: value.system }),
             ...(value.code && { code: value.code })

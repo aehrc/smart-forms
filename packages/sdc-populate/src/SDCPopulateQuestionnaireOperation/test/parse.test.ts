@@ -258,6 +258,30 @@ describe('parseValueToAnswer', () => {
     });
   });
 
+  it('preserves comparator on a source-derived valueQuantity, e.g. an out-of-range vitals reading', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'quantity'
+    };
+    const value = {
+      value: 120,
+      comparator: '>=',
+      unit: 'mmHg',
+      system: 'http://unitsofmeasure.org',
+      code: 'mm[Hg]'
+    };
+
+    expect(parseValueToAnswer(qItem, value)).toEqual({
+      valueQuantity: {
+        value: 120,
+        comparator: '>=',
+        unit: 'mmHg',
+        system: 'http://unitsofmeasure.org',
+        code: 'mm[Hg]'
+      }
+    });
+  });
+
   it('returns valueQuantity for a unit-less, code-only UCUM quantity instead of falling back to valueString', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',

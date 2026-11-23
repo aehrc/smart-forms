@@ -552,6 +552,27 @@ describe('calculatedExpression utils', () => {
       });
     });
 
+    it('preserves comparator on a source-derived valueQuantity, e.g. an out-of-range vitals reading', () => {
+      const qItem: QuestionnaireItem = { linkId: 'q1', type: 'quantity' };
+      const value = {
+        value: 120,
+        comparator: '>=',
+        unit: 'mmHg',
+        system: 'http://unitsofmeasure.org',
+        code: 'mm[Hg]'
+      };
+
+      expect(parseValueToAnswer(qItem, value)).toEqual({
+        valueQuantity: {
+          value: 120,
+          comparator: '>=',
+          unit: 'mmHg',
+          system: 'http://unitsofmeasure.org',
+          code: 'mm[Hg]'
+        }
+      });
+    });
+
     it('strips non-conformant extensions off a source-derived valueCoding that does not match the answerValueSet, e.g. the AU-base medication-type extension on a MedicationStatement.code.coding', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'q1',
