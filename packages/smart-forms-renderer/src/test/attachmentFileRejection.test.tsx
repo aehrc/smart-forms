@@ -89,6 +89,21 @@ test('keeps an attached file when its replacement has no content type', async ()
   expect(read).toHaveBeenCalledTimes(1);
 });
 
+test('keeps an attached file when its replacement is empty', async () => {
+  const upload = await renderAttachment();
+  const read = jest.spyOn(FileReader.prototype, 'readAsDataURL');
+  upload(new File(['report'], 'report.txt', { type: 'text/plain' }));
+  await waitFor(() => expect(savedAttachment()?.data).toBeTruthy());
+  const attachment = savedAttachment();
+
+  upload(new File([], 'empty.txt', { type: 'text/plain' }));
+  const alert = await screen.findByRole('alert');
+  expect(alert).toHaveTextContent(/^empty\.txt: The file is empty/);
+  expect(screen.getByText('report.txt')).toBeVisible();
+  expect(savedAttachment()).toEqual(attachment);
+  expect(read).toHaveBeenCalledTimes(1);
+});
+
 test('keeps the saved URL and the latest title edit when reading a file fails', async () => {
   const url = 'https://example.org/report';
   const title = 'Lab report';

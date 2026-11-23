@@ -126,13 +126,11 @@ describe('fileUtils', () => {
       await expect(promise).resolves.toMatchObject({ data: 'cmVwb3J0' });
     });
 
-    it('keeps the size of a zero-size file', async () => {
+    it('rejects an empty file without reading it', async () => {
       const file = createMockFile('empty.txt', 0, 'text/plain', '');
 
-      const promise = readAttachmentFile(file);
-      mockFileReader.onload();
-
-      await expect(promise).resolves.toMatchObject({ size: 0 });
+      await expect(readAttachmentFile(file)).resolves.toEqual({ error: 'attachmentEmpty' });
+      expect(mockFileReader.readAsDataURL).not.toHaveBeenCalled();
     });
 
     it.each(['', '   '])(

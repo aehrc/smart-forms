@@ -25,7 +25,10 @@ export function getFileSize(fileSizeString: string) {
   return `${Math.round(+fileSizeString / 1024) / 1000}MB`;
 }
 
-export type AttachmentFileError = 'attachmentTypeUnknown' | 'attachmentReadError';
+export type AttachmentFileError =
+  | 'attachmentTypeUnknown'
+  | 'attachmentEmpty'
+  | 'attachmentReadError';
 
 export async function readAttachmentFile(
   file: File
@@ -33,6 +36,11 @@ export async function readAttachmentFile(
   const contentType = file.type.trim();
   if (!contentType) {
     return { error: 'attachmentTypeUnknown' };
+  }
+
+  // An empty file has no data to store, and Attachment.data can't be an empty string.
+  if (file.size === 0) {
+    return { error: 'attachmentEmpty' };
   }
 
   try {
