@@ -294,4 +294,54 @@ describe('filterValueSetAnswersRecursive', () => {
 
     expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: '9' } }]);
   });
+
+  it('filters the answers of an item that also has child items', () => {
+    const input = {
+      linkId: 'q1',
+      answer: [
+        { valueCoding: { system: 'sys', code: 'a' } },
+        { valueCoding: { system: 'sys', code: 'c', display: 'Not an option' } }
+      ],
+      item: [
+        {
+          linkId: 'q2',
+          answer: [{ valueString: '1' }]
+        }
+      ]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      mockResolvedValueSetPromises,
+      mockAnswerOptions,
+      {},
+      new Set<string>()
+    );
+
+    // the item's own answers are filtered and normalised like those of an item without children
+    expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: 'a', display: 'A' } }]);
+    // child items are still filtered
+    expect(result?.item).toEqual([
+      { linkId: 'q2', answer: [{ valueCoding: { system: 'sys', code: '1', display: 'One' } }] }
+    ]);
+  });
+
+  it('keeps the child items when no answers of the item remain', () => {
+    const input = {
+      linkId: 'q3',
+      answer: [{ valueCoding: { system: 'sys', code: 'z', display: 'Z' } }],
+      item: [{ linkId: 'q4', answer: [{ valueString: 'child answer' }] }]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      {},
+      mockContainedResources,
+      new Set<string>()
+    );
+
+    expect(result?.answer).toEqual([]);
+    expect(result?.item).toEqual([{ linkId: 'q4', answer: [{ valueString: 'child answer' }] }]);
+  });
 });
