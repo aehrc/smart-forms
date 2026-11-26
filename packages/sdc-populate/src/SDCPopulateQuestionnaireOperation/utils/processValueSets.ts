@@ -97,9 +97,35 @@ export function filterValueSetAnswersRecursive(
       )
       .filter((item): item is QuestionnaireResponseItem => item !== null);
 
-    return { ...qrItem, item: qrItems };
+    // A question with child items can have its own answers, so filter them too.
+    // Keep the item for its child items even if none of its own answers remain.
+    const filteredQrItem = filterItemAnswers(
+      qrItem,
+      valueSetPromises,
+      answerOptions,
+      containedResources,
+      openChoiceLinkIds
+    );
+
+    return { ...(filteredQrItem ?? { ...qrItem, answer: [] }), item: qrItems };
   }
 
+  return filterItemAnswers(
+    qrItem,
+    valueSetPromises,
+    answerOptions,
+    containedResources,
+    openChoiceLinkIds
+  );
+}
+
+function filterItemAnswers(
+  qrItem: QuestionnaireResponseItem,
+  valueSetPromises: Record<string, ValueSetPromise>,
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
+  containedResources: Record<string, ValueSet>,
+  openChoiceLinkIds: Set<string>
+): QuestionnaireResponseItem | null {
   const linkId = qrItem.linkId;
   const isOpenChoice = openChoiceLinkIds.has(linkId);
 
